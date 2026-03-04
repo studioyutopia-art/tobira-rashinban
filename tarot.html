@@ -150,12 +150,67 @@
 
     /* Responsive */
     @media(max-width:768px){
-      nav{padding:22px 24px}.nav-links{display:none}
-      .page-header{padding:120px 24px 48px}
-      .card-grid{grid-template-columns:repeat(auto-fill,minmax(85px,1fr));gap:10px;padding:0 24px 80px}
-      .modal{grid-template-columns:1fr;max-height:85vh}
-      .modal-card{padding:24px 40px}
-      .modal-body{padding:32px 28px}
+      /* カーソル非表示（タッチ操作には不要） */
+      .cursor, .cursor-ring { display: none; }
+      body { cursor: auto; }
+      a, button, .card-wrap, .spread-card { cursor: pointer; }
+
+      /* ナビ */
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .nav-logo span { display: none; }
+
+      /* ページヘッダー */
+      .page-header { padding: 90px 24px 40px; }
+      .page-title { font-size: 28px; }
+      .page-desc { font-size: 13px; }
+
+      /* モード切替ボタン */
+      .mode-selector { margin: 32px 16px; }
+      .mode-btn { padding: 12px 20px; font-size: 10px; }
+
+      /* 説明文 */
+      .instruction { margin-bottom: 32px; padding: 0 24px; }
+
+      /* カードグリッド */
+      .card-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        padding: 0 16px 80px;
+      }
+
+      /* モーダル */
+      .overlay { padding: 0; align-items: flex-end; }
+      .modal {
+        grid-template-columns: 1fr;
+        max-height: 92vh;
+        border-radius: 16px 16px 0 0;
+        width: 100%;
+      }
+      .modal-card {
+        padding: 28px 40px 20px;
+        max-height: 280px;
+      }
+      .modal-card-img {
+        max-height: 220px;
+        width: auto;
+        margin: 0 auto;
+        display: block;
+      }
+      .modal-body {
+        padding: 24px 24px 40px;
+        gap: 16px;
+        overflow-y: auto;
+        max-height: calc(92vh - 280px);
+      }
+      .modal-title { font-size: 22px; }
+      .modal-close {
+        position: fixed;
+        top: auto;
+        bottom: calc(92vh + 8px);
+        right: 16px;
+        color: var(--cream);
+      }
     }
   </style>
 </head>
