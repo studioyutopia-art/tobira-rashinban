@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>カードを引く — 扉と羅針盤</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
+      --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
+      --ink-lt:#7A7068;--gold:#C9A96E;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+
+    /* Cursor */
+    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+
+    /* Nav */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+    .nav-links{display:flex;gap:44px;list-style:none}
+    .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+
+    /* Page Header */
+    .page-header{padding:140px 80px 60px;text-align:center}
+    .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
+    .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
+    .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards}
+
+    /* Mode Selector */
+    .mode-selector{display:flex;justify-content:center;gap:2px;margin:48px 0;opacity:0;animation:fadeUp 1s ease .8s forwards}
+    .mode-btn{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.35em;color:var(--ink-lt);background:none;border:1px solid rgba(182,169,154,.3);padding:14px 32px;cursor:none;transition:all .3s}
+    .mode-btn.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+    .mode-btn:hover:not(.active){border-color:var(--gold);color:var(--ink)}
+
+    /* Instruction */
+    .instruction{text-align:center;margin-bottom:56px;opacity:0;animation:fadeUp 1s ease 1s forwards}
+    .instruction p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.2em;color:var(--dust)}
+
+    /* Card Grid */
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:16px;max-width:1100px;margin:0 auto;padding:0 80px 120px}
+
+    /* Card */
+    .card-wrap{perspective:1000px;cursor:none}
+    .card-flip{width:100%;aspect-ratio:2/3.5;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,0,.2,1);border-radius:6px}
+    .card-wrap.flipped .card-flip{transform:rotateY(180deg)}
+    .card-wrap.reversed .card-flip{transform:rotateY(180deg) rotateZ(180deg)}
+
+    .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:6px;overflow:hidden}
+
+    /* Card Back */
+    .card-back{
+      background:linear-gradient(145deg,#2A2622,#3D3530);
+      border:1px solid rgba(201,169,110,.25);
+      display:flex;align-items:center;justify-content:center;
+      transition:box-shadow .3s,transform .2s;
+      box-shadow:0 8px 24px rgba(42,38,34,.2);
+    }
+    .card-wrap:not(.flipped):hover .card-back{
+      box-shadow:0 20px 48px rgba(42,38,34,.3);
+      transform:translateY(-6px);
+    }
+    .card-back-pattern{
+      position:absolute;inset:0;
+      background-image:
+        repeating-linear-gradient(45deg,rgba(201,169,110,.06) 0px,rgba(201,169,110,.06) 1px,transparent 1px,transparent 10px),
+        repeating-linear-gradient(-45deg,rgba(201,169,110,.06) 0px,rgba(201,169,110,.06) 1px,transparent 1px,transparent 10px);
+    }
+    .card-back-border{position:absolute;inset:6px;border:1px solid rgba(201,169,110,.2);border-radius:3px}
+    .card-back-sym{font-family:'Cormorant Garamond',serif;font-size:28px;color:rgba(201,169,110,.5);position:relative;z-index:1}
+
+    /* Card Front */
+    .card-front{
+      transform:rotateY(180deg);
+      background:var(--cream);
+      border:1px solid rgba(201,169,110,.3);
+      box-shadow:0 12px 40px rgba(42,38,34,.18);
+      display:flex;flex-direction:column;
+    }
+    .card-img-wrap{flex:1;overflow:hidden;position:relative}
+    .card-img-wrap img{
+      width:100%;height:100%;object-fit:cover;
+      display:block;
+      filter:sepia(15%) contrast(95%) brightness(102%);
+      transition:transform .5s ease;
+    }
+    .card-wrap:hover .card-img-wrap img{transform:scale(1.04)}
+    .card-label{
+      padding:8px 10px;text-align:center;
+      background:linear-gradient(to bottom,rgba(245,241,235,.97),var(--cream));
+      border-top:1px solid rgba(201,169,110,.2);
+    }
+    .card-label-name{font-size:9px;letter-spacing:.25em;color:var(--ink-mid);display:block}
+    .card-label-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:8px;letter-spacing:.2em;color:var(--dust)}
+
+    /* Overlay */
+    .overlay{
+      position:fixed;inset:0;z-index:500;
+      background:rgba(42,38,34,.75);
+      backdrop-filter:blur(12px);
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;pointer-events:none;
+      transition:opacity .5s ease;
+      padding:24px;
+    }
+    .overlay.open{opacity:1;pointer-events:all}
+
+    .modal{
+      background:var(--cream);
+      max-width:720px;width:100%;
+      display:grid;grid-template-columns:240px 1fr;
+      border-radius:4px;
+      overflow:hidden;
+      transform:translateY(24px) scale(.97);
+      transition:transform .5s cubic-bezier(.25,.46,.45,.94);
+      box-shadow:0 60px 120px rgba(42,38,34,.4);
+      max-height:90vh;
+    }
+    .overlay.open .modal{transform:translateY(0) scale(1)}
+
+    .modal-card{background:linear-gradient(145deg,#2A2622,#3A3028);display:flex;align-items:center;justify-content:center;padding:32px;position:relative}
+    .modal-card-img{width:100%;border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,.5);filter:sepia(10%) contrast(96%) brightness(104%)}
+    .modal-card.reversed .modal-card-img{transform:rotate(180deg)}
+
+    .modal-body{padding:48px 44px;overflow-y:auto;display:flex;flex-direction:column;gap:24px}
+    .modal-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--gold)}
+    .modal-title{font-weight:200;font-size:clamp(22px,3vw,32px);letter-spacing:.18em;line-height:1.5}
+    .modal-subtitle{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--ink-lt)}
+    .modal-divider{width:40px;height:1px;background:var(--mouve)}
+    .modal-section-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.4em;color:var(--gold);margin-bottom:10px;display:block}
+    .modal-text{font-size:13px;line-height:2.5;letter-spacing:.08em;color:var(--ink-mid)}
+    .modal-keywords{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+    .kw{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.15em;color:var(--ink-lt);border:1px solid rgba(182,169,154,.4);padding:4px 12px;border-radius:2px}
+    .modal-close{position:absolute;top:20px;right:24px;background:none;border:none;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.3em;color:var(--dust);cursor:none;transition:color .3s}
+    .modal-close:hover{color:var(--ink)}
+
+    /* Reversed badge */
+    .rev-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.3em;color:var(--mouve);border:1px solid var(--mouve);padding:4px 14px;border-radius:2px;width:fit-content}
+
+    /* Animations */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Responsive */
+    @media(max-width:768px){
+      nav{padding:22px 24px}.nav-links{display:none}
+      .page-header{padding:120px 24px 48px}
+      .card-grid{grid-template-columns:repeat(auto-fill,minmax(85px,1fr));gap:10px;padding:0 24px 80px}
+      .modal{grid-template-columns:1fr;max-height:85vh}
+      .modal-card{padding:24px 40px}
+      .modal-body{padding:32px 28px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+  <ul class="nav-links">
+    <li><a href="tarot.html" style="color:var(--ink)">カードを引く</a></li>
+    <li><a href="#">カード解説</a></li>
+    <li><a href="#">コラム</a></li>
+    <li><a href="#">ショップ</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="page-eyebrow">One Card Reading</span>
+  <h1 class="page-title">カードを引く</h1>
+  <p class="page-desc">心を静め、問いかけを持ち、一枚のカードを選んでください</p>
+</div>
+
+<div class="mode-selector">
+  <button class="mode-btn active" onclick="setMode('one')">一枚引き</button>
+  <button class="mode-btn" onclick="setMode('three')">三枚引き</button>
+</div>
+
+<div class="instruction">
+  <p id="instr-text">22枚の大アルカナが並んでいます。直感で一枚を選んでください</p>
+</div>
+
+<div class="card-grid" id="cardGrid"></div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-card" id="modalCard">
+      <img class="modal-card-img" id="modalImg" src="" alt="" />
+    </div>
+    <div class="modal-body">
+      <p class="modal-eyebrow" id="modalEyebrow"></p>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <p class="modal-subtitle" id="modalSubtitle"></p>
+      <div id="revBadge" style="display:none" class="rev-badge">↓ 逆位置</div>
+      <div class="modal-divider"></div>
+      <div>
+        <span class="modal-section-label" id="meaningLabel">正位置の意味</span>
+        <p class="modal-text" id="modalMeaning"></p>
+      </div>
+      <div>
+        <span class="modal-section-label">キーワード</span>
+        <div class="modal-keywords" id="modalKeywords"></div>
+      </div>
+      <div>
+        <span class="modal-section-label">メッセージ</span>
+        <p class="modal-text" id="modalMessage"></p>
+      </div>
+      <button class="modal-close" onclick="closeOverlay()">閉じる ✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Major Arcana Data ──
+const CARDS = [
+  {
+    num:'0', name:'愚者', en:'The Fool',
+    img: 'images/tarot/00_Fool.jpg',
+    upright:'新しい始まり、無限の可能性、自由な精神。恐れを手放し、未知の旅に踏み出す勇気を持つとき。',
+    reversed:'無謀、軽率、準備不足。衝動的な行動が思わぬトラブルを招く可能性。',
+    keywords:['始まり','自由','冒険','純粋さ','可能性'],
+    message:'今こそ一歩を踏み出す時です。完璧な準備を待つのではなく、軽やかな心で新しい扉を開いてください。'
+  },
+  {
+    num:'I', name:'魔術師', en:'The Magician',
+    img: 'images/tarot/01_Magician.jpg',
+    upright:'意志の力、創造性、スキルの発揮。あなたが必要なものはすべて既に手の中にある。',
+    reversed:'才能の無駄遣い、詐欺、自信の欠如。持っている能力を疑いすぎている。',
+    keywords:['意志','創造','スキル','集中','顕現'],
+    message:'あなたには変化を起こす力があります。目の前の道具を使いこなし、意図を現実へと変えてください。'
+  },
+  {
+    num:'II', name:'女教皇', en:'The High Priestess',
+    img: 'images/tarot/02_High_Priestess.jpg',
+    upright:'直感、潜在意識、神秘的な知恵。内なる声に耳を傾け、表に出ていない真実を感じ取る。',
+    reversed:'秘密、表面的な知識、内なる声の無視。直感を信じられていない状態。',
+    keywords:['直感','神秘','潜在意識','沈黙','知恵'],
+    message:'すべての答えは外にではなく、あなたの内側にあります。静かに座り、深い部分からのメッセージを受け取ってください。'
+  },
+  {
+    num:'III', name:'女帝', en:'The Empress',
+    img: 'images/tarot/03_Empress.jpg',
+    upright:'豊かさ、母性、自然との調和。創造的エネルギーが満ちあふれ、物事が育ち花開くとき。',
+    reversed:'創造性の枯渇、依存、自己愛の欠如。自分自身を大切にすることが必要。',
+    keywords:['豊かさ','母性','創造','自然','美'],
+    message:'自分を豊かにすることが、周りへの豊かさにつながります。今日は自分を甘やかし、美しいものと共に時間を過ごしてください。'
+  },
+  {
+    num:'IV', name:'皇帝', en:'The Emperor',
+    img: 'images/tarot/04_Emperor.jpg',
+    upright:'権威、構造、安定した基盤。規律と責任感によって現実を築いていく力。',
+    reversed:'支配欲、硬直性、権威への反発。柔軟性を失い、コントロールしすぎている。',
+    keywords:['権威','安定','構造','規律','父性'],
+    message:'しっかりとした基盤の上に立ってください。規律を持って行動することが、長期的な成功への道です。'
+  },
+  {
+    num:'V', name:'法王', en:'The Hierophant',
+    img: 'images/tarot/05_Hierophant.jpg',
+    upright:'伝統、精神的な指導、慣習。確立されたシステムや教えの中に知恵を見出す。',
+    reversed:'型破り、個人の信念、制度への反発。既存の枠を超えた新しい道を探している。',
+    keywords:['伝統','信仰','教え','慣習','精神性'],
+    message:'先人の知恵に耳を傾けてください。長い時間をかけて磨かれた教えの中に、今のあなたへのヒントがあります。'
+  },
+  {
+    num:'VI', name:'恋人', en:'The Lovers',
+    img: 'images/tarot/06_Lovers.jpg',
+    upright:'愛、調和、重要な選択。価値観の一致と、心から求めるものへの選択。',
+    reversed:'不調和、誤った選択、価値観の不一致。自分の本当の望みが見えていない状態。',
+    keywords:['愛','選択','調和','関係','価値観'],
+    message:'今、あなたは大切な選択の前に立っています。頭ではなく、心の声に従って選んでください。'
+  },
+  {
+    num:'VII', name:'戦車', en:'The Chariot',
+    img: 'images/tarot/07_Chariot.jpg',
+    upright:'意志の力、勝利、自己コントロール。相反する力を統合し、目標に向かって前進する。',
+    reversed:'方向性の欠如、コントロールの喪失、攻撃性。内なる葛藤が前進を妨げている。',
+    keywords:['勝利','意志','前進','自制','目標'],
+    message:'あなたには目標を達成する力があります。迷いを振り切り、意志の手綱をしっかりと握って進んでください。'
+  },
+  {
+    num:'VIII', name:'力', en:'Strength',
+    img: 'images/tarot/08_Strength.jpg',
+    upright:'内なる力、勇気、忍耐。力ずくではなく、穏やかな強さで困難を乗り越える。',
+    reversed:'自己不信、弱さ、情熱の抑圧。自分の力を信じられていない状態。',
+    keywords:['勇気','忍耐','内なる力','優しさ','自信'],
+    message:'本当の強さは優しさの中にあります。恐れではなく、愛と信頼から行動してください。'
+  },
+  {
+    num:'IX', name:'隠者', en:'The Hermit',
+    img: 'images/tarot/09_Hermit.jpg',
+    upright:'内省、孤独、内なる指針。一人で静かに自分と向き合う時間が必要なとき。',
+    reversed:'孤立、内向きすぎる、社会からの逃避。孤独が孤立になっている状態。',
+    keywords:['内省','孤独','知恵','導き','静寂'],
+    message:'今は静かにひとりになる時間が必要です。外の喧騒から離れ、自分の内なる光を見つめてください。'
+  },
+  {
+    num:'X', name:'運命の輪', en:'Wheel of Fortune',
+    img: 'images/tarot/10_Wheel_of_Fortune.jpg',
+    upright:'転換点、運命、サイクル。物事は常に変化し、良い方向への転機が訪れている。',
+    reversed:'悪運、変化への抵抗、サイクルの破綻。流れに抗っていることでチャンスを逃している。',
+    keywords:['運命','変化','転機','サイクル','幸運'],
+    message:'人生の輪が回っています。今この瞬間を大切に、流れに乗って変化を受け入れてください。'
+  },
+  {
+    num:'XI', name:'正義', en:'Justice',
+    img: 'images/tarot/11_Justice.jpg',
+    upright:'公正、真実、因果応報。客観的な判断と、行動の結果に対する誠実な向き合い。',
+    reversed:'不公正、偏見、責任回避。真実から目を背けていることで問題が生じている。',
+    keywords:['公正','真実','均衡','責任','判断'],
+    message:'すべての行いには結果が伴います。今は正直に、公平に、自分の行動を見つめ直してください。'
+  },
+  {
+    num:'XII', name:'吊るされた男', en:'The Hanged Man',
+    img: 'images/tarot/12_Hanged_Man.jpg',
+    upright:'一時停止、視点の転換、自己犠牲。違う角度から見ることで新しい真実が見えてくる。',
+    reversed:'停滞、無駄な犠牲、先延ばし。変化を拒んでいることで身動きが取れない状態。',
+    keywords:['停止','視点転換','受容','犠牲','悟り'],
+    message:'今は動くのではなく、待つ時です。いつもと違う視点から物事を見ると、新しい道が開けてきます。'
+  },
+  {
+    num:'XIII', name:'死神', en:'Death',
+    img: 'images/tarot/13_Death.jpg',
+    upright:'終わりと始まり、変容、手放すこと。古いものが終わり、新しいサイクルが始まる。',
+    reversed:'変化への抵抗、停滞、過去への執着。終わらせるべきことを終わらせていない。',
+    keywords:['変容','終わり','始まり','手放す','再生'],
+    message:'終わりを恐れないでください。何かを手放すことが、新しい何かが生まれるための空間を作ります。'
+  },
+  {
+    num:'XIV', name:'節制', en:'Temperance',
+    img: 'images/tarot/14_Temperance.jpg',
+    upright:'バランス、節度、癒し。対立するものを統合し、穏やかな流れの中に調和を見出す。',
+    reversed:'過剰、不均衡、目的意識の欠如。何かが行き過ぎていて、バランスを崩している。',
+    keywords:['調和','バランス','癒し','統合','節度'],
+    message:'急がず、焦らず。少しずつ、穏やかに。今のあなたに必要なのはバランスと、静かな流れに身を委ねることです。'
+  },
+  {
+    num:'XV', name:'悪魔', en:'The Devil',
+    img: 'images/tarot/15_Devil.jpg',
+    upright:'束縛、執着、物質主義。自分自身を縛っているものに気づき、解放の第一歩を踏み出す。',
+    reversed:'解放、解放感、力の取り戻し。束縛から少しずつ自由になり始めている。',
+    keywords:['束縛','執着','欲望','解放','影'],
+    message:'あなたを縛っているのは、実は自分自身かもしれません。鎖に気づくことが、自由への第一歩です。'
+  },
+  {
+    num:'XVI', name:'塔', en:'The Tower',
+    img: 'images/tarot/16_Tower.jpg',
+    upright:'突然の変化、崩壊、啓示。偽りの基盤が崩れ、真実が露わになる瞬間。',
+    reversed:'変化への抵抗、崩壊の回避、内なる転換。外的な崩壊ではなく、内面的な変革。',
+    keywords:['崩壊','変革','啓示','解放','混乱'],
+    message:'崩れていくものを恐れないでください。本当に必要なものは、嵐の後も残ります。'
+  },
+  {
+    num:'XVII', name:'星', en:'The Star',
+    img: 'images/tarot/17_Star.jpg',
+    upright:'希望、インスピレーション、信頼。暗闇の後に輝く光。未来への静かな確信。',
+    reversed:'希望の喪失、失望、自己不信。内なる光を見失い、悲観的になっている。',
+    keywords:['希望','インスピレーション','癒し','信頼','導き'],
+    message:'夜空に瞬く星のように、あなたの中にある光は消えていません。希望を持ち続けてください。'
+  },
+  {
+    num:'XVIII', name:'月', en:'The Moon',
+    img: 'images/tarot/18_Moon.jpg',
+    upright:'幻想、潜在意識、不安。見えないものへの恐れと、深層心理からのメッセージ。',
+    reversed:'幻想から覚める、混乱の解消、真実の発見。霧が晴れ、物事が明確になっていく。',
+    keywords:['幻想','潜在意識','夢','不安','神秘'],
+    message:'今は全てが明確に見えなくても大丈夫。月の光の中で、あなたの直感を信じて歩んでください。'
+  },
+  {
+    num:'XIX', name:'太陽', en:'The Sun',
+    img: 'images/tarot/19_Sun.jpg',
+    upright:'喜び、活力、成功。明るいエネルギーが満ち溢れ、物事が輝かしく展開していく。',
+    reversed:'一時的な陰り、過度な楽観、活力の低下。太陽の光がやや曇っている状態。',
+    keywords:['喜び','成功','活力','明るさ','子どもらしさ'],
+    message:'あなたの中に太陽が輝いています。今日は喜びに向かって心を開き、その光を存分に浴びてください。'
+  },
+  {
+    num:'XX', name:'審判', en:'Judgement',
+    img: 'images/tarot/20_Judgement.jpg',
+    upright:'覚醒、再生、内なる呼び声。過去を振り返り、より高い目的へと目覚める時。',
+    reversed:'自己批判、内省の欠如、変化への恐れ。心の奥からの呼びかけを聞けていない。',
+    keywords:['覚醒','再生','呼び声','許し','変容'],
+    message:'過去を裁くのではなく、そこから学んでください。あなたは今、新しい自分へと生まれ変わる瞬間にいます。'
+  },
+  {
+    num:'XXI', name:'世界', en:'The World',
+    img: 'images/tarot/21_World.jpg',
+    upright:'完成、達成、統合。一つのサイクルが完全な形で閉じ、充実感と感謝に満ちている。',
+    reversed:'未完成、目標未達成、停滞。もう少しで完成するのに、最後の一歩が踏み出せていない。',
+    keywords:['完成','達成','統合','充実','終わりと始まり'],
+    message:'あなたはここまで長い旅をしてきました。今いる場所を十分に味わい、次の旅への感謝を忘れずに。'
+  }
+];
+
+let mode = 'one';
+let selectedCards = [];
+let currentCardData = null;
+
+function setMode(m) {
+  mode = m;
+  selectedCards = [];
+  document.querySelectorAll('.mode-btn').forEach((b,i)=>{
+    b.classList.toggle('active', (i===0&&m==='one')||(i===1&&m==='three'));
+  });
+  document.getElementById('instr-text').textContent =
+    m === 'one'
+      ? '22枚の大アルカナが並んでいます。直感で一枚を選んでください'
+      : '三枚を選んでください — 過去・現在・未来を表します';
+  renderCards();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+let shuffled = [];
+
+function renderCards() {
+  shuffled = shuffle(CARDS);
+  const grid = document.getElementById('cardGrid');
+  grid.innerHTML = '';
+  shuffled.forEach((card, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'card-wrap';
+    wrap.style.opacity = '0';
+    wrap.style.transform = 'translateY(16px)';
+    wrap.style.transition = `opacity .5s ease ${i*30}ms, transform .5s ease ${i*30}ms`;
+    wrap.innerHTML = `
+      <div class="card-flip">
+        <div class="card-face card-back">
+          <div class="card-back-pattern"></div>
+          <div class="card-back-border"></div>
+          <div class="card-back-sym">✦</div>
+        </div>
+        <div class="card-face card-front">
+          <div class="card-img-wrap">
+            <img src="${card.img}" alt="${card.name}" loading="lazy" />
+          </div>
+          <div class="card-label">
+            <span class="card-label-name">${card.name}</span>
+            <span class="card-label-num">${card.en}</span>
+          </div>
+        </div>
+      </div>`;
+    wrap.addEventListener('click', () => onCardClick(wrap, card));
+    grid.appendChild(wrap);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      wrap.style.opacity = '1';
+      wrap.style.transform = 'translateY(0)';
+    }));
+  });
+}
+
+function onCardClick(wrap, card) {
+  if (mode === 'one') {
+    if (wrap.classList.contains('flipped') || wrap.classList.contains('reversed')) {
+      openModal(card, wrap.classList.contains('reversed'));
+      return;
+    }
+    // Flip all others back / disable
+    document.querySelectorAll('.card-wrap').forEach(w => {
+      if (w !== wrap) w.style.opacity = '0.3';
+    });
+    const rev = Math.random() < 0.25;
+    if (rev) wrap.classList.add('reversed');
+    else wrap.classList.add('flipped');
+    setTimeout(() => openModal(card, rev), 750);
+  } else {
+    if (wrap.classList.contains('flipped') || wrap.classList.contains('reversed')) {
+      const idx = selectedCards.findIndex(s=>s.card===card);
+      const rev = idx>=0 ? selectedCards[idx].rev : false;
+      openModal(card, rev);
+      return;
+    }
+    if (selectedCards.length >= 3) return;
+    const rev = Math.random() < 0.25;
+    if (rev) wrap.classList.add('reversed');
+    else wrap.classList.add('flipped');
+    selectedCards.push({card, rev});
+    if (selectedCards.length === 3) {
+      document.querySelectorAll('.card-wrap:not(.flipped):not(.reversed)').forEach(w=>w.style.opacity='0.3');
+    }
+  }
+}
+
+function openModal(card, reversed) {
+  currentCardData = {card, reversed};
+  const labels = ['過去','現在','未来'];
+  let eyebrow = reversed ? '逆位置 · Reversed' : '正位置 · Upright';
+  if (mode==='three') {
+    const idx = selectedCards.findIndex(s=>s.card===card);
+    if (idx>=0) eyebrow = labels[idx] + ' · ' + (reversed?'逆位置':'正位置');
+  }
+  document.getElementById('modalEyebrow').textContent = eyebrow;
+  document.getElementById('modalTitle').textContent = `${card.num}. ${card.name}`;
+  document.getElementById('modalSubtitle').textContent = card.en;
+  document.getElementById('modalImg').src = card.img;
+  document.getElementById('modalImg').alt = card.name;
+  document.getElementById('modalCard').className = 'modal-card' + (reversed?' reversed':'');
+  document.getElementById('revBadge').style.display = reversed ? 'inline-flex' : 'none';
+  document.getElementById('meaningLabel').textContent = reversed ? '逆位置の意味' : '正位置の意味';
+  document.getElementById('modalMeaning').textContent = reversed ? card.reversed : card.upright;
+  document.getElementById('modalMessage').textContent = card.message;
+  const kw = document.getElementById('modalKeywords');
+  kw.innerHTML = card.keywords.map(k=>`<span class="kw">${k}</span>`).join('');
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('overlay')) closeOverlay();
+}
+function closeOverlay() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Cursor
+const cur=document.getElementById('cur'), ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button,.card-wrap,.modal-close')){
+    cur.style.transform='translate(-50%,-50%) scale(2.2)';
+    ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
+  }else{
+    cur.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.borderColor='var(--mouve)';ring.style.transform='translate(-50%,-50%) scale(1)';
+  }
+});
+
+// Keyboard
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOverlay()});
+
+// Init
+renderCards();
+</script>
+</body>
+</html>

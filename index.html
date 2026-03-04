@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>扉と羅針盤</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;--dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;--ink-lt:#7A7068;--gold:#C9A96E}
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 56px;display:flex;justify-content:space-between;align-items:center}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+    .nav-links{display:flex;gap:44px;list-style:none}
+    .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+    .hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+    .hero-left{display:flex;flex-direction:column;justify-content:center;padding:140px 64px 100px 80px;position:relative}
+    .hero-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:36px;opacity:0;animation:fadeUp 1s ease .3s forwards}
+    .hero-title{font-weight:200;font-size:clamp(38px,4.2vw,62px);line-height:1.65;letter-spacing:.16em;margin-bottom:14px;opacity:0;animation:fadeUp 1s ease .55s forwards}
+    .hero-title-en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.32em;color:var(--ink-lt);margin-bottom:60px;opacity:0;animation:fadeUp 1s ease .75s forwards}
+    .hero-desc{font-size:13px;line-height:2.6;letter-spacing:.1em;color:var(--ink-mid);max-width:360px;margin-bottom:64px;opacity:0;animation:fadeUp 1s ease .95s forwards}
+    .hero-cta{display:flex;align-items:center;gap:32px;opacity:0;animation:fadeUp 1s ease 1.15s forwards}
+    .btn-primary{font-family:'Noto Serif JP',serif;font-weight:300;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 44px;cursor:none;position:relative;overflow:hidden;text-decoration:none;display:inline-block}
+    .btn-primary::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94)}
+    .btn-primary:hover::before{transform:translateX(0)}.btn-primary span{position:relative;z-index:1}
+    .btn-ghost{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.2em;color:var(--ink-lt);text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:color .3s,gap .4s}
+    .btn-ghost:hover{color:var(--ink);gap:18px}.btn-ghost::after{content:'→'}
+    .scroll-ind{position:absolute;bottom:52px;left:80px;display:flex;align-items:center;gap:16px;opacity:0;animation:fadeUp 1s ease 1.6s forwards}
+    .scroll-line{width:44px;height:1px;background:var(--dust);position:relative;overflow:hidden}
+    .scroll-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--gold);animation:scrollAnim 2.5s ease-in-out infinite}
+    .scroll-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.35em;color:var(--ink-lt)}
+    .hero-right{position:relative;overflow:hidden}
+    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 65% 75% at 55% 38%,rgba(196,176,192,.26) 0%,transparent 65%),radial-gradient(ellipse 45% 55% at 78% 70%,rgba(158,171,151,.18) 0%,transparent 60%),linear-gradient(155deg,var(--warm) 0%,var(--cream) 100%)}
+    .card-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+    .tarot-card{width:186px;height:324px;position:absolute;border-radius:5px;box-shadow:0 36px 72px rgba(42,38,34,.15),0 8px 18px rgba(42,38,34,.08)}
+    .card-inner{width:100%;height:100%;border-radius:5px;border:1px solid rgba(201,169,110,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px;position:relative}
+    .card-inner::before{content:'';position:absolute;inset:9px;border:1px solid rgba(201,169,110,.18);border-radius:3px}
+    .c-sym{font-family:'Cormorant Garamond',serif;font-size:50px;color:rgba(201,169,110,.58);line-height:1}
+    .c-name{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;letter-spacing:.3em;color:var(--dust);text-align:center}
+    .tc1{background:linear-gradient(148deg,#EEE7DE,#E2DAD0);transform:rotate(-13deg) translateX(-95px) translateY(24px);animation:fl1 6.5s ease-in-out infinite;z-index:1}
+    .tc2{background:linear-gradient(148deg,#F1EBE2,#E7DED5);transform:rotate(-2deg) translateX(-16px) translateY(-8px);animation:fl2 7.5s ease-in-out infinite;z-index:2;box-shadow:0 60px 100px rgba(42,38,34,.2),0 12px 28px rgba(42,38,34,.1)}
+    .tc2 .c-sym{color:rgba(201,169,110,.9)}.tc2 .c-name{color:var(--ink-mid)}
+    .tc3{background:linear-gradient(148deg,#EAE3D9,#DDD5CB);transform:rotate(10deg) translateX(76px) translateY(18px);animation:fl3 5.8s ease-in-out infinite;z-index:1}
+    .divider{width:1px;height:80px;background:linear-gradient(to bottom,transparent,var(--mouve),transparent);margin:0 auto}
+    .sec-daily{padding:120px 80px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1200px;margin:0 auto}
+    .sec-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.5em;color:var(--gold);margin-bottom:24px;display:block}
+    .sec-title{font-weight:200;font-size:clamp(28px,3vw,44px);line-height:1.75;letter-spacing:.14em;margin-bottom:32px}
+    .sec-body{font-size:13px;line-height:2.6;letter-spacing:.08em;color:var(--ink-mid);margin-bottom:48px}
+    .daily-wrap{position:relative;display:flex;justify-content:center;align-items:center;height:500px}
+    .daily-shadow{position:absolute;width:160px;height:260px;background:radial-gradient(ellipse,rgba(182,169,154,.36) 0%,transparent 70%);bottom:64px;filter:blur(22px)}
+    .daily-card{width:210px;height:360px;background:linear-gradient(162deg,#F3ECE3,#E9E0D5);border-radius:6px;border:1px solid rgba(201,169,110,.32);box-shadow:0 56px 96px rgba(42,38,34,.14),0 12px 30px rgba(42,38,34,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:36px;position:relative;cursor:none;transition:box-shadow .5s ease}
+    .daily-card::before{content:'';position:absolute;inset:11px;border:1px solid rgba(201,169,110,.2);border-radius:4px}
+    .daily-date{position:absolute;top:-30px;right:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.2em;color:var(--dust)}
+    .daily-card .c-sym{font-size:66px;color:rgba(201,169,110,.65)}
+    .daily-hint{font-size:11px;letter-spacing:.2em;color:var(--ink-lt);text-align:center;line-height:2.2}
+    .sec-features{background:var(--warm);padding:120px 80px;position:relative;overflow:hidden}
+    .sec-features::before{content:'';position:absolute;top:-80px;right:-80px;width:480px;height:480px;background:radial-gradient(ellipse,rgba(196,176,192,.18) 0%,transparent 70%);pointer-events:none}
+    .feat-header{text-align:center;max-width:520px;margin:0 auto 80px}
+    .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:1040px;margin:0 auto}
+    .feat-item{background:var(--cream);padding:56px 44px;transition:background .4s;position:relative;overflow:hidden}
+    .feat-item:hover{background:#F9F6F2}
+    .feat-item::after{content:'';position:absolute;bottom:0;left:44px;right:44px;height:1px;background:linear-gradient(to right,transparent,var(--mouve),transparent);opacity:0;transition:opacity .4s}
+    .feat-item:hover::after{opacity:1}
+    .feat-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--gold);margin-bottom:32px;display:block}
+    .feat-title{font-weight:300;font-size:16px;letter-spacing:.16em;line-height:1.8;margin-bottom:20px}
+    .feat-body{font-size:12px;line-height:2.5;letter-spacing:.08em;color:var(--ink-mid)}
+    .sec-quote{padding:140px 80px;text-align:center;position:relative}
+    .sec-quote::before{content:'✦';position:absolute;top:88px;left:50%;transform:translateX(-50%);font-size:16px;color:var(--gold);opacity:.55}
+    .quote-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(22px,2.8vw,34px);line-height:2;letter-spacing:.06em;color:var(--ink);max-width:680px;margin:0 auto 36px}
+    .quote-src{font-size:11px;letter-spacing:.35em;color:var(--dust)}
+    .sec-spread{padding:80px 80px 140px;max-width:1200px;margin:0 auto}
+    .spread-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:72px}
+    .spread-cards{display:flex;gap:28px;justify-content:center}
+    .spread-card{flex:1;max-width:200px;aspect-ratio:9/16;background:linear-gradient(158deg,#EEE7DE,#E4DDD4);border-radius:5px;border:1px solid rgba(201,169,110,.22);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;cursor:none;box-shadow:0 20px 50px rgba(42,38,34,.08);position:relative;transition:transform .5s cubic-bezier(.25,.46,.45,.94),box-shadow .5s}
+    .spread-card:nth-child(1){transform:rotate(-4deg) translateY(10px)}.spread-card:nth-child(2){transform:rotate(-1deg)}.spread-card:nth-child(3){transform:rotate(4deg) translateY(14px)}
+    .spread-card:hover{transform:translateY(-18px) rotate(0deg)!important;box-shadow:0 50px 80px rgba(42,38,34,.15);z-index:10}
+    .spread-card .c-sym{font-size:40px;color:rgba(201,169,110,.55)}.spread-card .c-name{font-size:10px}
+    .spread-lbl{position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;letter-spacing:.28em;color:var(--dust)}
+    footer{border-top:1px solid rgba(182,169,154,.28);padding:64px 80px;display:flex;justify-content:space-between;align-items:center}
+    .foot-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid)}
+    .foot-logo small{display:block;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.2em;color:var(--ink-lt);margin-top:5px}
+    .foot-nav{display:flex;gap:40px;list-style:none}
+    .foot-nav a{font-size:11px;letter-spacing:.28em;color:var(--ink-lt);text-decoration:none;transition:color .3s}
+    .foot-nav a:hover{color:var(--ink)}
+    .foot-copy{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.15em;color:var(--dust)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fl1{0%,100%{transform:rotate(-13deg) translateX(-95px) translateY(24px)}50%{transform:rotate(-11deg) translateX(-95px) translateY(10px)}}
+    @keyframes fl2{0%,100%{transform:rotate(-2deg) translateX(-16px) translateY(-8px)}50%{transform:rotate(-1deg) translateX(-16px) translateY(-22px)}}
+    @keyframes fl3{0%,100%{transform:rotate(10deg) translateX(76px) translateY(18px)}50%{transform:rotate(9deg) translateX(76px) translateY(5px)}}
+    @keyframes scrollAnim{0%{left:-100%}50%{left:0}100%{left:100%}}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s cubic-bezier(.25,.46,.45,.94)}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    @media(max-width:880px){nav{padding:22px 32px}.nav-links{display:none}.hero{grid-template-columns:1fr}.hero-left{padding:120px 32px 60px}.hero-right{height:380px}.sec-daily{grid-template-columns:1fr;padding:80px 32px}.feat-grid{grid-template-columns:1fr;gap:1px}.sec-features{padding:80px 32px}.sec-quote{padding:80px 32px}.sec-spread{padding:60px 32px 100px}footer{flex-direction:column;gap:40px;text-align:center;padding:48px 32px}.foot-nav{flex-wrap:wrap;justify-content:center}}
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cur"></div>
+  <div class="cursor-ring" id="ring"></div>
+  <nav>
+    <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+    <ul class="nav-links">
+      <li><a href="tarot.html">カードを引く</a></li>
+      <li><a href="cards.html">カード解説</a></li>
+      <li><a href="#">コラム</a></li>
+      <li><a href="#">ショップ</a></li>
+    </ul>
+  </nav>
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">Tarot &amp; Inner Guidance</p>
+      <h1 class="hero-title">自分の内側に<br>ある扉を、<br>開く。</h1>
+      <p class="hero-title-en">Find your compass within</p>
+      <p class="hero-desc">タロットは未来を「当てる」ものではありません。<br>あなたの中に眠る声に、静かに耳を傾けるための<br>78枚の扉です。</p>
+      <div class="hero-cta">
+        <a href="tarot.html" class="btn-primary"><span>カードを引く</span></a>
+        <a href="cards.html" class="btn-ghost">カードを知る</a>
+      </div>
+      <div class="scroll-ind"><div class="scroll-line"></div><span class="scroll-text">scroll</span></div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-bg"></div>
+      <div class="card-stage">
+        <div class="tarot-card tc1"><div class="card-inner"><div class="c-sym">☽</div><div class="c-name">The Moon</div></div></div>
+        <div class="tarot-card tc2"><div class="card-inner"><div class="c-sym">✦</div><div class="c-name">The Star</div></div></div>
+        <div class="tarot-card tc3"><div class="card-inner"><div class="c-sym">⊙</div><div class="c-name">The Sun</div></div></div>
+      </div>
+    </div>
+  </section>
+  <div class="divider"></div>
+  <section class="sec-daily">
+    <div class="reveal">
+      <span class="sec-label">Daily Tarot</span>
+      <h2 class="sec-title">今日の<br>一枚を引く</h2>
+      <p class="sec-body">朝のコーヒーとともに、あるいは夜眠る前に。<br>一枚のカードが今日のあなたに語りかけます。</p>
+      <a href="#" class="btn-ghost">今日のカードを見る</a>
+    </div>
+    <div class="daily-wrap reveal">
+      <div class="daily-shadow"></div>
+      <div class="daily-card" id="dc">
+        <div class="daily-date">2025 / 06 / 15</div>
+        <div class="c-sym">✦</div>
+        <p class="daily-hint">カードに触れて<br>今日のメッセージを受け取る</p>
+      </div>
+    </div>
+  </section>
+  <section class="sec-features">
+    <div class="feat-header reveal">
+      <span class="sec-label">What we offer</span>
+      <h2 class="sec-title">扉と羅針盤が<br>できること</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-item reveal"><span class="feat-num">01</span><h3 class="feat-title">インタラクティブな<br>タロット体験</h3><p class="feat-body">1枚引き、3枚引き、ケルト十字。あなたのペースで、あなただけの時間にカードを引いてください。</p></div>
+      <div class="feat-item reveal"><span class="feat-num">02</span><h3 class="feat-title">78枚の<br>カード解説</h3><p class="feat-body">大アルカナ22枚、小アルカナ56枚。それぞれのカードが持つ象徴と物語を深く読み解きます。</p></div>
+      <div class="feat-item reveal"><span class="feat-num">03</span><h3 class="feat-title">占い日記と<br>記録機能</h3><p class="feat-body">引いたカードとその日の気持ちを記録する占い日記。自分の流れを振り返ることが、次の羅針盤になります。</p></div>
+    </div>
+  </section>
+  <section class="sec-quote reveal">
+    <p class="quote-text">"タロットを読むことは、<br>自分自身の物語を語ることだ。"</p>
+    <p class="quote-src">— タロットの智慧より</p>
+  </section>
+  <div class="divider"></div>
+  <section class="sec-spread">
+    <div class="spread-head reveal">
+      <div><span class="sec-label">Three Card Spread</span><h2 class="sec-title">過去・現在・未来</h2></div>
+      <a href="#" class="btn-ghost">スプレッドを試す</a>
+    </div>
+    <div class="spread-cards reveal">
+      <div class="spread-card"><div class="c-sym">♃</div><div class="c-name">Past</div><div class="spread-lbl">過去</div></div>
+      <div class="spread-card"><div class="c-sym">☉</div><div class="c-name">Present</div><div class="spread-lbl">現在</div></div>
+      <div class="spread-card"><div class="c-sym">♀</div><div class="c-name">Future</div><div class="spread-lbl">未来</div></div>
+    </div>
+  </section>
+  <footer>
+    <div class="foot-logo">扉と羅針盤<small>Tobira to Rashinban</small></div>
+    <ul class="foot-nav"><li><a href="#">カードを引く</a></li><li><a href="#">カード解説</a></li><li><a href="#">コラム</a></li><li><a href="#">このサイトについて</a></li></ul>
+    <p class="foot-copy">© 2025 扉と羅針盤</p>
+  </footer>
+  <script>
+    const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+    (function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+    document.querySelectorAll('a,button,.daily-card,.spread-card').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.2)';ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)'});
+      el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='var(--mouve)';ring.style.transform='translate(-50%,-50%) scale(1)'});
+    });
+    const io=new IntersectionObserver(entries=>entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),i*60)}),{threshold:.1});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+    const dc=document.getElementById('dc');
+    dc.addEventListener('mousemove',e=>{const r=dc.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;dc.style.transform=`translateY(-12px) rotateY(${x*14}deg) rotateX(${-y*14}deg)`;dc.style.boxShadow=`${-x*20}px ${40+y*10}px 80px rgba(42,38,34,.2)`});
+    dc.addEventListener('mouseleave',()=>{dc.style.transform='';dc.style.boxShadow=''});
+  </script>
+</body>
+</html>
