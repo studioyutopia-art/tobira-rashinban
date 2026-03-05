@@ -421,27 +421,64 @@ function fanCards() {
 // ── 扇からカード選択 ──
 function onFanCardClick(card, index) {
   if (shufflePhase !== 'fanning') return;
-  shufflePhase = 'done';
 
-  card.style.transform = card.style.transform + ' translateY(-30px)';
-  card.style.borderColor = 'rgba(201,169,110,.6)';
-  card.style.boxShadow = '0 40px 80px rgba(42,38,34,.5)';
+  // すでに仮選択されているカードがある場合
+  const prevSelected = document.querySelector('.fan-card.pre-selected');
 
-  shuffleStepText.textContent = 'カードが選ばれました';
-  shuffleSubText.textContent = 'めくってメッセージを受け取ってください';
-  shuffleBtn.innerHTML = '<span>カードをめくる</span>';
-  shuffleBtn.disabled = false;
+  if (prevSelected === card) {
+    // 同じカードを再度タップ→確定
+    shufflePhase = 'done';
+    shuffleStepText.textContent = 'カードが選ばれました';
+    shuffleSubText.textContent = 'めくってメッセージを受け取ってください';
+    shuffleBtn.innerHTML = '<span>カードをめくる</span>';
+    shuffleBtn.disabled = false;
 
-  const cardData = shuffled[index] || CARDS[index % CARDS.length];
-  const reversed = Math.random() < 0.25;
+    const cardData = shuffled[index] || CARDS[index % CARDS.length];
+    const reversed = Math.random() < 0.25;
 
-  shuffleBtn.onclick = () => {
-    shuffleStage.style.opacity = '0';
-    setTimeout(() => {
-      shuffleStage.style.display = 'none';
-      openModal(cardData, reversed);
-    }, 400);
-  };
+    shuffleBtn.onclick = () => {
+      shuffleStage.style.opacity = '0';
+      setTimeout(() => {
+        shuffleStage.style.display = 'none';
+        openModal(cardData, reversed);
+      }, 400);
+    };
+
+  } else {
+    // 別のカードをタップ→仮選択に切り替え
+    if (prevSelected) {
+      // 前の仮選択を元に戻す
+      prevSelected.classList.remove('pre-selected');
+      prevSelected.style.transform = prevSelected.dataset.originalTransform;
+      prevSelected.style.boxShadow = '';
+      prevSelected.style.borderColor = '';
+    }
+
+    // 新しいカードを仮選択
+    card.dataset.originalTransform = card.style.transform;
+    card.classList.add('pre-selected');
+    card.style.transform = card.style.transform + ' translateY(-20px)';
+    card.style.borderColor = 'rgba(201,169,110,.6)';
+    card.style.boxShadow = '0 30px 60px rgba(42,38,34,.4)';
+    card.style.zIndex = 100;
+
+    shuffleStepText.textContent = 'このカードでよいですか？';
+    shuffleSubText.textContent = 'もう一度タップで確定、別のカードをタップで選び直せます';
+    shuffleBtn.innerHTML = '<span>このカードに決める</span>';
+    shuffleBtn.disabled = false;
+
+    const cardData = shuffled[index] || CARDS[index % CARDS.length];
+    const reversed = Math.random() < 0.25;
+
+    shuffleBtn.onclick = () => {
+      shufflePhase = 'done';
+      shuffleStage.style.opacity = '0';
+      setTimeout(() => {
+        shuffleStage.style.display = 'none';
+        openModal(cardData, reversed);
+      }, 400);
+    };
+  }
 }
 
 // ── リセット ──
