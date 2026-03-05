@@ -16,11 +16,9 @@
     body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
     body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
 
-    /* Cursor */
     .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
     .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
 
-    /* Nav */
     nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
     .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
     .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
@@ -29,107 +27,79 @@
     .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
     .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
 
-    /* Page Header */
     .page-header{padding:140px 80px 60px;text-align:center}
     .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
     .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
     .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards}
 
-    /* Mode Selector */
     .mode-selector{display:flex;justify-content:center;gap:2px;margin:48px 0;opacity:0;animation:fadeUp 1s ease .8s forwards}
     .mode-btn{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.35em;color:var(--ink-lt);background:none;border:1px solid rgba(182,169,154,.3);padding:14px 32px;cursor:none;transition:all .3s}
     .mode-btn.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
     .mode-btn:hover:not(.active){border-color:var(--gold);color:var(--ink)}
 
-    /* Instruction */
-    .instruction{text-align:center;margin-bottom:56px;opacity:0;animation:fadeUp 1s ease 1s forwards}
+    .instruction{text-align:center;margin-bottom:40px;opacity:0;animation:fadeUp 1s ease 1s forwards}
     .instruction p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.2em;color:var(--dust)}
 
-    /* Card Grid */
-    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:16px;max-width:1100px;margin:0 auto;padding:0 80px 120px}
+    /* シャッフルステージ */
+    .shuffle-stage{display:flex;flex-direction:column;align-items:center;gap:32px;padding:20px 80px 80px;margin:0 auto;min-height:520px;position:relative;transition:opacity .4s ease}
+    .shuffle-message{text-align:center;z-index:10}
+    .shuffle-step-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:16px;letter-spacing:.2em;color:var(--ink);margin-bottom:10px;transition:opacity .5s ease}
+    .shuffle-sub-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust);transition:opacity .5s ease}
 
-    /* Card */
+    .scatter-field{position:relative;width:100%;max-width:700px;height:340px}
+    .scatter-card{position:absolute;width:80px;height:140px;border-radius:4px;background:linear-gradient(145deg,#2A2622,#3D3530);border:1px solid rgba(201,169,110,.25);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(42,38,34,.25);transition:transform 0.8s cubic-bezier(.25,.46,.45,.94),left 0.8s cubic-bezier(.25,.46,.45,.94),top 0.8s cubic-bezier(.25,.46,.45,.94),opacity 0.6s ease;cursor:none;overflow:hidden}
+    .scatter-card::before{content:'';position:absolute;inset:5px;border:1px solid rgba(201,169,110,.15);border-radius:2px}
+    .scatter-card-sym{font-family:'Cormorant Garamond',serif;font-size:20px;color:rgba(201,169,110,.5);position:relative;z-index:1;transition:opacity .3s ease}
+    .scatter-card.floating{animation:floatCard 3s ease-in-out infinite}
+    .scatter-card:nth-child(odd).floating{animation:floatCardOdd 3.5s ease-in-out infinite}
+    .scatter-card:nth-child(3n).floating{animation:floatCardThird 2.8s ease-in-out infinite}
+    @keyframes floatCard{0%,100%{margin-top:0px}50%{margin-top:-8px}}
+    @keyframes floatCardOdd{0%,100%{margin-top:0px}50%{margin-top:-6px}}
+    @keyframes floatCardThird{0%,100%{margin-top:0px}50%{margin-top:-10px}}
+
+    .fan-field{position:relative;width:100%;max-width:700px;height:300px;display:flex;align-items:flex-end;justify-content:center}
+    .fan-card{position:absolute;width:90px;height:158px;border-radius:5px;background:linear-gradient(145deg,#2A2622,#3D3530);border:1px solid rgba(201,169,110,.28);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(42,38,34,.3);cursor:none;transform-origin:center bottom;transition:transform .3s ease,box-shadow .3s ease;overflow:hidden}
+    .fan-card::before{content:'';position:absolute;inset:6px;border:1px solid rgba(201,169,110,.18);border-radius:3px}
+    .fan-card-sym{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(201,169,110,.5);position:relative;z-index:1}
+    .fan-card:hover{box-shadow:0 30px 60px rgba(42,38,34,.4);z-index:50!important}
+    .fan-card.selected-fan{box-shadow:0 40px 80px rgba(42,38,34,.5);z-index:50!important;border-color:rgba(201,169,110,.6)}
+
+    .shuffle-controls{display:flex;flex-direction:column;align-items:center;gap:20px;z-index:10}
+    .btn-shuffle{font-family:'Noto Serif JP',serif;font-weight:300;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 52px;cursor:none;position:relative;overflow:hidden;transition:color .4s,opacity .3s}
+    .btn-shuffle::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0}
+    .btn-shuffle:hover::before{transform:translateX(0)}
+    .btn-shuffle:hover{color:var(--ink)}
+    .btn-shuffle span{position:relative;z-index:1}
+    .btn-shuffle:disabled{opacity:.4;cursor:not-allowed}
+
+    /* カードグリッド */
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:16px;max-width:1100px;margin:0 auto;padding:0 80px 120px}
     .card-wrap{perspective:1000px;cursor:none}
     .card-flip{width:100%;aspect-ratio:2/3.5;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,0,.2,1);border-radius:6px}
     .card-wrap.flipped .card-flip{transform:rotateY(180deg)}
     .card-wrap.reversed .card-flip{transform:rotateY(180deg) rotateZ(180deg)}
-
     .card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:6px;overflow:hidden}
-
-    /* Card Back */
-    .card-back{
-      background:linear-gradient(145deg,#2A2622,#3D3530);
-      border:1px solid rgba(201,169,110,.25);
-      display:flex;align-items:center;justify-content:center;
-      transition:box-shadow .3s,transform .2s;
-      box-shadow:0 8px 24px rgba(42,38,34,.2);
-    }
-    .card-wrap:not(.flipped):hover .card-back{
-      box-shadow:0 20px 48px rgba(42,38,34,.3);
-      transform:translateY(-6px);
-    }
-    .card-back-pattern{
-      position:absolute;inset:0;
-      background-image:
-        repeating-linear-gradient(45deg,rgba(201,169,110,.06) 0px,rgba(201,169,110,.06) 1px,transparent 1px,transparent 10px),
-        repeating-linear-gradient(-45deg,rgba(201,169,110,.06) 0px,rgba(201,169,110,.06) 1px,transparent 1px,transparent 10px);
-    }
+    .card-back{background:linear-gradient(145deg,#2A2622,#3D3530);border:1px solid rgba(201,169,110,.25);display:flex;align-items:center;justify-content:center;transition:box-shadow .3s,transform .2s;box-shadow:0 8px 24px rgba(42,38,34,.2)}
+    .card-wrap:not(.flipped):hover .card-back{box-shadow:0 20px 48px rgba(42,38,34,.3);transform:translateY(-6px)}
+    .card-back-pattern{position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(201,169,110,.06) 0px,rgba(201,169,110,.06) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(201,169,110,.06) 0px,rgba(201,169,110,.06) 1px,transparent 1px,transparent 10px)}
     .card-back-border{position:absolute;inset:6px;border:1px solid rgba(201,169,110,.2);border-radius:3px}
     .card-back-sym{font-family:'Cormorant Garamond',serif;font-size:28px;color:rgba(201,169,110,.5);position:relative;z-index:1}
-
-    /* Card Front */
-    .card-front{
-      transform:rotateY(180deg);
-      background:var(--cream);
-      border:1px solid rgba(201,169,110,.3);
-      box-shadow:0 12px 40px rgba(42,38,34,.18);
-      display:flex;flex-direction:column;
-    }
+    .card-front{transform:rotateY(180deg);background:var(--cream);border:1px solid rgba(201,169,110,.3);box-shadow:0 12px 40px rgba(42,38,34,.18);display:flex;flex-direction:column}
     .card-img-wrap{flex:1;overflow:hidden;position:relative}
-    .card-img-wrap img{
-      width:100%;height:100%;object-fit:cover;
-      display:block;
-      filter:sepia(15%) contrast(95%) brightness(102%);
-      transition:transform .5s ease;
-    }
+    .card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(15%) contrast(95%) brightness(102%);transition:transform .5s ease}
     .card-wrap:hover .card-img-wrap img{transform:scale(1.04)}
-    .card-label{
-      padding:8px 10px;text-align:center;
-      background:linear-gradient(to bottom,rgba(245,241,235,.97),var(--cream));
-      border-top:1px solid rgba(201,169,110,.2);
-    }
+    .card-label{padding:8px 10px;text-align:center;background:linear-gradient(to bottom,rgba(245,241,235,.97),var(--cream));border-top:1px solid rgba(201,169,110,.2)}
     .card-label-name{font-size:9px;letter-spacing:.25em;color:var(--ink-mid);display:block}
     .card-label-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:8px;letter-spacing:.2em;color:var(--dust)}
 
-    /* Overlay */
-    .overlay{
-      position:fixed;inset:0;z-index:500;
-      background:rgba(42,38,34,.75);
-      backdrop-filter:blur(12px);
-      display:flex;align-items:center;justify-content:center;
-      opacity:0;pointer-events:none;
-      transition:opacity .5s ease;
-      padding:24px;
-    }
+    /* モーダル */
+    .overlay{position:fixed;inset:0;z-index:500;background:rgba(42,38,34,.75);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s ease;padding:24px}
     .overlay.open{opacity:1;pointer-events:all}
-
-    .modal{
-      background:var(--cream);
-      max-width:720px;width:100%;
-      display:grid;grid-template-columns:240px 1fr;
-      border-radius:4px;
-      overflow:hidden;
-      transform:translateY(24px) scale(.97);
-      transition:transform .5s cubic-bezier(.25,.46,.45,.94);
-      box-shadow:0 60px 120px rgba(42,38,34,.4);
-      max-height:90vh;
-    }
+    .modal{background:var(--cream);max-width:720px;width:100%;display:grid;grid-template-columns:240px 1fr;border-radius:4px;overflow:hidden;transform:translateY(24px) scale(.97);transition:transform .5s cubic-bezier(.25,.46,.45,.94);box-shadow:0 60px 120px rgba(42,38,34,.4);max-height:90vh}
     .overlay.open .modal{transform:translateY(0) scale(1)}
-
     .modal-card{background:linear-gradient(145deg,#2A2622,#3A3028);display:flex;align-items:center;justify-content:center;padding:32px;position:relative}
     .modal-card-img{width:100%;border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,.5);filter:sepia(10%) contrast(96%) brightness(104%)}
     .modal-card.reversed .modal-card-img{transform:rotate(180deg)}
-
     .modal-body{padding:48px 44px;overflow-y:auto;display:flex;flex-direction:column;gap:24px}
     .modal-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--gold)}
     .modal-title{font-weight:200;font-size:clamp(22px,3vw,32px);letter-spacing:.18em;line-height:1.5}
@@ -141,257 +111,52 @@
     .kw{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.15em;color:var(--ink-lt);border:1px solid rgba(182,169,154,.4);padding:4px 12px;border-radius:2px}
     .modal-close{position:absolute;top:20px;right:24px;background:none;border:none;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.3em;color:var(--dust);cursor:none;transition:color .3s}
     .modal-close:hover{color:var(--ink)}
-
-    /* Reversed badge */
     .rev-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.3em;color:var(--mouve);border:1px solid var(--mouve);padding:4px 14px;border-radius:2px;width:fit-content}
 
-    /* Animations */
+    /* アニメーション */
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-    /* Responsive */
+    /* ハンバーガー */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
+    .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
+    .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    .mobile-menu{position:fixed;top:0;left:0;right:0;background:rgba(245,241,235,.98);backdrop-filter:blur(12px);z-index:150;padding:90px 48px 48px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);border-bottom:1px solid rgba(182,169,154,.3)}
+    .mobile-menu.open{transform:translateY(0)}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:0}
+    .mobile-menu ul li{border-bottom:1px solid rgba(182,169,154,.2)}
+    .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
+    .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
+
+    /* レスポンシブ */
     @media(max-width:768px){
-      /* カーソル非表示（タッチ操作には不要） */
-      .cursor, .cursor-ring { display: none; }
-      body { cursor: auto; }
-      a, button, .card-wrap, .spread-card { cursor: pointer; }
-
-      /* ナビ */
-      nav { padding: 16px 20px; }
-      .nav-links { display: none; }
-      .nav-logo span { display: none; }
-
-      /* ページヘッダー */
-      .page-header { padding: 90px 24px 40px; }
-      .page-title { font-size: 28px; }
-      .page-desc { font-size: 13px; }
-
-      /* モード切替ボタン */
-      .mode-selector { margin: 32px 16px; }
-      .mode-btn { padding: 12px 20px; font-size: 10px; }
-
-      /* 説明文 */
-      .instruction { margin-bottom: 32px; padding: 0 24px; }
-
-      /* カードグリッド */
-      .card-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
-        padding: 0 16px 80px;
-      }
-
-      /* モーダル */
-      .overlay { padding: 0; align-items: flex-end; }
-      .modal {
-        grid-template-columns: 1fr;
-        max-height: 92vh;
-        border-radius: 16px 16px 0 0;
-        width: 100%;
-      }
-      .modal-card {
-        padding: 28px 40px 20px;
-        max-height: 280px;
-      }
-      .modal-card-img {
-        max-height: 220px;
-        width: auto;
-        margin: 0 auto;
-        display: block;
-      }
-      .modal-body {
-        padding: 24px 24px 40px;
-        gap: 16px;
-        overflow-y: auto;
-        max-height: calc(92vh - 280px);
-      }
-      .modal-title { font-size: 22px; }
-      .modal-close {
-        position: fixed;
-        top: auto;
-        bottom: calc(92vh + 8px);
-        right: 16px;
-        color: var(--cream);
-      }
-    }
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      width: 40px; height: 40px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      z-index: 200;
-      padding: 4px;
-    }
-    .hamburger span {
-      display: block;
-      width: 22px; height: 1px;
-      background: var(--ink-mid);
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      transform-origin: center;
-    }
-    .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-    .mobile-menu {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      background: rgba(245,241,235,0.98);
-      backdrop-filter: blur(12px);
-      z-index: 150;
-      padding: 90px 48px 48px;
-      transform: translateY(-100%);
-      transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
-      border-bottom: 1px solid rgba(182,169,154,0.3);
-    }
-    .mobile-menu.open { transform: translateY(0); }
-    .mobile-menu ul { list-style: none; display: flex; flex-direction: column; gap: 0; }
-    .mobile-menu ul li {
-      border-bottom: 1px solid rgba(182,169,154,0.2);
-    }
-    .mobile-menu ul li a {
-      display: block;
-      font-family: 'Noto Serif JP', serif;
-      font-weight: 200;
-      font-size: 15px;
-      letter-spacing: 0.3em;
-      color: var(--ink-mid);
-      text-decoration: none;
-      padding: 20px 0;
-      transition: color 0.3s, padding-left 0.3s;
-    }
-    .mobile-menu ul li a:hover { color: var(--ink); padding-left: 8px; }
-
-    @media(max-width:880px) {
-      .hamburger { display: flex; }
-      .nav-links { display: none !important; }
-    }
-    /* シャッフルステージ */
-    .shuffle-stage {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 48px;
-      padding: 40px 80px 80px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .shuffle-card-wrap {
-      perspective: 1000px;
-      width: 200px;
-      height: 350px;
-    }
-
-    .shuffle-card {
-      width: 100%;
-      height: 100%;
-      border-radius: 6px;
-      position: relative;
-      cursor: none;
-      transition: transform 0.1s ease;
-      transform-style: preserve-3d;
-    }
-
-    .shuffle-card-back {
-      width: 100%;
-      height: 100%;
-      border-radius: 6px;
-      background: linear-gradient(145deg, #2A2622, #3D3530);
-      border: 1px solid rgba(201,169,110,.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 40px 80px rgba(42,38,34,.3), 0 8px 20px rgba(42,38,34,.15);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .shuffle-controls {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .btn-shuffle {
-      font-family: 'Noto Serif JP', serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: 0.4em;
-      color: var(--cream);
-      background: var(--ink);
-      border: none;
-      padding: 20px 52px;
-      cursor: none;
-      position: relative;
-      overflow: hidden;
-      transition: color 0.4s;
-    }
-    .btn-shuffle::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--gold);
-      transform: translateX(-100%);
-      transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
-    }
-    .btn-shuffle:hover::before { transform: translateX(0); }
-    .btn-shuffle span { position: relative; z-index: 1; }
-
-    .btn-shuffle.shuffling {
-      background: var(--gold);
-      letter-spacing: 0.3em;
-    }
-    .btn-shuffle.shuffling::before { display: none; }
-
-    .shuffle-hint {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 14px;
-      letter-spacing: 0.2em;
-      color: var(--dust);
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    .shuffle-hint.visible { opacity: 1; }
-
-    /* シャッフル中のカードアニメーション */
-    .shuffle-card.shuffling {
-      animation: cardShake 0.15s ease-in-out infinite;
-    }
-
-    @keyframes cardShake {
-      0%   { transform: rotate(-3deg) translateX(-4px); }
-      25%  { transform: rotate(3deg) translateX(4px); }
-      50%  { transform: rotate(-2deg) translateX(-2px); }
-      75%  { transform: rotate(2deg) translateX(2px); }
-      100% { transform: rotate(-3deg) translateX(-4px); }
-    }
-
-    /* カードが決まった瞬間のアニメーション */
-    .shuffle-card.selected {
-      animation: cardSelect 0.4s ease forwards;
-    }
-
-    @keyframes cardSelect {
-      0%   { transform: scale(1); }
-      50%  { transform: scale(1.08) translateY(-10px); }
-      100% { transform: scale(1); }
-    }
-
-    /* グリッド表示時のフェードイン */
-    .card-grid.visible {
-      animation: fadeUp 0.8s ease forwards;
-    }
-
-    @media(max-width: 768px) {
-      .shuffle-stage { padding: 20px 24px 60px; gap: 36px; }
-      .shuffle-card-wrap { width: 160px; height: 280px; }
-      .btn-shuffle { padding: 18px 40px; font-size: 11px; }
+      .cursor,.cursor-ring{display:none}
+      body{cursor:auto}
+      a,button,.card-wrap,.fan-card{cursor:pointer}
+      nav{padding:16px 20px}
+      .nav-links{display:none}
+      .nav-logo span{display:none}
+      .page-header{padding:90px 24px 40px}
+      .page-title{font-size:28px}
+      .page-desc{font-size:13px}
+      .mode-selector{margin:32px 16px}
+      .mode-btn{padding:12px 20px;font-size:10px}
+      .instruction{margin-bottom:32px;padding:0 24px}
+      .shuffle-stage{padding:20px 16px 60px;min-height:440px}
+      .scatter-field{height:260px}
+      .scatter-card{width:60px;height:105px}
+      .fan-field{height:240px}
+      .fan-card{width:70px;height:123px}
+      .btn-shuffle{padding:18px 40px;font-size:11px}
+      .card-grid{grid-template-columns:repeat(4,1fr);gap:10px;padding:0 16px 80px}
+      .overlay{padding:0;align-items:flex-end}
+      .modal{grid-template-columns:1fr;max-height:92vh;border-radius:16px 16px 0 0;width:100%}
+      .modal-card{padding:28px 40px 20px;max-height:280px}
+      .modal-card-img{max-height:220px;width:auto;margin:0 auto;display:block}
+      .modal-body{padding:24px 24px 40px;gap:16px;overflow-y:auto;max-height:calc(92vh - 280px)}
+      .modal-title{font-size:22px}
+      .hamburger{display:flex}
     }
   </style>
 </head>
@@ -409,9 +174,7 @@
     <li><a href="#">ショップ</a></li>
   </ul>
   <button class="hamburger" id="hamburger" aria-label="メニュー">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span></span><span></span><span></span>
   </button>
 </nav>
 
@@ -426,9 +189,9 @@
 </div>
 
 <div class="page-header">
-  <span class="page-eyebrow">One Card Reading</span>
+  <span class="page-eyebrow">Tarot Reading</span>
   <h1 class="page-title">カードを引く</h1>
-  <p class="page-desc">心を静め、問いかけを持ち、一枚のカードを選んでください</p>
+  <p class="page-desc">心を静め、問いを胸に抱いてください</p>
 </div>
 
 <div class="mode-selector">
@@ -437,28 +200,22 @@
 </div>
 
 <div class="instruction">
-  <p id="instr-text">心を静め、準備ができたらシャッフルを始めてください</p>
+  <p id="instr-text">準備ができたらカードに触れてシャッフルしてください</p>
 </div>
 
 <div class="shuffle-stage" id="shuffleStage">
-  <div class="shuffle-card-wrap">
-    <div class="shuffle-card" id="shuffleCard">
-      <div class="shuffle-card-back">
-        <div class="card-back-pattern"></div>
-        <div class="card-back-border"></div>
-        <div class="card-back-sym">✦</div>
-      </div>
-    </div>
+  <div class="shuffle-message">
+    <p class="shuffle-step-text" id="shuffleStepText">心を静め、問いを胸に抱いてください</p>
+    <p class="shuffle-sub-text" id="shuffleSubText">準備ができたらカードに触れてシャッフルしてください</p>
   </div>
+  <div class="scatter-field" id="scatterField"></div>
   <div class="shuffle-controls">
-    <button class="btn-shuffle" id="shuffleBtn">シャッフルを始める</button>
-    <p class="shuffle-hint" id="shuffleHint">直感を信じて、カードに触れてください</p>
+    <button class="btn-shuffle" id="shuffleBtn"><span>カードに触れる</span></button>
   </div>
 </div>
 
 <div class="card-grid" id="cardGrid" style="display:none"></div>
 
-<!-- Modal -->
 <div class="overlay" id="overlay" onclick="closeModal(event)">
   <div class="modal" id="modal">
     <div class="modal-card" id="modalCard">
@@ -488,286 +245,217 @@
 </div>
 
 <script>
-// ── Major Arcana Data ──
 const CARDS = [
-  {
-    num:'0', name:'愚者', en:'The Fool',
-    img: 'images/tarot/00_Fool.jpg',
-    upright:'新しい始まり、無限の可能性、自由な精神。恐れを手放し、未知の旅に踏み出す勇気を持つとき。',
-    reversed:'無謀、軽率、準備不足。衝動的な行動が思わぬトラブルを招く可能性。',
-    keywords:['始まり','自由','冒険','純粋さ','可能性'],
-    message:'今こそ一歩を踏み出す時です。完璧な準備を待つのではなく、軽やかな心で新しい扉を開いてください。'
-  },
-  {
-    num:'I', name:'魔術師', en:'The Magician',
-    img: 'images/tarot/01_Magician.jpg',
-    upright:'意志の力、創造性、スキルの発揮。あなたが必要なものはすべて既に手の中にある。',
-    reversed:'才能の無駄遣い、詐欺、自信の欠如。持っている能力を疑いすぎている。',
-    keywords:['意志','創造','スキル','集中','顕現'],
-    message:'あなたには変化を起こす力があります。目の前の道具を使いこなし、意図を現実へと変えてください。'
-  },
-  {
-    num:'II', name:'女教皇', en:'The High Priestess',
-    img: 'images/tarot/02_High_Priestess.jpg',
-    upright:'直感、潜在意識、神秘的な知恵。内なる声に耳を傾け、表に出ていない真実を感じ取る。',
-    reversed:'秘密、表面的な知識、内なる声の無視。直感を信じられていない状態。',
-    keywords:['直感','神秘','潜在意識','沈黙','知恵'],
-    message:'すべての答えは外にではなく、あなたの内側にあります。静かに座り、深い部分からのメッセージを受け取ってください。'
-  },
-  {
-    num:'III', name:'女帝', en:'The Empress',
-    img: 'images/tarot/03_Empress.jpg',
-    upright:'豊かさ、母性、自然との調和。創造的エネルギーが満ちあふれ、物事が育ち花開くとき。',
-    reversed:'創造性の枯渇、依存、自己愛の欠如。自分自身を大切にすることが必要。',
-    keywords:['豊かさ','母性','創造','自然','美'],
-    message:'自分を豊かにすることが、周りへの豊かさにつながります。今日は自分を甘やかし、美しいものと共に時間を過ごしてください。'
-  },
-  {
-    num:'IV', name:'皇帝', en:'The Emperor',
-    img: 'images/tarot/04_Emperor.jpg',
-    upright:'権威、構造、安定した基盤。規律と責任感によって現実を築いていく力。',
-    reversed:'支配欲、硬直性、権威への反発。柔軟性を失い、コントロールしすぎている。',
-    keywords:['権威','安定','構造','規律','父性'],
-    message:'しっかりとした基盤の上に立ってください。規律を持って行動することが、長期的な成功への道です。'
-  },
-  {
-    num:'V', name:'法王', en:'The Hierophant',
-    img: 'images/tarot/05_Hierophant.jpg',
-    upright:'伝統、精神的な指導、慣習。確立されたシステムや教えの中に知恵を見出す。',
-    reversed:'型破り、個人の信念、制度への反発。既存の枠を超えた新しい道を探している。',
-    keywords:['伝統','信仰','教え','慣習','精神性'],
-    message:'先人の知恵に耳を傾けてください。長い時間をかけて磨かれた教えの中に、今のあなたへのヒントがあります。'
-  },
-  {
-    num:'VI', name:'恋人', en:'The Lovers',
-    img: 'images/tarot/06_Lovers.jpg',
-    upright:'愛、調和、重要な選択。価値観の一致と、心から求めるものへの選択。',
-    reversed:'不調和、誤った選択、価値観の不一致。自分の本当の望みが見えていない状態。',
-    keywords:['愛','選択','調和','関係','価値観'],
-    message:'今、あなたは大切な選択の前に立っています。頭ではなく、心の声に従って選んでください。'
-  },
-  {
-    num:'VII', name:'戦車', en:'The Chariot',
-    img: 'images/tarot/07_Chariot.jpg',
-    upright:'意志の力、勝利、自己コントロール。相反する力を統合し、目標に向かって前進する。',
-    reversed:'方向性の欠如、コントロールの喪失、攻撃性。内なる葛藤が前進を妨げている。',
-    keywords:['勝利','意志','前進','自制','目標'],
-    message:'あなたには目標を達成する力があります。迷いを振り切り、意志の手綱をしっかりと握って進んでください。'
-  },
-  {
-    num:'VIII', name:'力', en:'Strength',
-    img: 'images/tarot/08_Strength.jpg',
-    upright:'内なる力、勇気、忍耐。力ずくではなく、穏やかな強さで困難を乗り越える。',
-    reversed:'自己不信、弱さ、情熱の抑圧。自分の力を信じられていない状態。',
-    keywords:['勇気','忍耐','内なる力','優しさ','自信'],
-    message:'本当の強さは優しさの中にあります。恐れではなく、愛と信頼から行動してください。'
-  },
-  {
-    num:'IX', name:'隠者', en:'The Hermit',
-    img: 'images/tarot/09_Hermit.jpg',
-    upright:'内省、孤独、内なる指針。一人で静かに自分と向き合う時間が必要なとき。',
-    reversed:'孤立、内向きすぎる、社会からの逃避。孤独が孤立になっている状態。',
-    keywords:['内省','孤独','知恵','導き','静寂'],
-    message:'今は静かにひとりになる時間が必要です。外の喧騒から離れ、自分の内なる光を見つめてください。'
-  },
-  {
-    num:'X', name:'運命の輪', en:'Wheel of Fortune',
-    img: 'images/tarot/10_Wheel_of_Fortune.jpg',
-    upright:'転換点、運命、サイクル。物事は常に変化し、良い方向への転機が訪れている。',
-    reversed:'悪運、変化への抵抗、サイクルの破綻。流れに抗っていることでチャンスを逃している。',
-    keywords:['運命','変化','転機','サイクル','幸運'],
-    message:'人生の輪が回っています。今この瞬間を大切に、流れに乗って変化を受け入れてください。'
-  },
-  {
-    num:'XI', name:'正義', en:'Justice',
-    img: 'images/tarot/11_Justice.jpg',
-    upright:'公正、真実、因果応報。客観的な判断と、行動の結果に対する誠実な向き合い。',
-    reversed:'不公正、偏見、責任回避。真実から目を背けていることで問題が生じている。',
-    keywords:['公正','真実','均衡','責任','判断'],
-    message:'すべての行いには結果が伴います。今は正直に、公平に、自分の行動を見つめ直してください。'
-  },
-  {
-    num:'XII', name:'吊るされた男', en:'The Hanged Man',
-    img: 'images/tarot/12_Hanged_Man.jpg',
-    upright:'一時停止、視点の転換、自己犠牲。違う角度から見ることで新しい真実が見えてくる。',
-    reversed:'停滞、無駄な犠牲、先延ばし。変化を拒んでいることで身動きが取れない状態。',
-    keywords:['停止','視点転換','受容','犠牲','悟り'],
-    message:'今は動くのではなく、待つ時です。いつもと違う視点から物事を見ると、新しい道が開けてきます。'
-  },
-  {
-    num:'XIII', name:'死神', en:'Death',
-    img: 'images/tarot/13_Death.jpg',
-    upright:'終わりと始まり、変容、手放すこと。古いものが終わり、新しいサイクルが始まる。',
-    reversed:'変化への抵抗、停滞、過去への執着。終わらせるべきことを終わらせていない。',
-    keywords:['変容','終わり','始まり','手放す','再生'],
-    message:'終わりを恐れないでください。何かを手放すことが、新しい何かが生まれるための空間を作ります。'
-  },
-  {
-    num:'XIV', name:'節制', en:'Temperance',
-    img: 'images/tarot/14_Temperance.jpg',
-    upright:'バランス、節度、癒し。対立するものを統合し、穏やかな流れの中に調和を見出す。',
-    reversed:'過剰、不均衡、目的意識の欠如。何かが行き過ぎていて、バランスを崩している。',
-    keywords:['調和','バランス','癒し','統合','節度'],
-    message:'急がず、焦らず。少しずつ、穏やかに。今のあなたに必要なのはバランスと、静かな流れに身を委ねることです。'
-  },
-  {
-    num:'XV', name:'悪魔', en:'The Devil',
-    img: 'images/tarot/15_Devil.jpg',
-    upright:'束縛、執着、物質主義。自分自身を縛っているものに気づき、解放の第一歩を踏み出す。',
-    reversed:'解放、解放感、力の取り戻し。束縛から少しずつ自由になり始めている。',
-    keywords:['束縛','執着','欲望','解放','影'],
-    message:'あなたを縛っているのは、実は自分自身かもしれません。鎖に気づくことが、自由への第一歩です。'
-  },
-  {
-    num:'XVI', name:'塔', en:'The Tower',
-    img: 'images/tarot/16_Tower.jpg',
-    upright:'突然の変化、崩壊、啓示。偽りの基盤が崩れ、真実が露わになる瞬間。',
-    reversed:'変化への抵抗、崩壊の回避、内なる転換。外的な崩壊ではなく、内面的な変革。',
-    keywords:['崩壊','変革','啓示','解放','混乱'],
-    message:'崩れていくものを恐れないでください。本当に必要なものは、嵐の後も残ります。'
-  },
-  {
-    num:'XVII', name:'星', en:'The Star',
-    img: 'images/tarot/17_Star.jpg',
-    upright:'希望、インスピレーション、信頼。暗闇の後に輝く光。未来への静かな確信。',
-    reversed:'希望の喪失、失望、自己不信。内なる光を見失い、悲観的になっている。',
-    keywords:['希望','インスピレーション','癒し','信頼','導き'],
-    message:'夜空に瞬く星のように、あなたの中にある光は消えていません。希望を持ち続けてください。'
-  },
-  {
-    num:'XVIII', name:'月', en:'The Moon',
-    img: 'images/tarot/18_Moon.jpg',
-    upright:'幻想、潜在意識、不安。見えないものへの恐れと、深層心理からのメッセージ。',
-    reversed:'幻想から覚める、混乱の解消、真実の発見。霧が晴れ、物事が明確になっていく。',
-    keywords:['幻想','潜在意識','夢','不安','神秘'],
-    message:'今は全てが明確に見えなくても大丈夫。月の光の中で、あなたの直感を信じて歩んでください。'
-  },
-  {
-    num:'XIX', name:'太陽', en:'The Sun',
-    img: 'images/tarot/19_Sun.jpg',
-    upright:'喜び、活力、成功。明るいエネルギーが満ち溢れ、物事が輝かしく展開していく。',
-    reversed:'一時的な陰り、過度な楽観、活力の低下。太陽の光がやや曇っている状態。',
-    keywords:['喜び','成功','活力','明るさ','子どもらしさ'],
-    message:'あなたの中に太陽が輝いています。今日は喜びに向かって心を開き、その光を存分に浴びてください。'
-  },
-  {
-    num:'XX', name:'審判', en:'Judgement',
-    img: 'images/tarot/20_Judgement.jpg',
-    upright:'覚醒、再生、内なる呼び声。過去を振り返り、より高い目的へと目覚める時。',
-    reversed:'自己批判、内省の欠如、変化への恐れ。心の奥からの呼びかけを聞けていない。',
-    keywords:['覚醒','再生','呼び声','許し','変容'],
-    message:'過去を裁くのではなく、そこから学んでください。あなたは今、新しい自分へと生まれ変わる瞬間にいます。'
-  },
-  {
-    num:'XXI', name:'世界', en:'The World',
-    img: 'images/tarot/21_World.jpg',
-    upright:'完成、達成、統合。一つのサイクルが完全な形で閉じ、充実感と感謝に満ちている。',
-    reversed:'未完成、目標未達成、停滞。もう少しで完成するのに、最後の一歩が踏み出せていない。',
-    keywords:['完成','達成','統合','充実','終わりと始まり'],
-    message:'あなたはここまで長い旅をしてきました。今いる場所を十分に味わい、次の旅への感謝を忘れずに。'
-  }
+  {num:'0',name:'愚者',en:'The Fool',img:'images/tarot/00_Fool.jpg',upright:'新しい始まり、無限の可能性、自由な精神。恐れを手放し、未知の旅に踏み出す勇気を持つとき。',reversed:'無謀、軽率、準備不足。衝動的な行動が思わぬトラブルを招く可能性。',keywords:['始まり','自由','冒険','純粋さ','可能性'],message:'今こそ一歩を踏み出す時です。完璧な準備を待つのではなく、軽やかな心で新しい扉を開いてください。'},
+  {num:'I',name:'魔術師',en:'The Magician',img:'images/tarot/01_Magician.jpg',upright:'意志の力、創造性、スキルの発揮。あなたが必要なものはすべて既に手の中にある。',reversed:'才能の無駄遣い、詐欺、自信の欠如。持っている能力を疑いすぎている。',keywords:['意志','創造','スキル','集中','顕現'],message:'あなたには変化を起こす力があります。目の前の道具を使いこなし、意図を現実へと変えてください。'},
+  {num:'II',name:'女教皇',en:'The High Priestess',img:'images/tarot/02_High_Priestess.jpg',upright:'直感、潜在意識、神秘的な知恵。内なる声に耳を傾け、表に出ていない真実を感じ取る。',reversed:'秘密、表面的な知識、内なる声の無視。直感を信じられていない状態。',keywords:['直感','神秘','潜在意識','沈黙','知恵'],message:'すべての答えは外にではなく、あなたの内側にあります。静かに座り、深い部分からのメッセージを受け取ってください。'},
+  {num:'III',name:'女帝',en:'The Empress',img:'images/tarot/03_Empress.jpg',upright:'豊かさ、母性、自然との調和。創造的エネルギーが満ちあふれ、物事が育ち花開くとき。',reversed:'創造性の枯渇、依存、自己愛の欠如。自分自身を大切にすることが必要。',keywords:['豊かさ','母性','創造','自然','美'],message:'自分を豊かにすることが、周りへの豊かさにつながります。今日は自分を甘やかし、美しいものと共に時間を過ごしてください。'},
+  {num:'IV',name:'皇帝',en:'The Emperor',img:'images/tarot/04_Emperor.jpg',upright:'権威、構造、安定した基盤。規律と責任感によって現実を築いていく力。',reversed:'支配欲、硬直性、権威への反発。柔軟性を失い、コントロールしすぎている。',keywords:['権威','安定','構造','規律','父性'],message:'しっかりとした基盤の上に立ってください。規律を持って行動することが、長期的な成功への道です。'},
+  {num:'V',name:'法王',en:'The Hierophant',img:'images/tarot/05_Hierophant.jpg',upright:'伝統、精神的な指導、慣習。確立されたシステムや教えの中に知恵を見出す。',reversed:'型破り、個人の信念、制度への反発。既存の枠を超えた新しい道を探している。',keywords:['伝統','信仰','教え','慣習','精神性'],message:'先人の知恵に耳を傾けてください。長い時間をかけて磨かれた教えの中に、今のあなたへのヒントがあります。'},
+  {num:'VI',name:'恋人',en:'The Lovers',img:'images/tarot/06_Lovers.jpg',upright:'愛、調和、重要な選択。価値観の一致と、心から求めるものへの選択。',reversed:'不調和、誤った選択、価値観の不一致。自分の本当の望みが見えていない状態。',keywords:['愛','選択','調和','関係','価値観'],message:'今、あなたは大切な選択の前に立っています。頭ではなく、心の声に従って選んでください。'},
+  {num:'VII',name:'戦車',en:'The Chariot',img:'images/tarot/07_Chariot.jpg',upright:'意志の力、勝利、自己コントロール。相反する力を統合し、目標に向かって前進する。',reversed:'方向性の欠如、コントロールの喪失、攻撃性。内なる葛藤が前進を妨げている。',keywords:['勝利','意志','前進','自制','目標'],message:'あなたには目標を達成する力があります。迷いを振り切り、意志の手綱をしっかりと握って進んでください。'},
+  {num:'VIII',name:'力',en:'Strength',img:'images/tarot/08_Strength.jpg',upright:'内なる力、勇気、忍耐。力ずくではなく、穏やかな強さで困難を乗り越える。',reversed:'自己不信、弱さ、情熱の抑圧。自分の力を信じられていない状態。',keywords:['勇気','忍耐','内なる力','優しさ','自信'],message:'本当の強さは優しさの中にあります。恐れではなく、愛と信頼から行動してください。'},
+  {num:'IX',name:'隠者',en:'The Hermit',img:'images/tarot/09_Hermit.jpg',upright:'内省、孤独、内なる指針。一人で静かに自分と向き合う時間が必要なとき。',reversed:'孤立、内向きすぎる、社会からの逃避。孤独が孤立になっている状態。',keywords:['内省','孤独','知恵','導き','静寂'],message:'今は静かにひとりになる時間が必要です。外の喧騒から離れ、自分の内なる光を見つめてください。'},
+  {num:'X',name:'運命の輪',en:'Wheel of Fortune',img:'images/tarot/10_Wheel_of_Fortune.jpg',upright:'転換点、運命、サイクル。物事は常に変化し、良い方向への転機が訪れている。',reversed:'悪運、変化への抵抗、サイクルの破綻。流れに抗っていることでチャンスを逃している。',keywords:['運命','変化','転機','サイクル','幸運'],message:'人生の輪が回っています。今この瞬間を大切に、流れに乗って変化を受け入れてください。'},
+  {num:'XI',name:'正義',en:'Justice',img:'images/tarot/11_Justice.jpg',upright:'公正、真実、因果応報。客観的な判断と、行動の結果に対する誠実な向き合い。',reversed:'不公正、偏見、責任回避。真実から目を背けていることで問題が生じている。',keywords:['公正','真実','均衡','責任','判断'],message:'すべての行いには結果が伴います。今は正直に、公平に、自分の行動を見つめ直してください。'},
+  {num:'XII',name:'吊るされた男',en:'The Hanged Man',img:'images/tarot/12_Hanged_Man.jpg',upright:'一時停止、視点の転換、自己犠牲。違う角度から見ることで新しい真実が見えてくる。',reversed:'停滞、無駄な犠牲、先延ばし。変化を拒んでいることで身動きが取れない状態。',keywords:['停止','視点転換','受容','犠牲','悟り'],message:'今は動くのではなく、待つ時です。いつもと違う視点から物事を見ると、新しい道が開けてきます。'},
+  {num:'XIII',name:'死神',en:'Death',img:'images/tarot/13_Death.jpg',upright:'終わりと始まり、変容、手放すこと。古いものが終わり、新しいサイクルが始まる。',reversed:'変化への抵抗、停滞、過去への執着。終わらせるべきことを終わらせていない。',keywords:['変容','終わり','始まり','手放す','再生'],message:'終わりを恐れないでください。何かを手放すことが、新しい何かが生まれるための空間を作ります。'},
+  {num:'XIV',name:'節制',en:'Temperance',img:'images/tarot/14_Temperance.jpg',upright:'バランス、節度、癒し。対立するものを統合し、穏やかな流れの中に調和を見出す。',reversed:'過剰、不均衡、目的意識の欠如。何かが行き過ぎていて、バランスを崩している。',keywords:['調和','バランス','癒し','統合','節度'],message:'急がず、焦らず。少しずつ、穏やかに。今のあなたに必要なのはバランスと、静かな流れに身を委ねることです。'},
+  {num:'XV',name:'悪魔',en:'The Devil',img:'images/tarot/15_Devil.jpg',upright:'束縛、執着、物質主義。自分自身を縛っているものに気づき、解放の第一歩を踏み出す。',reversed:'解放、解放感、力の取り戻し。束縛から少しずつ自由になり始めている。',keywords:['束縛','執着','欲望','解放','影'],message:'あなたを縛っているのは、実は自分自身かもしれません。鎖に気づくことが、自由への第一歩です。'},
+  {num:'XVI',name:'塔',en:'The Tower',img:'images/tarot/16_Tower.jpg',upright:'突然の変化、崩壊、啓示。偽りの基盤が崩れ、真実が露わになる瞬間。',reversed:'変化への抵抗、崩壊の回避、内なる転換。外的な崩壊ではなく、内面的な変革。',keywords:['崩壊','変革','啓示','解放','混乱'],message:'崩れていくものを恐れないでください。本当に必要なものは、嵐の後も残ります。'},
+  {num:'XVII',name:'星',en:'The Star',img:'images/tarot/17_Star.jpg',upright:'希望、インスピレーション、信頼。暗闇の後に輝く光。未来への静かな確信。',reversed:'希望の喪失、失望、自己不信。内なる光を見失い、悲観的になっている。',keywords:['希望','インスピレーション','癒し','信頼','導き'],message:'夜空に瞬く星のように、あなたの中にある光は消えていません。希望を持ち続けてください。'},
+  {num:'XVIII',name:'月',en:'The Moon',img:'images/tarot/18_Moon.jpg',upright:'幻想、潜在意識、不安。見えないものへの恐れと、深層心理からのメッセージ。',reversed:'幻想から覚める、混乱の解消、真実の発見。霧が晴れ、物事が明確になっていく。',keywords:['幻想','潜在意識','夢','不安','神秘'],message:'今は全てが明確に見えなくても大丈夫。月の光の中で、あなたの直感を信じて歩んでください。'},
+  {num:'XIX',name:'太陽',en:'The Sun',img:'images/tarot/19_Sun.jpg',upright:'喜び、活力、成功。明るいエネルギーが満ち溢れ、物事が輝かしく展開していく。',reversed:'一時的な陰り、過度な楽観、活力の低下。太陽の光がやや曇っている状態。',keywords:['喜び','成功','活力','明るさ','子どもらしさ'],message:'あなたの中に太陽が輝いています。今日は喜びに向かって心を開き、その光を存分に浴びてください。'},
+  {num:'XX',name:'審判',en:'Judgement',img:'images/tarot/20_Judgement.jpg',upright:'覚醒、再生、内なる呼び声。過去を振り返り、より高い目的へと目覚める時。',reversed:'自己批判、内省の欠如、変化への恐れ。心の奥からの呼びかけを聞けていない。',keywords:['覚醒','再生','呼び声','許し','変容'],message:'過去を裁くのではなく、そこから学んでください。あなたは今、新しい自分へと生まれ変わる瞬間にいます。'},
+  {num:'XXI',name:'世界',en:'The World',img:'images/tarot/21_World.jpg',upright:'完成、達成、統合。一つのサイクルが完全な形で閉じ、充実感と感謝に満ちている。',reversed:'未完成、目標未達成、停滞。もう少しで完成するのに、最後の一歩が踏み出せていない。',keywords:['完成','達成','統合','充実','終わりと始まり'],message:'あなたはここまで長い旅をしてきました。今いる場所を十分に味わい、次の旅への感謝を忘れずに。'},
 ];
 
 let mode = 'one';
 let selectedCards = [];
 let currentCardData = null;
-let isShuffling = false;
-let shuffleInterval = null;
-let shuffleReady = false;
+let shuffled = [];
+let shufflePhase = 'idle';
 
-// シャッフル機能
 const shuffleBtn = document.getElementById('shuffleBtn');
-const shuffleCard = document.getElementById('shuffleCard');
 const shuffleStage = document.getElementById('shuffleStage');
-const shuffleHint = document.getElementById('shuffleHint');
-const instrText = document.getElementById('instr-text');
+const scatterField = document.getElementById('scatterField');
+const shuffleStepText = document.getElementById('shuffleStepText');
+const shuffleSubText = document.getElementById('shuffleSubText');
+const symbols = ['✦','☽','⊙','☉','♃','♀','✧','◈','☿','♄'];
 
-// カードの裏面シンボルをランダムに切り替える
-const symbols = ['✦', '☽', '⊙', '☉', '♃', '♀', '✧', '◈'];
-let symIndex = 0;
-
+// ── シャッフルボタン ──
 shuffleBtn.addEventListener('click', () => {
-  if (!isShuffling && !shuffleReady) {
-    // シャッフル開始
-    startShuffle();
-  } else if (shuffleReady) {
-    // もう一度シャッフル
-    resetShuffle();
-    setTimeout(() => startShuffle(), 300);
+  if (shufflePhase === 'idle') {
+    shufflePhase = 'scattering';
+    shuffleBtn.innerHTML = '<span>カードを混ぜる</span>';
+    shuffleStepText.textContent = 'カードが広がりました';
+    shuffleSubText.textContent = '問いを心に念じながら、カードを混ぜてください';
+    scatterCards();
+  } else if (shufflePhase === 'scattering') {
+    shufflePhase = 'gathering';
+    shuffleBtn.innerHTML = '<span>扇状に広げる</span>';
+    shuffleStepText.textContent = 'カードがまとまりました';
+    shuffleSubText.textContent = '準備ができたら扇状に広げてください';
+    gatherCards();
+  } else if (shufflePhase === 'gathering') {
+    shufflePhase = 'fanning';
+    shuffleBtn.disabled = true;
+    shuffleBtn.innerHTML = '<span>直感で一枚選んでください</span>';
+    shuffleStepText.textContent = 'カードを扇状に広げました';
+    shuffleSubText.textContent = '心が反応したカードを一枚選んでください';
+    fanCards();
   }
 });
 
-shuffleCard.addEventListener('click', () => {
-  if (isShuffling) {
-    stopShuffle();
+// ── カードを散らばらせる ──
+function scatterCards() {
+  shuffled = shuffle(CARDS);
+  scatterField.innerHTML = '';
+  const fieldW = scatterField.offsetWidth || 600;
+  const fieldH = scatterField.offsetHeight || 340;
+
+  for (let i = 0; i < 22; i++) {
+    const card = document.createElement('div');
+    card.className = 'scatter-card';
+    const sym = document.createElement('div');
+    sym.className = 'scatter-card-sym';
+    sym.textContent = symbols[i % symbols.length];
+    card.appendChild(sym);
+
+    const x = Math.random() * (fieldW - 80);
+    const y = Math.random() * (fieldH - 140);
+    const rot = (Math.random() - 0.5) * 60;
+    card.style.left = x + 'px';
+    card.style.top = y + 'px';
+    card.style.transform = `rotate(${rot}deg)`;
+    card.style.zIndex = i;
+    card.style.opacity = '0';
+    scatterField.appendChild(card);
+
+    setTimeout(() => {
+      card.style.opacity = '1';
+      setTimeout(() => card.classList.add('floating'), 100);
+    }, i * 40);
   }
-});
-
-function startShuffle() {
-  isShuffling = true;
-  shuffleReady = false;
-  shuffleBtn.textContent = 'シャッフル中...';
-  shuffleBtn.classList.add('shuffling');
-  shuffleCard.classList.add('shuffling');
-  shuffleHint.classList.add('visible');
-  instrText.textContent = '直感を信じて、カードに触れて止めてください';
-
-  // シンボルをパラパラ切り替える
-  shuffleInterval = setInterval(() => {
-    symIndex = (symIndex + 1) % symbols.length;
-    shuffleCard.querySelector('.card-back-sym').textContent = symbols[symIndex];
-  }, 120);
 }
 
-function stopShuffle() {
-  isShuffling = false;
-  shuffleReady = true;
-  clearInterval(shuffleInterval);
-  shuffleCard.classList.remove('shuffling');
-  shuffleCard.classList.add('selected');
+// ── 束に集める ──
+function gatherCards() {
+  const cards = scatterField.querySelectorAll('.scatter-card');
+  const fieldW = scatterField.offsetWidth || 600;
+  const fieldH = scatterField.offsetHeight || 340;
+  const cx = fieldW / 2 - 40;
+  const cy = fieldH / 2 - 70;
 
-  // 選ばれた感を演出
-  instrText.textContent = 'カードが決まりました。めくってみてください';
-  shuffleBtn.textContent = 'もう一度占う';
-  shuffleBtn.classList.remove('shuffling');
-  shuffleHint.classList.remove('visible');
+  cards.forEach((card, i) => {
+    card.classList.remove('floating');
+    const rot = (Math.random() - 0.5) * 8;
+    card.style.left = cx + 'px';
+    card.style.top = cy + 'px';
+    card.style.transform = `rotate(${rot}deg)`;
+    card.style.zIndex = i;
+  });
+}
 
-  // カードグリッドを表示
+// ── 扇状に広げる ──
+function fanCards() {
+  scatterField.style.transition = 'opacity 0.6s ease';
+  scatterField.style.opacity = '0';
   setTimeout(() => {
-    shuffleStage.style.display = 'none';
-    const grid = document.getElementById('cardGrid');
-    grid.style.display = 'grid';
-    grid.classList.add('visible');
-    renderCards();
-  }, 800);
+    scatterField.style.display = 'none';
+
+    const fanField = document.createElement('div');
+    fanField.className = 'fan-field';
+    fanField.id = 'fanField';
+    shuffleStage.insertBefore(fanField, shuffleStage.querySelector('.shuffle-controls'));
+
+    const total = 22;
+    const spreadAngle = 160;
+    const startAngle = -spreadAngle / 2;
+
+    for (let i = 0; i < total; i++) {
+      const card = document.createElement('div');
+      card.className = 'fan-card';
+      const sym = document.createElement('div');
+      sym.className = 'fan-card-sym';
+      sym.textContent = symbols[i % symbols.length];
+      card.appendChild(sym);
+
+      const angle = startAngle + (spreadAngle / (total - 1)) * i;
+      const rad = (angle * Math.PI) / 180;
+      const radius = 280;
+      const x = Math.sin(rad) * radius;
+
+      card.style.transform = `translateX(${x}px) rotate(${angle}deg)`;
+      card.style.zIndex = i;
+      card.style.opacity = '0';
+      card.style.bottom = '0';
+      card.style.left = 'calc(50% - 45px)';
+
+      card.addEventListener('click', () => onFanCardClick(card, i));
+      fanField.appendChild(card);
+
+      setTimeout(() => { card.style.opacity = '1'; }, i * 30);
+    }
+  }, 600);
 }
 
+// ── 扇からカード選択 ──
+function onFanCardClick(card, index) {
+  if (shufflePhase !== 'fanning') return;
+  shufflePhase = 'done';
+
+  card.style.transform = card.style.transform + ' translateY(-30px)';
+  card.style.borderColor = 'rgba(201,169,110,.6)';
+  card.style.boxShadow = '0 40px 80px rgba(42,38,34,.5)';
+
+  shuffleStepText.textContent = 'カードが選ばれました';
+  shuffleSubText.textContent = 'めくってメッセージを受け取ってください';
+  shuffleBtn.innerHTML = '<span>カードをめくる</span>';
+  shuffleBtn.disabled = false;
+
+  const cardData = shuffled[index] || CARDS[index % CARDS.length];
+  const reversed = Math.random() < 0.25;
+
+  shuffleBtn.onclick = () => {
+    shuffleStage.style.opacity = '0';
+    setTimeout(() => {
+      shuffleStage.style.display = 'none';
+      openModal(cardData, reversed);
+    }, 400);
+  };
+}
+
+// ── リセット ──
 function resetShuffle() {
-  shuffleReady = false;
-  shuffleCard.classList.remove('selected', 'shuffling');
-  shuffleCard.querySelector('.card-back-sym').textContent = '✦';
+  shufflePhase = 'idle';
+  shuffleBtn.innerHTML = '<span>カードに触れる</span>';
+  shuffleBtn.disabled = false;
+  shuffleBtn.onclick = null;
+  shuffleStepText.textContent = '心を静め、問いを胸に抱いてください';
+  shuffleSubText.textContent = '準備ができたらカードに触れてシャッフルしてください';
+  scatterField.innerHTML = '';
+  scatterField.style.display = 'block';
+  scatterField.style.opacity = '1';
   shuffleStage.style.display = 'flex';
+  shuffleStage.style.opacity = '1';
+  const fanField = document.getElementById('fanField');
+  if (fanField) fanField.remove();
   const grid = document.getElementById('cardGrid');
   grid.style.display = 'none';
-  grid.classList.remove('visible');
-  instrText.textContent = '心を静め、準備ができたらシャッフルを始めてください';
-  shuffleHint.classList.remove('visible');
 }
 
+// ── モード切替 ──
 function setMode(m) {
   mode = m;
   selectedCards = [];
-  resetShuffle();
   document.querySelectorAll('.mode-btn').forEach((b,i)=>{
-    b.classList.toggle('active', (i===0&&m==='one')||(i===1&&m==='three'));
+    b.classList.toggle('active',(i===0&&m==='one')||(i===1&&m==='three'));
   });
-  document.getElementById('instr-text').textContent =
-    m === 'one'
-      ? '22枚の大アルカナが並んでいます。直感で一枚を選んでください'
-      : '三枚を選んでください — 過去・現在・未来を表します';
-  renderCards();
+  resetShuffle();
 }
 
+// ── シャッフル ──
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length-1; i>0; i--) {
@@ -777,8 +465,7 @@ function shuffle(arr) {
   return a;
 }
 
-let shuffled = [];
-
+// ── カードグリッド描画 ──
 function renderCards() {
   shuffled = shuffle(CARDS);
   const grid = document.getElementById('cardGrid');
@@ -815,13 +502,13 @@ function renderCards() {
   });
 }
 
+// ── カードクリック ──
 function onCardClick(wrap, card) {
   if (mode === 'one') {
     if (wrap.classList.contains('flipped') || wrap.classList.contains('reversed')) {
       openModal(card, wrap.classList.contains('reversed'));
       return;
     }
-    // Flip all others back / disable
     document.querySelectorAll('.card-wrap').forEach(w => {
       if (w !== wrap) w.style.opacity = '0.3';
     });
@@ -847,6 +534,7 @@ function onCardClick(wrap, card) {
   }
 }
 
+// ── モーダル ──
 function openModal(card, reversed) {
   currentCardData = {card, reversed};
   const labels = ['過去','現在','未来'];
@@ -874,18 +562,19 @@ function openModal(card, reversed) {
 function closeModal(e) {
   if (e.target === document.getElementById('overlay')) closeOverlay();
 }
+
 function closeOverlay() {
   document.getElementById('overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
 
-// Cursor
-const cur=document.getElementById('cur'), ring=document.getElementById('ring');
+// ── カーソル ──
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
 (function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
 document.addEventListener('mouseover',e=>{
-  if(e.target.closest('a,button,.card-wrap,.modal-close')){
+  if(e.target.closest('a,button,.card-wrap,.fan-card,.modal-close')){
     cur.style.transform='translate(-50%,-50%) scale(2.2)';
     ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
   }else{
@@ -894,24 +583,21 @@ document.addEventListener('mouseover',e=>{
   }
 });
 
-// Keyboard
+// ── キーボード ──
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOverlay()});
 
-// Init
-renderCards();
-const hamburger = document.getElementById('hamburger');
-const mobileMenu = document.getElementById('mobileMenu');
-
-hamburger.addEventListener('click', () => {
+// ── ハンバーガーメニュー ──
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobileMenu');
+hamburger.addEventListener('click',()=>{
   hamburger.classList.toggle('open');
   mobileMenu.classList.toggle('open');
-  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
 });
-
-function closeMenu() {
+function closeMenu(){
   hamburger.classList.remove('open');
   mobileMenu.classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.style.overflow='';
 }
 </script>
 </body>
