@@ -158,15 +158,14 @@
       .modal-title{font-size:22px}
       .hamburger{display:flex}
       .fan-field {
-        overflow-x: auto;
-        overflow-y: visible;
-        height: 160px;
+        position: relative;
+        width: 100%;
+        max-width: 700px;
+        height: 220px;
         display: flex;
         align-items: flex-end;
-        justify-content: flex-start;
-        padding: 0 16px;
-        gap: 6px;
-        -webkit-overflow-scrolling: touch;
+        justify-content: center;
+        overflow: visible;
       }
     }
   </style>
@@ -382,60 +381,39 @@ function fanCards() {
 
     const total = 22;
     const isMobile = window.innerWidth <= 768;
+    const spreadAngle = isMobile ? 120 : 160;
+    const startAngle = -spreadAngle / 2;
+    const radius = isMobile ? 150 : 280;
 
-    if (isMobile) {
-      // スマホ：横スクロール
-      for (let i = 0; i < total; i++) {
-        const card = document.createElement('div');
-        card.className = 'fan-card';
-        card.style.position = 'relative';
-        card.style.left = 'auto';
-        card.style.bottom = 'auto';
-        card.style.transform = `rotate(${(Math.random()-0.5)*10}deg)`;
-        card.style.flexShrink = '0';
-        card.style.opacity = '0';
-        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        card.style.zIndex = i;
+    for (let i = 0; i < total; i++) {
+      const card = document.createElement('div');
+      card.className = 'fan-card';
+      const sym = document.createElement('div');
+      sym.className = 'fan-card-sym';
+      sym.textContent = symbols[i % symbols.length];
+      card.appendChild(sym);
 
-        const sym = document.createElement('div');
-        sym.className = 'fan-card-sym';
-        sym.textContent = symbols[i % symbols.length];
-        card.appendChild(sym);
+      const angle = startAngle + (spreadAngle / (total - 1)) * i;
+      const rad = (angle * Math.PI) / 180;
+      const x = Math.sin(rad) * radius;
 
-        card.addEventListener('click', () => onFanCardClick(card, i));
-        fanField.appendChild(card);
-
-        setTimeout(() => { card.style.opacity = '1'; }, i * 30);
-      }
-    } else {
-      // PC：扇状
-      const spreadAngle = 160;
-      const startAngle = -spreadAngle / 2;
-
-      for (let i = 0; i < total; i++) {
-        const card = document.createElement('div');
-        card.className = 'fan-card';
-        const sym = document.createElement('div');
-        sym.className = 'fan-card-sym';
-        sym.textContent = symbols[i % symbols.length];
-        card.appendChild(sym);
-
-        const angle = startAngle + (spreadAngle / (total - 1)) * i;
-        const rad = (angle * Math.PI) / 180;
-        const radius = 280;
-        const x = Math.sin(rad) * radius;
-
-        card.style.transform = `translateX(${x}px) rotate(${angle}deg)`;
-        card.style.zIndex = i;
-        card.style.opacity = '0';
-        card.style.bottom = '0';
+      if (isMobile) {
+        card.style.width = '38px';
+        card.style.height = '66px';
+        card.style.left = 'calc(50% - 19px)';
+      } else {
         card.style.left = 'calc(50% - 45px)';
-
-        card.addEventListener('click', () => onFanCardClick(card, i));
-        fanField.appendChild(card);
-
-        setTimeout(() => { card.style.opacity = '1'; }, i * 30);
       }
+
+      card.style.transform = `translateX(${x}px) rotate(${angle}deg)`;
+      card.style.zIndex = i;
+      card.style.opacity = '0';
+      card.style.bottom = '0';
+
+      card.addEventListener('click', () => onFanCardClick(card, i));
+      fanField.appendChild(card);
+
+      setTimeout(() => { card.style.opacity = '1'; }, i * 30);
     }
   }, 600);
 }
