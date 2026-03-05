@@ -269,6 +269,130 @@
       .hamburger { display: flex; }
       .nav-links { display: none !important; }
     }
+    /* シャッフルステージ */
+    .shuffle-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+      padding: 40px 80px 80px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .shuffle-card-wrap {
+      perspective: 1000px;
+      width: 200px;
+      height: 350px;
+    }
+
+    .shuffle-card {
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      position: relative;
+      cursor: none;
+      transition: transform 0.1s ease;
+      transform-style: preserve-3d;
+    }
+
+    .shuffle-card-back {
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      background: linear-gradient(145deg, #2A2622, #3D3530);
+      border: 1px solid rgba(201,169,110,.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 40px 80px rgba(42,38,34,.3), 0 8px 20px rgba(42,38,34,.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shuffle-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .btn-shuffle {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 0.4em;
+      color: var(--cream);
+      background: var(--ink);
+      border: none;
+      padding: 20px 52px;
+      cursor: none;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.4s;
+    }
+    .btn-shuffle::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      transform: translateX(-100%);
+      transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .btn-shuffle:hover::before { transform: translateX(0); }
+    .btn-shuffle span { position: relative; z-index: 1; }
+
+    .btn-shuffle.shuffling {
+      background: var(--gold);
+      letter-spacing: 0.3em;
+    }
+    .btn-shuffle.shuffling::before { display: none; }
+
+    .shuffle-hint {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      color: var(--dust);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .shuffle-hint.visible { opacity: 1; }
+
+    /* シャッフル中のカードアニメーション */
+    .shuffle-card.shuffling {
+      animation: cardShake 0.15s ease-in-out infinite;
+    }
+
+    @keyframes cardShake {
+      0%   { transform: rotate(-3deg) translateX(-4px); }
+      25%  { transform: rotate(3deg) translateX(4px); }
+      50%  { transform: rotate(-2deg) translateX(-2px); }
+      75%  { transform: rotate(2deg) translateX(2px); }
+      100% { transform: rotate(-3deg) translateX(-4px); }
+    }
+
+    /* カードが決まった瞬間のアニメーション */
+    .shuffle-card.selected {
+      animation: cardSelect 0.4s ease forwards;
+    }
+
+    @keyframes cardSelect {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.08) translateY(-10px); }
+      100% { transform: scale(1); }
+    }
+
+    /* グリッド表示時のフェードイン */
+    .card-grid.visible {
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    @media(max-width: 768px) {
+      .shuffle-stage { padding: 20px 24px 60px; gap: 36px; }
+      .shuffle-card-wrap { width: 160px; height: 280px; }
+      .btn-shuffle { padding: 18px 40px; font-size: 11px; }
+    }
   </style>
 </head>
 <body>
@@ -313,10 +437,26 @@
 </div>
 
 <div class="instruction">
-  <p id="instr-text">22枚の大アルカナが並んでいます。直感で一枚を選んでください</p>
+  <p id="instr-text">心を静め、準備ができたらシャッフルを始めてください</p>
 </div>
 
-<div class="card-grid" id="cardGrid"></div>
+<div class="shuffle-stage" id="shuffleStage">
+  <div class="shuffle-card-wrap">
+    <div class="shuffle-card" id="shuffleCard">
+      <div class="shuffle-card-back">
+        <div class="card-back-pattern"></div>
+        <div class="card-back-border"></div>
+        <div class="card-back-sym">✦</div>
+      </div>
+    </div>
+  </div>
+  <div class="shuffle-controls">
+    <button class="btn-shuffle" id="shuffleBtn">シャッフルを始める</button>
+    <p class="shuffle-hint" id="shuffleHint">直感を信じて、カードに触れてください</p>
+  </div>
+</div>
+
+<div class="card-grid" id="cardGrid" style="display:none"></div>
 
 <!-- Modal -->
 <div class="overlay" id="overlay" onclick="closeModal(event)">
@@ -531,10 +671,93 @@ const CARDS = [
 let mode = 'one';
 let selectedCards = [];
 let currentCardData = null;
+let isShuffling = false;
+let shuffleInterval = null;
+let shuffleReady = false;
+
+// シャッフル機能
+const shuffleBtn = document.getElementById('shuffleBtn');
+const shuffleCard = document.getElementById('shuffleCard');
+const shuffleStage = document.getElementById('shuffleStage');
+const shuffleHint = document.getElementById('shuffleHint');
+const instrText = document.getElementById('instr-text');
+
+// カードの裏面シンボルをランダムに切り替える
+const symbols = ['✦', '☽', '⊙', '☉', '♃', '♀', '✧', '◈'];
+let symIndex = 0;
+
+shuffleBtn.addEventListener('click', () => {
+  if (!isShuffling && !shuffleReady) {
+    // シャッフル開始
+    startShuffle();
+  } else if (shuffleReady) {
+    // もう一度シャッフル
+    resetShuffle();
+    setTimeout(() => startShuffle(), 300);
+  }
+});
+
+shuffleCard.addEventListener('click', () => {
+  if (isShuffling) {
+    stopShuffle();
+  }
+});
+
+function startShuffle() {
+  isShuffling = true;
+  shuffleReady = false;
+  shuffleBtn.textContent = 'シャッフル中...';
+  shuffleBtn.classList.add('shuffling');
+  shuffleCard.classList.add('shuffling');
+  shuffleHint.classList.add('visible');
+  instrText.textContent = '直感を信じて、カードに触れて止めてください';
+
+  // シンボルをパラパラ切り替える
+  shuffleInterval = setInterval(() => {
+    symIndex = (symIndex + 1) % symbols.length;
+    shuffleCard.querySelector('.card-back-sym').textContent = symbols[symIndex];
+  }, 120);
+}
+
+function stopShuffle() {
+  isShuffling = false;
+  shuffleReady = true;
+  clearInterval(shuffleInterval);
+  shuffleCard.classList.remove('shuffling');
+  shuffleCard.classList.add('selected');
+
+  // 選ばれた感を演出
+  instrText.textContent = 'カードが決まりました。めくってみてください';
+  shuffleBtn.textContent = 'もう一度占う';
+  shuffleBtn.classList.remove('shuffling');
+  shuffleHint.classList.remove('visible');
+
+  // カードグリッドを表示
+  setTimeout(() => {
+    shuffleStage.style.display = 'none';
+    const grid = document.getElementById('cardGrid');
+    grid.style.display = 'grid';
+    grid.classList.add('visible');
+    renderCards();
+  }, 800);
+}
+
+function resetShuffle() {
+  shuffleReady = false;
+  shuffleCard.classList.remove('selected', 'shuffling');
+  shuffleCard.querySelector('.card-back-sym').textContent = '✦';
+  shuffleStage.style.display = 'flex';
+  const grid = document.getElementById('cardGrid');
+  grid.style.display = 'none';
+  grid.classList.remove('visible');
+  instrText.textContent = '心を静め、準備ができたらシャッフルを始めてください';
+  shuffleHint.classList.remove('visible');
+}
 
 function setMode(m) {
   mode = m;
   selectedCards = [];
+  resetShuffle();
   document.querySelectorAll('.mode-btn').forEach((b,i)=>{
     b.classList.toggle('active', (i===0&&m==='one')||(i===1&&m==='three'));
   });
