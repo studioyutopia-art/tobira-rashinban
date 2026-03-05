@@ -157,6 +157,14 @@
       .modal-body{padding:24px 24px 40px;gap:16px;overflow-y:auto;max-height:calc(92vh - 280px)}
       .modal-title{font-size:22px}
       .hamburger{display:flex}
+      .fan-field {
+        height: 200px;
+        overflow: visible;
+      }
+      .fan-card {
+        width: 55px;
+        height: 97px;
+      }
     }
   </style>
 </head>
@@ -370,21 +378,22 @@ function fanCards() {
     shuffleStage.insertBefore(fanField, shuffleStage.querySelector('.shuffle-controls'));
 
     const total = 22;
-    const spreadAngle = 160;
-    const startAngle = -spreadAngle / 2;
+        const isMobile = window.innerWidth <= 768;
+        const spreadAngle = isMobile ? 100 : 160;
+        const startAngle = -spreadAngle / 2;
 
-    for (let i = 0; i < total; i++) {
-      const card = document.createElement('div');
-      card.className = 'fan-card';
-      const sym = document.createElement('div');
-      sym.className = 'fan-card-sym';
-      sym.textContent = symbols[i % symbols.length];
-      card.appendChild(sym);
+        for (let i = 0; i < total; i++) {
+          const card = document.createElement('div');
+          card.className = 'fan-card';
+          const sym = document.createElement('div');
+          sym.className = 'fan-card-sym';
+          sym.textContent = symbols[i % symbols.length];
+          card.appendChild(sym);
 
-      const angle = startAngle + (spreadAngle / (total - 1)) * i;
-      const rad = (angle * Math.PI) / 180;
-      const radius = 280;
-      const x = Math.sin(rad) * radius;
+          const angle = startAngle + (spreadAngle / (total - 1)) * i;
+          const rad = (angle * Math.PI) / 180;
+          const radius = isMobile ? 180 : 280;
+          const x = Math.sin(rad) * radius;
 
       card.style.transform = `translateX(${x}px) rotate(${angle}deg)`;
       card.style.zIndex = i;
