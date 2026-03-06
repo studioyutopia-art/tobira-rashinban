@@ -219,7 +219,7 @@
     <p class="shuffle-sub-text" id="shuffleSubText">準備ができたらカードに触れてシャッフルしてください</p>
   </div>
   <div class="shuffle-controls">
-    <button class="btn-shuffle" id="shuffleBtn"><span>カードに触れる</span></button>
+    <button class="btn-shuffle" id="shuffleBtn"><span>シャッフルを始める</span></button>
   </div>
   <div class="scatter-field" id="scatterField"></div>
 </div>
@@ -297,7 +297,7 @@ const symbols = ['✦','☽','⊙','☉','♃','♀','✧','◈','☿','♄'];
 shuffleBtn.addEventListener('click', () => {
   if (shufflePhase === 'idle') {
     shufflePhase = 'scattering';
-    shuffleBtn.innerHTML = '<span>カードを混ぜる</span>';
+    shuffleBtn.innerHTML = '<span>シャッフルを始める</span>';
     shuffleStepText.textContent = 'カードが広がりました';
     shuffleSubText.textContent = '問いを心に念じながら、カードを混ぜてください';
     scatterCards();
