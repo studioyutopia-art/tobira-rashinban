@@ -321,6 +321,11 @@ shuffleBtn.addEventListener('click', () => {
 function scatterCards() {
   shuffled = shuffle(CARDS);
   scatterField.innerHTML = '';
+
+  // カードが散らばる場所まで自動スクロール
+  setTimeout(() => {
+    scatterField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
   const fieldW = scatterField.offsetWidth || 600;
   const fieldH = scatterField.offsetHeight || 340;
 
