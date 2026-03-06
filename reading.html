@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>鑑定 — 扉と羅針盤</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
+      --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
+      --ink-lt:#7A7068;--gold:#C9A96E;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+
+    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+    .nav-links{display:flex;gap:44px;list-style:none}
+    .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+
+    .page-header{padding:140px 80px 60px;text-align:center}
+    .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
+    .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
+    .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards}
+
+    /* 鑑定タイプ選択 */
+    .reading-type{display:flex;justify-content:center;gap:2px;margin:48px 0;opacity:0;animation:fadeUp 1s ease .8s forwards}
+    .type-btn{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.35em;color:var(--ink-lt);background:none;border:1px solid rgba(182,169,154,.3);padding:14px 32px;cursor:none;transition:all .3s}
+    .type-btn.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+    .type-btn:hover:not(.active){border-color:var(--gold);color:var(--ink)}
+
+    /* シャッフルステージ */
+    .shuffle-stage{display:flex;flex-direction:column;align-items:center;gap:32px;padding:20px 80px 80px;margin:0 auto;min-height:520px;position:relative;transition:opacity .4s ease}
+    .shuffle-message{text-align:center;z-index:10}
+    .shuffle-step-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:16px;letter-spacing:.2em;color:var(--ink);margin-bottom:10px;transition:opacity .5s ease}
+    .shuffle-sub-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust);transition:opacity .5s ease}
+
+    .scatter-field{position:relative;width:100%;max-width:700px;height:340px}
+    .scatter-card{position:absolute;width:80px;height:140px;border-radius:4px;background:linear-gradient(145deg,#2A2622,#3D3530);border:1px solid rgba(201,169,110,.25);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(42,38,34,.25);transition:transform 0.8s cubic-bezier(.25,.46,.45,.94),left 0.8s cubic-bezier(.25,.46,.45,.94),top 0.8s cubic-bezier(.25,.46,.45,.94),opacity 0.6s ease;cursor:none;overflow:hidden}
+    .scatter-card::before{content:'';position:absolute;inset:5px;border:1px solid rgba(201,169,110,.15);border-radius:2px}
+    .scatter-card-sym{font-family:'Cormorant Garamond',serif;font-size:20px;color:rgba(201,169,110,.5);position:relative;z-index:1;transition:opacity .3s ease}
+    .scatter-card.floating{animation:floatCard 3s ease-in-out infinite}
+    .scatter-card:nth-child(odd).floating{animation:floatCardOdd 3.5s ease-in-out infinite}
+    .scatter-card:nth-child(3n).floating{animation:floatCardThird 2.8s ease-in-out infinite}
+    @keyframes floatCard{0%,100%{margin-top:0px}50%{margin-top:-8px}}
+    @keyframes floatCardOdd{0%,100%{margin-top:0px}50%{margin-top:-6px}}
+    @keyframes floatCardThird{0%,100%{margin-top:0px}50%{margin-top:-10px}}
+
+    .fan-field{position:relative;width:100%;max-width:700px;height:300px;display:flex;align-items:flex-end;justify-content:center}
+    .fan-card{position:absolute;width:90px;height:158px;border-radius:5px;background:linear-gradient(145deg,#2A2622,#3D3530);border:1px solid rgba(201,169,110,.28);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(42,38,34,.3);cursor:none;transform-origin:center bottom;transition:transform .3s ease,box-shadow .3s ease;overflow:hidden}
+    .fan-card::before{content:'';position:absolute;inset:6px;border:1px solid rgba(201,169,110,.18);border-radius:3px}
+    .fan-card-sym{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(201,169,110,.5);position:relative;z-index:1}
+    .fan-card:hover{box-shadow:0 30px 60px rgba(42,38,34,.4);z-index:50!important}
+    .fan-card.pre-selected{box-shadow:0 40px 80px rgba(42,38,34,.5);z-index:50!important;border-color:rgba(201,169,110,.6)}
+
+    .shuffle-controls{display:flex;flex-direction:column;align-items:center;gap:20px;z-index:10}
+    .btn-shuffle{font-family:'Noto Serif JP',serif;font-weight:300;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 52px;cursor:none;position:relative;overflow:hidden;transition:color .4s,opacity .3s;border-radius:999px}
+    .btn-shuffle::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-shuffle:hover::before{transform:translateX(0)}
+    .btn-shuffle:hover{color:var(--ink)}
+    .btn-shuffle span{position:relative;z-index:1}
+    .btn-shuffle:disabled{opacity:.4}
+
+    /* 鑑定結果エリア */
+    .result-area{max-width:800px;margin:0 auto;padding:0 80px 120px;display:none}
+    .result-area.visible{display:block}
+
+    .result-cards{display:flex;justify-content:center;gap:24px;margin-bottom:64px;flex-wrap:wrap}
+    .result-card{text-align:center}
+    .result-card-img-wrap{width:120px;height:210px;border-radius:6px;overflow:hidden;margin:0 auto 16px;box-shadow:0 20px 48px rgba(42,38,34,.2)}
+    .result-card-img-wrap img{width:100%;height:100%;object-fit:cover;filter:sepia(15%) contrast(95%) brightness(102%)}
+    .result-card-img-wrap.reversed img{transform:rotate(180deg)}
+    .result-card-position{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.3em;color:var(--gold);margin-bottom:6px}
+    .result-card-name{font-size:12px;letter-spacing:.2em;color:var(--ink-mid)}
+    .result-card-orientation{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.2em;color:var(--dust)}
+
+    .result-divider{width:40px;height:1px;background:var(--mouve);margin:0 auto 64px}
+
+    /* AIメッセージ */
+    .ai-message{opacity:0;transition:opacity 1s ease}
+    .ai-message.visible{opacity:1}
+
+    .ai-loading{text-align:center;padding:80px 0}
+    .ai-loading-sym{font-family:'Cormorant Garamond',serif;font-size:40px;color:var(--gold);animation:pulse 2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+    .ai-loading-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.3em;color:var(--dust);margin-top:24px}
+
+    .ai-content{font-size:14px;line-height:3;letter-spacing:.1em;color:var(--ink-mid);white-space:pre-wrap}
+    .ai-content h3{font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink);margin:40px 0 16px;font-family:'Noto Serif JP',serif}
+
+    .result-actions{display:flex;justify-content:center;gap:16px;margin-top:80px;flex-wrap:wrap}
+    .btn-action{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 48px;cursor:none;position:relative;overflow:hidden;transition:color .4s;text-decoration:none;border-radius:999px;display:inline-block}
+    .btn-action::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-action:hover::before{transform:translateX(0)}
+    .btn-action:hover{color:var(--ink)}
+    .btn-action span{position:relative;z-index:1}
+    .btn-action.ghost{background:none;border:1px solid rgba(182,169,154,.4);color:var(--ink-lt)}
+    .btn-action.ghost::before{background:var(--warm)}
+    .btn-action.ghost:hover{color:var(--ink)}
+
+    /* ハンバーガー */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
+    .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
+    .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    .mobile-menu{position:fixed;top:0;left:0;right:0;background:rgba(245,241,235,.98);backdrop-filter:blur(12px);z-index:150;padding:90px 48px 48px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);border-bottom:1px solid rgba(182,169,154,.3)}
+    .mobile-menu.open{transform:translateY(0)}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:0}
+    .mobile-menu ul li{border-bottom:1px solid rgba(182,169,154,.2)}
+    .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
+    .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:768px){
+      .cursor,.cursor-ring{display:none}
+      body{cursor:auto}
+      a,button,.fan-card{cursor:pointer}
+      nav{padding:16px 20px}
+      .nav-links{display:none}
+      .nav-logo span{display:none}
+      .page-header{padding:90px 24px 40px}
+      .reading-type{margin:32px 16px}
+      .type-btn{padding:12px 16px;font-size:10px}
+      .shuffle-stage{padding:20px 16px 60px;min-height:440px}
+      .scatter-field{height:260px}
+      .scatter-card{width:60px;height:105px}
+      .fan-field{position:relative;width:100%;max-width:700px;height:220px;display:flex;align-items:flex-end;justify-content:center;overflow:visible}
+      .fan-card{width:38px;height:66px}
+      .btn-shuffle{padding:18px 40px;font-size:11px}
+      .result-area{padding:0 24px 80px}
+      .result-card-img-wrap{width:90px;height:158px}
+      .hamburger{display:flex}
+      .btn-action{padding:18px 32px;font-size:10px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+  <ul class="nav-links">
+    <li><a href="tarot.html">カードを引く</a></li>
+    <li><a href="product.html">鑑定メニュー</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html" onclick="closeMenu()">トップページ</a></li>
+    <li><a href="tarot.html" onclick="closeMenu()">カードを引く</a></li>
+    <li><a href="product.html" onclick="closeMenu()">鑑定メニュー</a></li>
+  </ul>
+</div>
+
+<div class="page-header">
+  <span class="page-eyebrow">Premium Reading</span>
+  <h1 class="page-title">鑑定</h1>
+  <p class="page-desc">心を静め、問いを胸に抱いてください</p>
+</div>
+
+<div class="reading-type">
+  <button class="type-btn active" onclick="setReadingType('one')">一枚引き</button>
+  <button class="type-btn" onclick="setReadingType('deep')">一枚引き・深掘り</button>
+  <button class="type-btn" onclick="setReadingType('three')">三枚引き</button>
+</div>
+
+<div class="shuffle-stage" id="shuffleStage">
+  <div class="shuffle-message">
+    <p class="shuffle-step-text" id="shuffleStepText">心を静め、問いを胸に抱いてください</p>
+    <p class="shuffle-sub-text" id="shuffleSubText">準備ができたらシャッフルを始めてください</p>
+  </div>
+  <div class="shuffle-controls">
+    <button class="btn-shuffle" id="shuffleBtn"><span>シャッフルを始める</span></button>
+  </div>
+  <div class="scatter-field" id="scatterField"></div>
+</div>
+
+<div class="result-area" id="resultArea">
+  <div class="result-cards" id="resultCards"></div>
+  <div class="result-divider"></div>
+  <div class="ai-message" id="aiMessage">
+    <div class="ai-loading" id="aiLoading">
+      <div class="ai-loading-sym">✦</div>
+      <p class="ai-loading-text">カードのメッセージを読み解いています</p>
+    </div>
+    <div class="ai-content" id="aiContent" style="display:none"></div>
+  </div>
+  <div class="result-actions" style="display:none" id="resultActions">
+    <button class="btn-action ghost" onclick="resetReading()"><span>もう一度占う</span></button>
+    <a href="product.html" class="btn-action"><span>別のメニューを選ぶ</span></a>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  {num:'0',name:'愚者',en:'The Fool',img:'images/tarot/00_Fool.jpg'},
+  {num:'I',name:'魔術師',en:'The Magician',img:'images/tarot/01_Magician.jpg'},
+  {num:'II',name:'女教皇',en:'The High Priestess',img:'images/tarot/02_High_Priestess.jpg'},
+  {num:'III',name:'女帝',en:'The Empress',img:'images/tarot/03_Empress.jpg'},
+  {num:'IV',name:'皇帝',en:'The Emperor',img:'images/tarot/04_Emperor.jpg'},
+  {num:'V',name:'法王',en:'The Hierophant',img:'images/tarot/05_Hierophant.jpg'},
+  {num:'VI',name:'恋人',en:'The Lovers',img:'images/tarot/06_Lovers.jpg'},
+  {num:'VII',name:'戦車',en:'The Chariot',img:'images/tarot/07_Chariot.jpg'},
+  {num:'VIII',name:'力',en:'Strength',img:'images/tarot/08_Strength.jpg'},
+  {num:'IX',name:'隠者',en:'The Hermit',img:'images/tarot/09_Hermit.jpg'},
+  {num:'X',name:'運命の輪',en:'Wheel of Fortune',img:'images/tarot/10_Wheel_of_Fortune.jpg'},
+  {num:'XI',name:'正義',en:'Justice',img:'images/tarot/11_Justice.jpg'},
+  {num:'XII',name:'吊るされた男',en:'The Hanged Man',img:'images/tarot/12_Hanged_Man.jpg'},
+  {num:'XIII',name:'死神',en:'Death',img:'images/tarot/13_Death.jpg'},
+  {num:'XIV',name:'節制',en:'Temperance',img:'images/tarot/14_Temperance.jpg'},
+  {num:'XV',name:'悪魔',en:'The Devil',img:'images/tarot/15_Devil.jpg'},
+  {num:'XVI',name:'塔',en:'The Tower',img:'images/tarot/16_Tower.jpg'},
+  {num:'XVII',name:'星',en:'The Star',img:'images/tarot/17_Star.jpg'},
+  {num:'XVIII',name:'月',en:'The Moon',img:'images/tarot/18_Moon.jpg'},
+  {num:'XIX',name:'太陽',en:'The Sun',img:'images/tarot/19_Sun.jpg'},
+  {num:'XX',name:'審判',en:'Judgement',img:'images/tarot/20_Judgement.jpg'},
+  {num:'XXI',name:'世界',en:'The World',img:'images/tarot/21_World.jpg'},
+];
+
+let readingType = 'one';
+let shuffled = [];
+let shufflePhase = 'idle';
+let selectedCardData = null;
+let selectedCards = [];
+
+const shuffleBtn = document.getElementById('shuffleBtn');
+const shuffleStage = document.getElementById('shuffleStage');
+const scatterField = document.getElementById('scatterField');
+const shuffleStepText = document.getElementById('shuffleStepText');
+const shuffleSubText = document.getElementById('shuffleSubText');
+const symbols = ['✦','☽','⊙','☉','♃','♀','✧','◈','☿','♄'];
+
+function setReadingType(type) {
+  readingType = type;
+  document.querySelectorAll('.type-btn').forEach((b,i) => {
+    b.classList.toggle('active',
+      (i===0&&type==='one')||(i===1&&type==='deep')||(i===2&&type==='three'));
+  });
+  resetReading();
+}
+
+// ── シャッフルボタン ──
+shuffleBtn.addEventListener('click', () => {
+  if (shufflePhase === 'idle') {
+    shufflePhase = 'scattering';
+    shuffleBtn.innerHTML = '<span>カードを混ぜる</span>';
+    shuffleStepText.textContent = 'カードが広がりました';
+    shuffleSubText.textContent = '問いを心に念じながら、カードを混ぜてください';
+    scatterCards();
+  } else if (shufflePhase === 'scattering') {
+    shufflePhase = 'gathering';
+    shuffleBtn.innerHTML = '<span>扇状に広げる</span>';
+    shuffleStepText.textContent = 'カードがまとまりました';
+    shuffleSubText.textContent = '準備ができたら扇状に広げてください';
+    gatherCards();
+  } else if (shufflePhase === 'gathering') {
+    shufflePhase = 'fanning';
+    shuffleBtn.disabled = true;
+    const isMobile = window.innerWidth <= 768;
+    shuffleBtn.innerHTML = isMobile ? '<span>カードを並べる</span>' : '<span>扇状に広げる</span>';
+    shuffleStepText.textContent = isMobile ? 'カードを並べました' : 'カードを扇状に広げました';
+    shuffleSubText.textContent = '心が反応したカードを一枚選んでください';
+    fanCards();
+  }
+});
+
+function scatterCards() {
+  shuffled = shuffle(CARDS);
+  scatterField.innerHTML = '';
+  const fieldW = scatterField.offsetWidth || 600;
+  const fieldH = scatterField.offsetHeight || 340;
+
+  setTimeout(() => {
+    scatterField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+
+  for (let i = 0; i < 22; i++) {
+    const card = document.createElement('div');
+    card.className = 'scatter-card';
+    const sym = document.createElement('div');
+    sym.className = 'scatter-card-sym';
+    sym.textContent = symbols[i % symbols.length];
+    card.appendChild(sym);
+    const x = Math.random() * (fieldW - 80);
+    const y = Math.random() * (fieldH - 140);
+    const rot = (Math.random() - 0.5) * 60;
+    card.style.left = x + 'px';
+    card.style.top = y + 'px';
+    card.style.transform = `rotate(${rot}deg)`;
+    card.style.zIndex = i;
+    card.style.opacity = '0';
+    scatterField.appendChild(card);
+    setTimeout(() => {
+      card.style.opacity = '1';
+      setTimeout(() => card.classList.add('floating'), 100);
+    }, i * 40);
+  }
+}
+
+function gatherCards() {
+  const cards = scatterField.querySelectorAll('.scatter-card');
+  const fieldW = scatterField.offsetWidth || 600;
+  const fieldH = scatterField.offsetHeight || 340;
+  const cx = fieldW / 2 - 40;
+  const cy = fieldH / 2 - 70;
+  cards.forEach((card, i) => {
+    card.classList.remove('floating');
+    const rot = (Math.random() - 0.5) * 8;
+    card.style.left = cx + 'px';
+    card.style.top = cy + 'px';
+    card.style.transform = `rotate(${rot}deg)`;
+    card.style.zIndex = i;
+  });
+}
+
+function fanCards() {
+  scatterField.style.transition = 'opacity 0.6s ease';
+  scatterField.style.opacity = '0';
+  setTimeout(() => {
+    scatterField.style.display = 'none';
+    const fanField = document.createElement('div');
+    fanField.className = 'fan-field';
+    fanField.id = 'fanField';
+    shuffleStage.insertBefore(fanField, shuffleStage.querySelector('.shuffle-controls'));
+
+    const total = 22;
+    const isMobile = window.innerWidth <= 768;
+    const spreadAngle = isMobile ? 140 : 160;
+    const startAngle = -spreadAngle / 2;
+    const radius = isMobile ? 95 : 280;
+
+    for (let i = 0; i < total; i++) {
+      const card = document.createElement('div');
+      card.className = 'fan-card';
+      const sym = document.createElement('div');
+      sym.className = 'fan-card-sym';
+      sym.textContent = symbols[i % symbols.length];
+      card.appendChild(sym);
+      const angle = startAngle + (spreadAngle / (total - 1)) * i;
+      const rad = (angle * Math.PI) / 180;
+      const x = Math.sin(rad) * radius;
+      if (isMobile) {
+        card.style.left = 'calc(50% - 19px)';
+      } else {
+        card.style.left = 'calc(50% - 45px)';
+      }
+      card.style.transform = `translateX(${x}px) rotate(${angle}deg)`;
+      card.style.zIndex = i;
+      card.style.opacity = '0';
+      card.style.bottom = '0';
+      card.addEventListener('click', () => onFanCardClick(card, i));
+      fanField.appendChild(card);
+      setTimeout(() => { card.style.opacity = '1'; }, i * 30);
+    }
+  }, 600);
+}
+
+function onFanCardClick(card, index) {
+  if (shufflePhase !== 'fanning') return;
+
+  const prevSelected = document.querySelector('.fan-card.pre-selected');
+  if (prevSelected === card) {
+    confirmCard(card, index);
+  } else {
+    if (prevSelected) {
+      prevSelected.classList.remove('pre-selected');
+      prevSelected.style.transform = prevSelected.dataset.originalTransform;
+      prevSelected.style.boxShadow = '';
+      prevSelected.style.borderColor = '';
+    }
+    card.dataset.originalTransform = card.style.transform;
+    card.classList.add('pre-selected');
+    card.style.transform = card.style.transform + ' translateY(-20px)';
+    card.style.borderColor = 'rgba(201,169,110,.6)';
+    card.style.boxShadow = '0 30px 60px rgba(42,38,34,.4)';
+    card.style.zIndex = 100;
+
+    shuffleStepText.textContent = 'このカードでよいですか？';
+    shuffleSubText.textContent = 'もう一度タップで確定、別のカードをタップで選び直せます';
+    shuffleBtn.innerHTML = '<span>このカードに決める</span>';
+    shuffleBtn.disabled = false;
+
+    const cardData = shuffled[index] || CARDS[index % CARDS.length];
+    const reversed = Math.random() < 0.25;
+
+    shuffleBtn.onclick = () => confirmCardWithData(cardData, reversed);
+  }
+}
+
+function confirmCard(card, index) {
+  const cardData = shuffled[index] || CARDS[index % CARDS.length];
+  const reversed = Math.random() < 0.25;
+  confirmCardWithData(cardData, reversed);
+}
+
+function confirmCardWithData(cardData, reversed) {
+  shufflePhase = 'done';
+
+  if (readingType === 'three') {
+    selectedCards.push({ card: cardData, reversed });
+    if (selectedCards.length < 3) {
+      // 次のカードを選ぶ
+      const positions = ['過去', '現在', '未来'];
+      shuffleStepText.textContent = `${positions[selectedCards.length]}のカードを選んでください`;
+      shuffleSubText.textContent = '心が反応したカードを選んでください';
+      shuffleBtn.innerHTML = '<span>直感で選んでください</span>';
+      shuffleBtn.disabled = true;
+      shufflePhase = 'fanning';
+      // 選択済みカードをリセット
+      document.querySelectorAll('.fan-card.pre-selected').forEach(c => {
+        c.classList.remove('pre-selected');
+        c.style.pointerEvents = 'none';
+        c.style.opacity = '0.3';
+      });
+      return;
+    }
+  } else {
+    selectedCards = [{ card: cardData, reversed }];
+  }
+
+  // 結果表示へ
+  shuffleStage.style.opacity = '0';
+  setTimeout(() => {
+    shuffleStage.style.display = 'none';
+    showResult();
+  }, 400);
+}
+
+function showResult() {
+  const resultArea = document.getElementById('resultArea');
+  const resultCards = document.getElementById('resultCards');
+  resultArea.classList.add('visible');
+
+  // カード画像を表示
+  resultCards.innerHTML = '';
+  const positions = ['過去', '現在', '未来'];
+  selectedCards.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'result-card';
+    div.innerHTML = `
+      ${readingType === 'three' ? `<p class="result-card-position">${positions[i]}</p>` : ''}
+      <div class="result-card-img-wrap ${item.reversed ? 'reversed' : ''}">
+        <img src="${item.card.img}" alt="${item.card.name}" />
+      </div>
+      <p class="result-card-name">${item.card.num}. ${item.card.name}</p>
+      <p class="result-card-orientation">${item.reversed ? '逆位置' : '正位置'}</p>
+    `;
+    resultCards.appendChild(div);
+  });
+
+  // AIメッセージ取得
+  resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  fetchReading();
+}
+
+async function fetchReading() {
+  const aiMessage = document.getElementById('aiMessage');
+  const aiLoading = document.getElementById('aiLoading');
+  const aiContent = document.getElementById('aiContent');
+  const resultActions = document.getElementById('resultActions');
+
+  aiMessage.classList.add('visible');
+
+  try {
+    const response = await fetch('/api/reading', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cards: selectedCards.map(item => ({
+          name: item.card.name,
+          en: item.card.en,
+          num: item.card.num,
+          reversed: item.reversed
+        })),
+        readingType
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.error) throw new Error(data.error);
+
+    // ローディングを非表示にしてコンテンツ表示
+    aiLoading.style.display = 'none';
+    aiContent.style.display = 'block';
+
+    // テキストをセクションに分けて表示
+    const text = data.reading;
+    const formatted = text
+      .replace(/【(.+?)】/g, '<h3>【$1】</h3>')
+      .replace(/\n/g, '<br>');
+    aiContent.innerHTML = formatted;
+
+    setTimeout(() => {
+      aiMessage.classList.add('visible');
+      resultActions.style.display = 'flex';
+    }, 100);
+
+  } catch (error) {
+    aiLoading.style.display = 'none';
+    aiContent.style.display = 'block';
+    aiContent.innerHTML = `
+      <p style="color:var(--dust);font-family:'Cormorant Garamond',serif;font-style:italic;letter-spacing:.2em;line-height:2.5">
+        メッセージの取得中にエラーが発生しました。<br>
+        しばらく経ってからもう一度お試しください。
+      </p>`;
+    resultActions.style.display = 'flex';
+  }
+}
+
+function resetReading() {
+  shufflePhase = 'idle';
+  selectedCards = [];
+  shuffleBtn.innerHTML = '<span>シャッフルを始める</span>';
+  shuffleBtn.disabled = false;
+  shuffleBtn.onclick = null;
+  shuffleStepText.textContent = '心を静め、問いを胸に抱いてください';
+  shuffleSubText.textContent = '準備ができたらシャッフルを始めてください';
+  scatterField.innerHTML = '';
+  scatterField.style.display = 'block';
+  scatterField.style.opacity = '1';
+  shuffleStage.style.display = 'flex';
+  shuffleStage.style.opacity =
