@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ご購入ありがとうございます — 扉と羅針盤</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
+      --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
+      --ink-lt:#7A7068;--gold:#C9A96E;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+
+    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+
+    .thanks-wrap{text-align:center;padding:40px 24px;max-width:600px;z-index:1}
+
+    .thanks-symbol{font-family:'Cormorant Garamond',serif;font-size:64px;color:var(--gold);opacity:0;animation:fadeUp 1s ease .2s forwards;display:block;margin-bottom:32px}
+
+    .thanks-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .4s forwards}
+
+    .thanks-title{font-weight:200;font-size:clamp(28px,4vw,44px);line-height:1.6;letter-spacing:.16em;margin-bottom:24px;opacity:0;animation:fadeUp 1s ease .6s forwards}
+
+    .thanks-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.15em;color:var(--ink-lt);line-height:2.5;opacity:0;animation:fadeUp 1s ease .8s forwards;margin-bottom:56px}
+
+    .thanks-divider{width:40px;height:1px;background:var(--mouve);margin:0 auto 56px;opacity:0;animation:fadeUp 1s ease .9s forwards}
+
+    .btn-reading{display:inline-block;text-align:center;font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:24px 64px;cursor:none;position:relative;overflow:hidden;transition:color .4s;text-decoration:none;border-radius:999px;opacity:0;animation:fadeUp 1s ease 1.1s forwards}
+    .btn-reading::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-reading:hover::before{transform:translateX(0)}
+    .btn-reading:hover{color:var(--ink)}
+    .btn-reading span{position:relative;z-index:1}
+
+    .thanks-note{margin-top:32px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.2em;color:var(--dust);opacity:0;animation:fadeUp 1s ease 1.3s forwards}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:768px){
+      .cursor,.cursor-ring{display:none}
+      body{cursor:auto}
+      nav{padding:16px 20px}
+      .btn-reading{padding:20px 48px;cursor:pointer}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+</nav>
+
+<div class="thanks-wrap">
+  <span class="thanks-symbol">✦</span>
+  <span class="thanks-eyebrow">Thank you</span>
+  <h1 class="thanks-title">ご購入ありがとうございます</h1>
+  <p class="thanks-desc">
+    カードはあなたを待っています<br>
+    心を静め、問いを胸に抱いて<br>
+    扉を開いてください
+  </p>
+  <div class="thanks-divider"></div>
+  <a href="reading.html" class="btn-reading"><span>鑑定を始める</span></a>
+  <p class="thanks-note">このページをブックマークしておくと便利です</p>
+</div>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button')){
+    cur.style.transform='translate(-50%,-50%) scale(2.2)';
+    ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
+  }else{
+    cur.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.borderColor='var(--mouve)';ring.style.transform='translate(-50%,-50%) scale(1)';
+  }
+});
+</script>
+</body>
+</html>

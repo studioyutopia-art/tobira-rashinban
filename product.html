@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>鑑定メニュー — 扉と羅針盤</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
+      --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
+      --ink-lt:#7A7068;--gold:#C9A96E;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+
+    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+    .nav-links{display:flex;gap:44px;list-style:none}
+    .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+
+    /* Page Header */
+    .page-header{padding:140px 80px 80px;text-align:center}
+    .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
+    .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
+    .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards;max-width:600px;margin:0 auto;line-height:2}
+
+    /* Plans */
+    .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:1000px;margin:80px auto 120px;padding:0 80px}
+
+    .plan{background:var(--warm);padding:56px 40px;position:relative;opacity:0;animation:fadeUp 1s ease forwards;display:flex;flex-direction:column;gap:24px}
+    .plan:nth-child(1){animation-delay:.3s}
+    .plan:nth-child(2){animation-delay:.5s;background:var(--ink)}
+    .plan:nth-child(3){animation-delay:.7s}
+
+    .plan-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.4em;color:var(--gold)}
+    .plan:nth-child(2) .plan-eyebrow{color:var(--mouve)}
+
+    .plan-name{font-weight:200;font-size:24px;letter-spacing:.2em;line-height:1.5}
+    .plan:nth-child(2) .plan-name{color:var(--cream)}
+
+    .plan-price{display:flex;align-items:baseline;gap:4px}
+    .plan-price-num{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--gold);line-height:1}
+    .plan-price-unit{font-size:12px;letter-spacing:.2em;color:var(--dust)}
+    .plan:nth-child(2) .plan-price-unit{color:var(--mouve)}
+
+    .plan-divider{width:40px;height:1px;background:var(--mouve)}
+    .plan:nth-child(2) .plan-divider{background:rgba(196,176,192,.4)}
+
+    .plan-features{display:flex;flex-direction:column;gap:14px;flex:1}
+    .plan-feature{font-size:12px;letter-spacing:.15em;line-height:2;color:var(--ink-mid);padding-left:16px;position:relative}
+    .plan-feature::before{content:'✦';position:absolute;left:0;font-size:8px;color:var(--gold);top:6px}
+    .plan:nth-child(2) .plan-feature{color:rgba(245,241,235,.7)}
+    .plan:nth-child(2) .plan-feature::before{color:var(--mouve)}
+
+    .plan-recommended{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--cream);font-size:9px;letter-spacing:.3em;padding:6px 20px;white-space:nowrap}
+
+    .btn-plan{display:block;text-align:center;font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px;cursor:none;position:relative;overflow:hidden;transition:color .4s;text-decoration:none;border-radius:999px;margin-top:8px}
+    .btn-plan::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-plan:hover::before{transform:translateX(0)}
+    .btn-plan:hover{color:var(--ink)}
+    .btn-plan span{position:relative;z-index:1}
+    .plan:nth-child(2) .btn-plan{background:var(--gold);color:var(--ink)}
+    .plan:nth-child(2) .btn-plan::before{background:var(--cream)}
+    .plan:nth-child(2) .btn-plan:hover{color:var(--ink)}
+
+    /* Note */
+    .note{text-align:center;padding:0 80px 120px;opacity:0;animation:fadeUp 1s ease 1s forwards}
+    .note p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust);line-height:2.5}
+
+    /* ハンバーガー */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
+    .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
+    .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    .mobile-menu{position:fixed;top:0;left:0;right:0;background:rgba(245,241,235,.98);backdrop-filter:blur(12px);z-index:150;padding:90px 48px 48px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);border-bottom:1px solid rgba(182,169,154,.3)}
+    .mobile-menu.open{transform:translateY(0)}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:0}
+    .mobile-menu ul li{border-bottom:1px solid rgba(182,169,154,.2)}
+    .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
+    .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:768px){
+      .cursor,.cursor-ring{display:none}
+      body{cursor:auto}
+      nav{padding:16px 20px}
+      .nav-links{display:none}
+      .nav-logo span{display:none}
+      .page-header{padding:100px 24px 48px}
+      .plans{grid-template-columns:1fr;padding:0 24px;margin:48px auto 80px}
+      .plan{padding:40px 28px}
+      .note{padding:0 24px 80px}
+      .hamburger{display:flex}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+  <ul class="nav-links">
+    <li><a href="tarot.html">カードを引く</a></li>
+    <li><a href="cards.html">カード解説</a></li>
+    <li><a href="product.html" style="color:var(--ink)">鑑定メニュー</a></li>
+    <li><a href="#">ショップ</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html" onclick="closeMenu()">トップページ</a></li>
+    <li><a href="tarot.html" onclick="closeMenu()">カードを引く</a></li>
+    <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
+    <li><a href="product.html" onclick="closeMenu()">鑑定メニュー</a></li>
+    <li><a href="#" onclick="closeMenu()">ショップ</a></li>
+  </ul>
+</div>
+
+<div class="page-header">
+  <span class="page-eyebrow">Reading Menu</span>
+  <h1 class="page-title">鑑定メニュー</h1>
+  <p class="page-desc">あなたの問いの深さに合わせて、鑑定メニューをお選びください</p>
+</div>
+
+<div class="plans">
+
+  <div class="plan">
+    <p class="plan-eyebrow">One Card</p>
+    <h2 class="plan-name">一枚引き</h2>
+    <div class="plan-price">
+      <span class="plan-price-num">100</span>
+      <span class="plan-price-unit">円</span>
+    </div>
+    <div class="plan-divider"></div>
+    <div class="plan-features">
+      <p class="plan-feature">大アルカナ22枚からカードを引く</p>
+      <p class="plan-feature">今この瞬間へのメッセージ</p>
+      <p class="plan-feature">正位置・逆位置の解釈</p>
+      <p class="plan-feature">AIによるパーソナルメッセージ</p>
+    </div>
+    <a href="https://buy.stripe.com/test_cNi28q2Pma0yfPo3SX2VG00" class="btn-plan"><span>このメニューを選ぶ</span></a>
+  </div>
+
+  <div class="plan">
+    <div class="plan-recommended">おすすめ</div>
+    <p class="plan-eyebrow">One Card · Deep Reading</p>
+    <h2 class="plan-name">一枚引き<br>深掘り解説</h2>
+    <div class="plan-price">
+      <span class="plan-price-num">300</span>
+      <span class="plan-price-unit">円</span>
+    </div>
+    <div class="plan-divider"></div>
+    <div class="plan-features">
+      <p class="plan-feature">大アルカナ22枚からカードを引く</p>
+      <p class="plan-feature">カードの象徴・背景の詳しい解説</p>
+      <p class="plan-feature">今のあなたへの具体的なアドバイス</p>
+      <p class="plan-feature">注意すべきポイントと行動指針</p>
+      <p class="plan-feature">AIによる深いパーソナルメッセージ</p>
+    </div>
+    <a href="https://buy.stripe.com/test_7sY7sKgGc6Om46Gcpt2VG01" class="btn-plan"><span>このメニューを選ぶ</span></a>
+  </div>
+
+  <div class="plan">
+    <p class="plan-eyebrow">Three Cards</p>
+    <h2 class="plan-name">三枚引き</h2>
+    <div class="plan-price">
+      <span class="plan-price-num">500</span>
+      <span class="plan-price-unit">円</span>
+    </div>
+    <div class="plan-divider"></div>
+    <div class="plan-features">
+      <p class="plan-feature">過去・現在・未来の3枚を引く</p>
+      <p class="plan-feature">3枚の組み合わせを総合的に解釈</p>
+      <p class="plan-feature">時間の流れの中での自分を知る</p>
+      <p class="plan-feature">AIによる総合パーソナルメッセージ</p>
+    </div>
+    <a href="https://buy.stripe.com/test_bJe00iahO5Kiav40GL2VG02" class="btn-plan"><span>このメニューを選ぶ</span></a>
+  </div>
+
+</div>
+
+<div class="note">
+  <p>決済はStripeの安全なシステムで処理されます<br>
+  購入後すぐに鑑定ページへアクセスできます<br>
+  ご不明な点はお気軽にお問い合わせください</p>
+</div>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button')){
+    cur.style.transform='translate(-50%,-50%) scale(2.2)';
+    ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
+  }else{
+    cur.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.borderColor='var(--mouve)';ring.style.transform='translate(-50%,-50%) scale(1)';
+  }
+});
+
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobileMenu');
+hamburger.addEventListener('click',()=>{
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
+});
+function closeMenu(){
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow='';
+}
+</script>
+</body>
+</html>
