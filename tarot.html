@@ -65,7 +65,7 @@
     .fan-card.selected-fan{box-shadow:0 40px 80px rgba(42,38,34,.5);z-index:50!important;border-color:rgba(201,169,110,.6)}
 
     .shuffle-controls{display:flex;flex-direction:column;align-items:center;gap:20px;z-index:10}
-    .btn-shuffle{font-family:'Noto Serif JP',serif;font-weight:300;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 52px;cursor:none;position:relative;overflow:hidden;transition:color .4s,opacity .3s}
+    .btn-shuffle{font-family:'Noto Serif JP',serif;font-weight:300;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 52px;cursor:none;position:relative;overflow:hidden;transition:color .4s,opacity .3s;border-radius:999px;}
     .btn-shuffle::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0}
     .btn-shuffle:hover::before{transform:translateX(0)}
     .btn-shuffle:hover{color:var(--ink)}
@@ -218,10 +218,10 @@
     <p class="shuffle-step-text" id="shuffleStepText">心を静め、問いを胸に抱いてください</p>
     <p class="shuffle-sub-text" id="shuffleSubText">準備ができたらカードに触れてシャッフルしてください</p>
   </div>
-  <div class="scatter-field" id="scatterField"></div>
   <div class="shuffle-controls">
     <button class="btn-shuffle" id="shuffleBtn"><span>カードに触れる</span></button>
   </div>
+  <div class="scatter-field" id="scatterField"></div>
 </div>
 
 <div class="card-grid" id="cardGrid" style="display:none"></div>
