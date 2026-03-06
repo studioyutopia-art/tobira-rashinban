@@ -601,8 +601,10 @@ function openModal(card, reversed) {
   document.getElementById('modalEyebrow').textContent = eyebrow;
   document.getElementById('modalTitle').textContent = `${card.num}. ${card.name}`;
   document.getElementById('modalSubtitle').textContent = card.en;
-  document.getElementById('modalImg').src = card.img;
-  document.getElementById('modalImg').alt = card.name;
+  const modalImg = document.getElementById('modalImg');
+  modalImg.src = '';
+  modalImg.alt = card.name;
+  modalImg.src = card.img;
   document.getElementById('modalCard').className = 'modal-card' + (reversed?' reversed':'');
   document.getElementById('revBadge').style.display = reversed ? 'inline-flex' : 'none';
   document.getElementById('meaningLabel').textContent = reversed ? '逆位置の意味' : '正位置の意味';
