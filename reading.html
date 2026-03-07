@@ -218,8 +218,8 @@ const POSITION_LABELS = {
 
 // URLパラメータを取得
 const params = new URLSearchParams(window.location.search);
-const cardsParam = params.get('cards') || '';
-const theme = params.get('theme') || '総合鑑定';
+const cardsParam = params.get('cards') || localStorage.getItem('tobira_reading_cards') || '';
+const theme = params.get('theme') || localStorage.getItem('tobira_reading_theme') || '総合鑑定';
 
 // カード情報をパース
 // 例: "恋人（正位置）・女帝（逆位置）"

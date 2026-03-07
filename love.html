@@ -665,8 +665,10 @@ function showResult() {
   // AI鑑定リンクにカード情報を付加
   const cardNames = selectedCards.map(item =>
     `${item.card.name}（${item.reversed ? '逆位置' : '正位置'}）`).join('・');
-  document.getElementById('btnAiReading').href =
-    `product.html?cards=${encodeURIComponent(cardNames)}&theme=${encodeURIComponent(theme.name)}`;
+  // カード情報をブラウザに保存
+  localStorage.setItem('tobira_reading_cards', cardNames);
+  localStorage.setItem('tobira_reading_theme', theme.name);
+  document.getElementById('btnAiReading').href = 'product.html';
 
   resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
