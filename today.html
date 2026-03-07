@@ -150,7 +150,7 @@
 <div class="input-screen" id="welcomeScreen" style="display:none">
   <span class="input-eyebrow">Welcome Back</span>
   <h1 class="input-title">おかえりなさい</h1>
-  <p class="input-desc" id="welcomeDate"></p>
+  <p class="input-desc" id="welcomeDate" style="font-size:18px;letter-spacing:.2em;color:var(--ink-mid)"></p>
   <div class="input-form">
     <button class="btn-start" onclick="showReading(localStorage.getItem('tobira_birthdate'))"><span>今日のカードを受け取る</span></button>
     <button class="btn-reset" onclick="resetReading()">生年月日を変更する</button>
@@ -421,6 +421,11 @@ function showReading(birthdate) {
   // メッセージ
   document.getElementById('resultMessage').textContent =
     reversed ? card.todayMessage.reversed : card.todayMessage.upright;
+
+  // 結果画面にスクロール
+  setTimeout(() => {
+    document.getElementById('resultScreen').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 
   // Xシェア
   const shareText = `今日のタロットカードは「${card.name}」（${reversed ? '逆位置' : '正位置'}）でした✦\n${card.keywords.slice(0,3).join('・')}\n\n#扉と羅針盤 #タロット占い #今日の占い`;
