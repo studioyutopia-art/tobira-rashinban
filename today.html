@@ -146,6 +146,17 @@
   </ul>
 </div>
 
+<!-- 中間画面（保存済みユーザー用） -->
+<div class="input-screen" id="welcomeScreen" style="display:none">
+  <span class="input-eyebrow">Welcome Back</span>
+  <h1 class="input-title">おかえりなさい</h1>
+  <p class="input-desc" id="welcomeDate"></p>
+  <div class="input-form">
+    <button class="btn-start" onclick="showReading(localStorage.getItem('tobira_birthdate'))"><span>今日のカードを受け取る</span></button>
+    <button class="btn-reset" onclick="resetReading()">生年月日を変更する</button>
+  </div>
+</div>
+
 <!-- 入力画面 -->
 <div class="input-screen" id="inputScreen">
   <span class="input-eyebrow">Today's Reading</span>
@@ -426,7 +437,12 @@ function resetReading() {
 window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('tobira_birthdate');
   if (saved) {
-    showReading(saved);
+    // 中間画面を表示
+    const welcome = document.getElementById('welcomeScreen');
+    const today = new Date();
+    document.getElementById('welcomeDate').textContent = formatDate(today);
+    welcome.style.display = 'flex';
+    document.getElementById('inputScreen').style.display = 'none';
   }
 });
 
