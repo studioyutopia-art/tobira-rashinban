@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">タロットカード解説 — 扉と羅針盤</title>
+  <meta name="description" id="pageDesc" content="タロットカードの意味・象徴を丁寧に解説。" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
+      --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
+      --ink-lt:#7A7068;--gold:#C9A96E;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+
+    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+    .nav-links{display:flex;gap:44px;list-style:none}
+    .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+
+    /* ヒーロー */
+    .hero{display:grid;grid-template-columns:1fr 2fr;gap:80px;max-width:1100px;margin:0 auto;padding:140px 80px 80px;align-items:start;opacity:0;animation:fadeUp 1s ease .2s forwards}
+
+    .hero-card{position:sticky;top:120px}
+    .hero-card-img{width:100%;max-width:280px;border-radius:8px;overflow:hidden;box-shadow:0 40px 80px rgba(42,38,34,.2);margin-bottom:24px}
+    .hero-card-img img{width:100%;height:auto;display:block;filter:sepia(15%) contrast(95%) brightness(102%)}
+    .hero-card-nav{display:flex;justify-content:space-between;gap:8px}
+    .btn-nav{font-family:'Noto Serif JP',serif;font-weight:200;font-size:10px;letter-spacing:.3em;color:var(--ink-lt);background:none;border:1px solid rgba(182,169,154,.3);padding:10px 16px;cursor:none;transition:all .3s;text-decoration:none;flex:1;text-align:center;border-radius:999px}
+    .btn-nav:hover{border-color:var(--gold);color:var(--ink)}
+
+    .hero-content{}
+    .hero-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:16px;display:block}
+    .hero-title{font-weight:200;font-size:clamp(40px,5vw,72px);letter-spacing:.15em;line-height:1.3;margin-bottom:8px}
+    .hero-en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;letter-spacing:.2em;color:var(--dust);margin-bottom:32px}
+    .hero-keywords{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:48px}
+    .hero-kw{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);border:1px solid rgba(182,169,154,.3);padding:5px 14px;border-radius:2px}
+
+    /* セクション */
+    .section{margin-bottom:64px;opacity:0;animation:fadeUp .8s ease forwards}
+    .section:nth-child(1){animation-delay:.3s}
+    .section:nth-child(2){animation-delay:.5s}
+    .section:nth-child(3){animation-delay:.7s}
+    .section:nth-child(4){animation-delay:.9s}
+    .section:nth-child(5){animation-delay:1.1s}
+
+    .section-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:16px}
+    .section-label::after{content:'';flex:1;height:1px;background:rgba(182,169,154,.3)}
+    .section-title{font-weight:200;font-size:20px;letter-spacing:.2em;color:var(--ink);margin-bottom:20px}
+    .section-text{font-size:14px;line-height:3;letter-spacing:.08em;color:var(--ink-mid)}
+
+    /* 正位置・逆位置 */
+    .orientations{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:64px}
+    .orientation{padding:40px 36px;opacity:0;animation:fadeUp .8s ease forwards}
+    .orientation:nth-child(1){background:var(--warm);animation-delay:.4s}
+    .orientation:nth-child(2){background:var(--ink);animation-delay:.6s}
+    .orientation-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.4em;color:var(--gold);margin-bottom:16px;display:block}
+    .orientation:nth-child(2) .orientation-label{color:var(--mouve)}
+    .orientation-title{font-weight:200;font-size:18px;letter-spacing:.2em;margin-bottom:20px}
+    .orientation:nth-child(2) .orientation-title{color:var(--cream)}
+    .orientation-text{font-size:13px;line-height:2.8;letter-spacing:.08em;color:var(--ink-mid)}
+    .orientation:nth-child(2) .orientation-text{color:rgba(245,241,235,.7)}
+    .orientation-keywords{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
+    .orientation-kw{font-size:10px;letter-spacing:.1em;padding:4px 10px;border-radius:2px}
+    .orientation:nth-child(1) .orientation-kw{border:1px solid rgba(182,169,154,.3);color:var(--ink-lt)}
+    .orientation:nth-child(2) .orientation-kw{border:1px solid rgba(196,176,192,.3);color:var(--mouve)}
+
+    /* 関連カード */
+    .related{max-width:1100px;margin:0 auto 80px;padding:0 80px}
+    .related-title{font-weight:200;font-size:16px;letter-spacing:.3em;margin-bottom:32px;text-align:center}
+    .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+    .related-card{background:var(--warm);text-decoration:none;display:block;transition:background .3s;overflow:hidden}
+    .related-card:hover{background:var(--ink)}
+    .related-card-img{width:100%;aspect-ratio:2/3;overflow:hidden}
+    .related-card-img img{width:100%;height:100%;object-fit:cover;filter:sepia(15%) contrast(95%);transition:transform .6s}
+    .related-card:hover .related-card-img img{transform:scale(1.05)}
+    .related-card-body{padding:16px}
+    .related-card-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;letter-spacing:.3em;color:var(--gold);display:block;margin-bottom:4px}
+    .related-card-name{font-size:14px;letter-spacing:.2em;color:var(--ink);transition:color .3s}
+    .related-card:hover .related-card-name{color:var(--cream)}
+
+    /* CTAバナー */
+    .cta-banner{background:var(--ink);padding:80px;text-align:center;margin-bottom:0}
+    .cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block}
+    .cta-title{font-weight:200;font-size:clamp(22px,3vw,34px);letter-spacing:.2em;color:var(--cream);margin-bottom:16px;line-height:1.8}
+    .cta-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.2em;color:var(--mouve);margin-bottom:48px;line-height:2}
+    .cta-buttons{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+    .btn-cta{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;padding:20px 52px;cursor:none;position:relative;overflow:hidden;transition:color .4s;text-decoration:none;border-radius:999px;display:inline-block}
+    .btn-cta.primary{color:var(--ink);background:var(--gold);border:none}
+    .btn-cta.primary::before{content:'';position:absolute;inset:0;background:var(--cream);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-cta.primary:hover::before{transform:translateX(0)}
+    .btn-cta.primary:hover{color:var(--ink)}
+    .btn-cta.ghost{color:var(--mouve);background:none;border:1px solid rgba(196,176,192,.4)}
+    .btn-cta.ghost::before{content:'';position:absolute;inset:0;background:rgba(196,176,192,.1);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-cta.ghost:hover::before{transform:translateX(0)}
+    .btn-cta.ghost:hover{color:var(--cream)}
+    .btn-cta span{position:relative;z-index:1}
+
+    /* ハンバーガー */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
+    .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
+    .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    .mobile-menu{position:fixed;top:0;left:0;right:0;background:rgba(245,241,235,.98);backdrop-filter:blur(12px);z-index:150;padding:90px 48px 48px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);border-bottom:1px solid rgba(182,169,154,.3)}
+    .mobile-menu.open{transform:translateY(0)}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:0}
+    .mobile-menu ul li{border-bottom:1px solid rgba(182,169,154,.2)}
+    .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
+    .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:768px){
+      .cursor,.cursor-ring{display:none}
+      body{cursor:auto}
+      a,button{cursor:pointer}
+      nav{padding:16px 20px}
+      .nav-links{display:none}
+      .nav-logo span{display:none}
+      .hero{grid-template-columns:1fr;gap:40px;padding:100px 24px 48px}
+      .hero-card{position:static}
+      .hero-card-img{max-width:180px;margin:0 auto 24px}
+      .orientations{grid-template-columns:1fr}
+      .related{padding:0 24px}
+      .related-grid{grid-template-columns:repeat(3,1fr)}
+      .cta-banner{padding:48px 24px}
+      .cta-buttons{flex-direction:column;align-items:center}
+      .btn-cta{padding:18px 40px}
+      .hamburger{display:flex}
+      .section{padding:0 24px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+  <ul class="nav-links">
+    <li><a href="tarot.html">カードを引く</a></li>
+    <li><a href="cards.html" style="color:var(--ink)">カード解説</a></li>
+    <li><a href="product.html">鑑定メニュー</a></li>
+    <li><a href="#">コラム</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html" onclick="closeMenu()">トップページ</a></li>
+    <li><a href="tarot.html" onclick="closeMenu()">カードを引く</a></li>
+    <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
+    <li><a href="product.html" onclick="closeMenu()">鑑定メニュー</a></li>
+    <li><a href="#" onclick="closeMenu()">コラム</a></li>
+  </ul>
+</div>
+
+<!-- ヒーローセクション -->
+<div class="hero" id="hero">
+  <div class="hero-card">
+    <div class="hero-card-img">
+      <img id="cardImg" src="" alt="" />
+    </div>
+    <div class="hero-card-nav">
+      <a id="btnPrev" href="#" class="btn-nav">← 前のカード</a>
+      <a id="btnNext" href="#" class="btn-nav">次のカード →</a>
+    </div>
+  </div>
+  <div class="hero-content">
+    <span class="hero-eyebrow" id="heroEyebrow"></span>
+    <h1 class="hero-title" id="heroTitle"></h1>
+    <p class="hero-en" id="heroEn"></p>
+    <div class="hero-keywords" id="heroKeywords"></div>
+    <div id="sections"></div>
+  </div>
+</div>
+
+<!-- 正位置・逆位置 -->
+<div style="max-width:1100px;margin:0 auto;padding:0 80px 80px" id="orientationWrap">
+  <div class="orientations">
+    <div class="orientation">
+      <span class="orientation-label">Upright</span>
+      <h2 class="orientation-title">正位置の意味</h2>
+      <p class="orientation-text" id="uprightText"></p>
+      <div class="orientation-keywords" id="uprightKeywords"></div>
+    </div>
+    <div class="orientation">
+      <span class="orientation-label">Reversed</span>
+      <h2 class="orientation-title">逆位置の意味</h2>
+      <p class="orientation-text" id="reversedText"></p>
+      <div class="orientation-keywords" id="reversedKeywords"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 関連カード -->
+<div class="related">
+  <h2 class="related-title">他のカードを見る</h2>
+  <div class="related-grid" id="relatedGrid"></div>
+</div>
+
+<!-- CTAバナー -->
+<div class="cta-banner">
+  <span class="cta-eyebrow">Try a Reading</span>
+  <h2 class="cta-title" id="ctaTitle">このカードを実際に引いてみませんか</h2>
+  <p class="cta-desc">知識を得たら、次は直感に従って一枚を選んでみてください</p>
+  <div class="cta-buttons">
+    <a href="tarot.html" class="btn-cta primary"><span>今すぐタロットを引く</span></a>
+    <a href="product.html" class="btn-cta ghost"><span>AI深層鑑定を受ける</span></a>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  {num:'0',name:'愚者',en:'The Fool',img:'images/tarot/00_Fool.jpg',
+   keywords:['始まり','自由','冒険','純粋さ','可能性'],
+   upright:'新しい旅の始まりを告げるカードです。既存の枠にとらわれず、純粋な心で一歩を踏み出す勇気を象徴しています。未知への恐れよりも、可能性への期待を胸に進んでいくことの大切さを教えてくれます。',
+   uprightKeywords:['新しい始まり','自由','冒険心','純粋さ','無限の可能性'],
+   reversed:'無謀な行動や準備不足を示すことがあります。直感に従うことは大切ですが、現実を見失ってはいけないという警告でもあります。もう少し慎重に状況を見極める時期かもしれません。',
+   reversedKeywords:['無謀','軽率','準備不足','現実逃避','無責任'],
+   symbol:'崖の端に立つ若者。白い犬、白いバラ、行李を持つ姿が旅立ちを象徴。',
+   element:'風',
+   planet:'天王星',
+   description:'愚者は番号ゼロのカードで、大アルカナの始まりであり終わりでもある特別な存在です。ライダー・ウェイト版では、崖の端に立つ若者が描かれており、無限の可能性と冒険心を象徴しています。'},
+
+  {num:'I',name:'魔術師',en:'The Magician',img:'images/tarot/01_Magician.jpg',
+   keywords:['意志','創造','スキル','集中','顕現'],
+   upright:'持っている才能やスキルを存分に発揮できる時です。意志の力と集中力で、思い描いたことを現実にする力があります。必要なものはすべて揃っています。行動を起こす絶好のタイミングです。',
+   uprightKeywords:['意志の力','創造性','スキル発揮','集中','顕現'],
+   reversed:'才能を持ちながらも活かしきれていない状態を示します。自信の欠如や、力を誤った方向に使っている可能性があります。自分の本当の力を信じ、正しい方向に向けることが重要です。',
+   reversedKeywords:['才能の無駄遣い','自信の欠如','詐欺','力の誤用'],
+   symbol:'無限大(∞)のシンボル、四つの道具（杖・聖杯・剣・ペンタクル）が象徴的。',
+   element:'火',
+   planet:'水星',
+   description:'魔術師は意識と意志の象徴です。テーブルの上に置かれた四つの道具は、四元素（火・水・風・土）を表しており、すべての力を自在に使いこなす能力を示しています。'},
+
+  {num:'II',name:'女教皇',en:'The High Priestess',img:'images/tarot/02_High_Priestess.jpg',
+   keywords:['直感','神秘','潜在意識','沈黙','知恵'],
+   upright:'表面に見えないものを感じ取る直感力が高まっています。答えはすでにあなたの内側にあります。静かに内なる声に耳を傾けることで、真実が見えてくるでしょう。',
+   uprightKeywords:['直感','内なる知恵','神秘','潜在意識','沈黙'],
+   reversed:'内なる声を無視している状態かもしれません。表面的な情報に惑わされず、自分の直感を信じることが大切です。秘密や隠された事実がある可能性も示しています。',
+   reversedKeywords:['直感の無視','秘密','隠された真実','自己不信'],
+   symbol:'二本の柱（ボアズとヤキン）、ザクロの刺繍のベール、月冠が神秘を象徴。',
+   element:'水',
+   planet:'月',
+   description:'女教皇は神秘と潜在意識の守護者です。二本の柱の間に座り、表と裏の世界を繋ぐ存在として描かれています。膝に置かれた巻物は秘められた知恵の象徴です。'},
+
+  {num:'III',name:'女帝',en:'The Empress',img:'images/tarot/03_Empress.jpg',
+   keywords:['豊かさ','母性','創造','自然','美'],
+   upright:'豊かさと創造性に満ちた時期です。自然の恵みや生命力があふれ、物事が育ち花開くサインです。自分自身を大切にし、感覚的な喜びを享受してください。',
+   uprightKeywords:['豊かさ','母性愛','創造力','自然','美しさ','成長'],
+   reversed:'創造性が枯渇しているか、自己愛が不足しているサインです。自分を後回しにして疲弊していないか確認してみてください。自然の中で休息することが助けになるでしょう。',
+   reversedKeywords:['創造性の枯渇','自己愛の欠如','過保護','依存'],
+   symbol:'12の星の冠、小麦の豊作、ザクロ模様のローブ、金星のシンボル。',
+   element:'土',
+   planet:'金星',
+   description:'女帝は大地母神の象徴で、自然の豊かさと生命力を体現しています。周囲に広がる豊かな自然は、彼女の愛と創造力が世界に与える恵みを表しています。'},
+
+  {num:'IV',name:'皇帝',en:'The Emperor',img:'images/tarot/04_Emperor.jpg',
+   keywords:['権威','安定','構造','規律','父性'],
+   upright:'強固な基盤を築く時です。論理的思考と規律をもって行動することで、安定した結果が得られます。リーダーシップを発揮し、責任を持って物事を進めてください。',
+   uprightKeywords:['権威','安定','規律','構造','父性','リーダーシップ'],
+   reversed:'過度なコントロールや硬直した考え方が障害になっているかもしれません。柔軟性を持つことで、より良い結果が生まれるでしょう。権威への反発も示す場合があります。',
+   reversedKeywords:['支配欲','硬直性','横暴','権威への反発'],
+   symbol:'牡羊の頭飾りの玉座、赤いローブ、オーブと笏が権力を象徴。',
+   element:'火',
+   planet:'牡羊座',
+   description:'皇帝は秩序と権威の象徴です。岩の玉座に座る姿は、揺るぎない意志と確固たる基盤を表しています。女帝が感性と自然を司るなら、皇帝は理性と構造を象徴します。'},
+
+  {num:'V',name:'法王',en:'The Hierophant',img:'images/tarot/05_Hierophant.jpg',
+   keywords:['伝統','信仰','教え','慣習','精神性'],
+   upright:'伝統的な知恵や精神的な指導を受け入れることで、深い学びが得られる時期です。師や先人の教えに耳を傾けてみてください。慣習に従うことが安定をもたらします。',
+   uprightKeywords:['伝統','精神的指導','信仰','教え','慣習','結婚'],
+   reversed:'既存の枠組みや権威に疑問を感じているサインかもしれません。型破りなアプローチが必要な時期です。ただし、伝統を否定するのではなく、自分なりの道を見つけることが重要です。',
+   reversedKeywords:['型破り','制度への反発','個人の信念','慣習からの逸脱'],
+   symbol:'三重の冠（ティアラ）、二本の鍵、跪く二人の弟子が信仰を象徴。',
+   element:'土',
+   planet:'牡牛座',
+   description:'法王は精神的権威の象徴で、神と人間の橋渡し役です。三重の冠と二本の鍵は天界と地上の両方に対する権限を示し、足元の弟子たちは精神的な教えを求める人々を表しています。'},
+
+  {num:'VI',name:'恋人',en:'The Lovers',img:'images/tarot/06_Lovers.jpg',
+   keywords:['愛','選択','調和','関係','価値観'],
+   upright:'重要な選択の局面に立っています。心の声に従い、自分の価値観に基づいた選択をすることが大切です。愛と調和のエネルギーが高まっており、関係性が深まるサインでもあります。',
+   uprightKeywords:['愛','調和','重要な選択','価値観','パートナーシップ'],
+   reversed:'価値観の不一致や誤った選択をしているサインかもしれません。本当に自分が望むものは何かを改めて問い直してみてください。関係性における不調和も示します。',
+   reversedKeywords:['不調和','誤った選択','価値観の不一致','自己不一致'],
+   symbol:'エデンの園、アダムとイヴ、天使ラファエル、善悪の知識の木。',
+   element:'風',
+   planet:'双子座',
+   description:'恋人は愛だけでなく、重要な選択を象徴するカードです。天使が祝福する姿は、神聖な愛と重大な決断の両方を意味しています。真の調和は、心と魂が一致したところから生まれます。'},
+
+  {num:'VII',name:'戦車',en:'The Chariot',img:'images/tarot/07_Chariot.jpg',
+   keywords:['勝利','意志','前進','自制','目標'],
+   upright:'強い意志と自制心で目標に向かって進む力があります。困難があっても、それを乗り越えて勝利を手にできる時期です。相反する力をうまくコントロールすることが鍵です。',
+   uprightKeywords:['勝利','意志の力','前進','自制心','目標達成'],
+   reversed:'方向性を見失っているか、感情や衝動に振り回されているサインです。進む前に一度立ち止まり、自分が本当に向かうべき方向を確認してください。',
+   reversedKeywords:['方向性の喪失','感情的','コントロール不足','自己中心'],
+   symbol:'星のついた冠、二頭のスフィンクス（黒と白）、月のシンボル。',
+   element:'水',
+   planet:'蟹座',
+   description:'戦車は意志の力による勝利の象徴です。黒と白の二頭のスフィンクスは相反する力を表し、それを意志の力でコントロールすることで前進できることを示しています。'},
+
+  {num:'VIII',name:'力',en:'Strength',img:'images/tarot/08_Strength.jpg',
+   keywords:['勇気','忍耐','内なる力','優しさ','自信'],
+   upright:'真の強さは優しさから生まれることを教えてくれます。困難な状況も、力ずくではなく愛と忍耐をもって乗り越えることができます。内なる勇気を信じてください。',
+   uprightKeywords:['内なる力','勇気','忍耐','優しさ','自信','克服'],
+   reversed:'自己不信や情熱の抑圧を示します。自分の力を疑わず、自分らしさを表現することが大切です。恐れではなく愛から行動することを思い出してください。',
+   reversedKeywords:['自己不信','情熱の抑圧','臆病','自信の欠如'],
+   symbol:'無限大(∞)の冠、白いローブ、ライオンを優しく押さえる女性。',
+   element:'火',
+   planet:'獅子座',
+   description:'力のカードは、物理的な強さではなく精神的な強さを象徴しています。女性がライオンの口を優しく押さえる姿は、愛と穏やかさが最強の力であることを示しています。'},
+
+  {num:'IX',name:'隠者',en:'The Hermit',img:'images/tarot/09_Hermit.jpg',
+   keywords:['内省','孤独','知恵','導き','静寂'],
+   upright:'内側に向かう時期が来ています。一人で静かに考える時間を持つことで、本質的な答えが見えてきます。自分自身の光に従って歩む時です。',
+   uprightKeywords:['内省','孤独','内なる知恵','精神的探求','導き'],
+   reversed:'社会から切り離されすぎているか、孤立を恐れているサインかもしれません。適切な孤独と繋がりのバランスを取ることが重要です。',
+   reversedKeywords:['孤立','社会からの逃避','孤独への恐れ','引きこもり'],
+   symbol:'ランタン（六芒星の光）、杖、灰色のローブ、雪山の頂。',
+   element:'土',
+   planet:'乙女座',
+   description:'隠者は精神的な探求と内省の象徴です。山頂で一人ランタンを掲げる老賢者の姿は、自分自身の内なる光で道を照らすことの大切さを教えています。'},
+
+  {num:'X',name:'運命の輪',en:'Wheel of Fortune',img:'images/tarot/10_Wheel_of_Fortune.jpg',
+   keywords:['運命','変化','転機','サイクル','幸運'],
+   upright:'人生の転換点が訪れています。物事が大きく動き始めるサインで、良い変化の波に乗る絶好のチャンスです。宇宙のサイクルを信頼して流れに乗りましょう。',
+   uprightKeywords:['転換点','幸運','変化','運命','サイクル','チャンス'],
+   reversed:'変化への抵抗や、悪いサイクルが続いているサインかもしれません。状況を変えるためには、まず自分の内側から変わることが必要です。',
+   reversedKeywords:['悪運','変化への抵抗','不運なサイクル','停滞'],
+   symbol:'ヘルメス・トリスメギストスの書、四大天使、アヌビス、スフィンクス。',
+   element:'火',
+   planet:'木星',
+   description:'運命の輪は、宇宙のサイクルと運命の象徴です。輪の中に書かれたヘブライ語とタロットの文字は、物事が常に変化し、すべてがつながっていることを示しています。'},
+
+  {num:'XI',name:'正義',en:'Justice',img:'images/tarot/11_Justice.jpg',
+   keywords:['公正','真実','均衡','責任','判断'],
+   upright:'公正な判断と均衡の時期です。自分の行動に責任を持ち、真実に向き合うことで、公正な結果が得られます。因果応報の法則が働いています。',
+   uprightKeywords:['公正','真実','均衡','因果応報','責任','法律'],
+   reversed:'不公正な状況や、責任を回避しているサインかもしれません。公正さを欠いた判断は後々問題を引き起こします。真実から目をそらさないことが重要です。',
+   reversedKeywords:['不公正','責任回避','偏見','不誠実'],
+   symbol:'天秤（均衡）、剣（真実）、赤いローブ、王冠。',
+   element:'風',
+   planet:'天秤座',
+   description:'正義は宇宙の法則と因果応報の象徴です。天秤は均衡を、剣は真実を見極める力を表しています。すべての行動には結果が伴うという普遍的な真理を教えています。'},
+
+  {num:'XII',name:'吊るされた男',en:'The Hanged Man',img:'images/tarot/12_Hanged_Man.jpg',
+   keywords:['停止','視点転換','受容','犠牲','悟り'],
+   upright:'一時的に立ち止まり、違う角度から物事を見る時期です。焦らず受け入れることで、新たな洞察が得られます。手放すことで、より大きなものを得られるでしょう。',
+   uprightKeywords:['一時停止','視点の転換','受容','自己犠牲','新たな洞察'],
+   reversed:'不必要な停滞や、無駄な犠牲を払っているサインかもしれません。すべきことを先延ばしにしていないか確認してください。',
+   reversedKeywords:['停滞','無駄な犠牲','先延ばし','変化への抵抗'],
+   symbol:'T字型の木、足首で逆さに吊るされた男、頭の光輪。',
+   element:'水',
+   planet:'海王星',
+   description:'吊るされた男は、自発的な犠牲と視点転換の象徴です。苦しそうに見えますが、その表情は穏やかで悟りを開いたように見えます。逆さの視点から世界を見ることで、新たな真実が見えてきます。'},
+
+  {num:'XIII',name:'死神',en:'Death',img:'images/tarot/13_Death.jpg',
+   keywords:['変容','終わり','始まり','手放す','再生'],
+   upright:'何かが終わり、新しいものが始まる転換期です。手放すことへの恐れを乗り越えることで、真の再生が訪れます。変容を恐れず受け入れてください。',
+   uprightKeywords:['変容','終わりと始まり','手放す','再生','必然的な変化'],
+   reversed:'変化への抵抗や、過去への執着を示します。終わらせるべきことを続けることで、エネルギーが消耗されています。変容を受け入れる勇気を持ちましょう。',
+   reversedKeywords:['変化への抵抗','過去への執着','停滞','消耗'],
+   symbol:'白馬に乗る骸骨の騎士、黒い旗に白いバラ、沈む太陽と昇る太陽。',
+   element:'水',
+   planet:'蠍座',
+   description:'死神は文字通りの死ではなく、変容と再生の象徴です。骸骨の騎士が全ての人の前に現れる様子は、変化は誰も逃れられないことを示しています。終わりがあるからこそ、新しい始まりがあります。'},
+
+  {num:'XIV',name:'節制',en:'Temperance',img:'images/tarot/14_Temperance.jpg',
+   keywords:['調和','バランス','癒し','統合','節度'],
+   upright:'バランスと調和の時期です。焦らず、着実に物事を進めることで、最良の結果が生まれます。異なる要素を統合し、中庸を保つことが大切です。',
+   uprightKeywords:['バランス','調和','癒し','統合','忍耐','節度'],
+   reversed:'過剰や不均衡が生じているサインです。何かをやりすぎていないか確認してください。バランスを取り戻すために、意識的に調整が必要な時期です。',
+   reversedKeywords:['過剰','不均衡','不和','極端'],
+   symbol:'翼を持つ天使、水を注ぐ二つの聖杯、額の太陽、遠くに見える王冠。',
+   element:'火',
+   planet:'射手座',
+   description:'節制は錬金術的な変容と調和の象徴です。天使が二つの杯の間で水を注ぐ姿は、異なる要素をバランスよく統合することの大切さを示しています。'},
+
+  {num:'XV',name:'悪魔',en:'The Devil',img:'images/tarot/15_Devil.jpg',
+   keywords:['束縛','執着','欲望','解放','影'],
+   upright:'何らかの束縛や執着に気づく時です。物質的な欲望や恐れによって縛られている状態を示します。しかし、その鎖は実は外すことができるものかもしれません。',
+   uprightKeywords:['束縛','執着','物質主義','恐れ','影の自己','依存'],
+   reversed:'束縛から解放されるサインです。自分を縛っていたものから自由になる力を取り戻しつつあります。影の部分と向き合い、統合することで真の解放が得られます。',
+   reversedKeywords:['解放','自由','力の取り戻し','束縛からの脱出'],
+   symbol:'バフォメット、逆五芒星、鎖につながれたアダムとイヴ、松明。',
+   element:'土',
+   planet:'山羊座',
+   description:'悪魔は束縛と影の自己の象徴です。鎖につながれた男女は、実は鎖を自分で外せることに気づいていません。このカードは、自分自身の恐れや執着が最大の牢獄であることを教えています。'},
+
+  {num:'XVI',name:'塔',en:'The Tower',img:'images/tarot/16_Tower.jpg',
+   keywords:['崩壊','変革','啓示','解放','混乱'],
+   upright:'突然の変化や崩壊が訪れるサインです。しかし、それは不要なものが壊れる必要な変革かもしれません。嵐が過ぎた後には、より強固な基盤が築かれます。',
+   uprightKeywords:['突然の変化','崩壊','啓示','解放','混乱','変革'],
+   reversed:'変化を内側で処理しているか、崩壊を回避しているサインです。外的な混乱は少ないかもしれませんが、内なる変革が静かに進んでいます。',
+   reversedKeywords:['内なる変革','崩壊の回避','変化の先延ばし','自己欺瞞'],
+   symbol:'稲妻に打たれる塔、落下する人物、炎、黒い空。',
+   element:'火',
+   planet:'火星',
+   description:'塔は突然の混乱と変革の象徴です。人間が築いた傲慢な構造物が神の稲妻によって崩壊する様子は、真実に基づかないものは必ず壊れるという教えを示しています。'},
+
+  {num:'XVII',name:'星',en:'The Star',img:'images/tarot/17_Star.jpg',
+   keywords:['希望','インスピレーション','癒し','信頼','導き'],
+   upright:'希望と癒しの時期が訪れています。困難な時を経て、心が開き始めているサインです。宇宙があなたを導いています。自分の夢と可能性を信じてください。',
+   uprightKeywords:['希望','癒し','インスピレーション','信頼','導き','再生'],
+   reversed:'希望を失っているか、自己不信に陥っているサインかもしれません。自分の可能性を信じることが難しくなっていても、星は常に輝き続けています。',
+   reversedKeywords:['希望の喪失','自己不信','絶望','夢の放棄'],
+   symbol:'八つの星（大きな中心の星と七つの小さな星）、二つの水差し、鳥。',
+   element:'風',
+   planet:'水瓶座',
+   description:'星は希望と天の導きの象徴です。タロットの中で最も美しいカードの一つで、塔の混乱の後に訪れる癒しと希望を表しています。夜空の星のように、あなたを導く光があります。'},
+
+  {num:'XVIII',name:'月',en:'The Moon',img:'images/tarot/18_Moon.jpg',
+   keywords:['幻想','潜在意識','夢','不安','神秘'],
+   upright:'物事が見えにくい、混乱した時期かもしれません。しかし、その不確かさの中に深い真実が隠れています。夢や直感からのメッセージに耳を傾けてみてください。',
+   uprightKeywords:['幻想','潜在意識','夢','不安','神秘','幻惑'],
+   reversed:'幻想から覚め、真実が明らかになりつつあるサインです。混乱や不安が薄れ、状況が明確になってきます。隠れていた真実が表面に出てきます。',
+   reversedKeywords:['幻想から覚める','真実の発見','恐れの克服','明晰さ'],
+   symbol:'満月と眉月を合わせた月、二本の塔、犬と狼、水中から這い出るザリガニ。',
+   element:'水',
+   planet:'魚座',
+   description:'月は幻想と潜在意識の象徴です。月明かりの下では物事の輪郭が曖昧になり、夢と現実の境界が溶けていきます。このカードは、表面に見えているものだけが真実ではないことを示しています。'},
+
+  {num:'XIX',name:'太陽',en:'The Sun',img:'images/tarot/19_Sun.jpg',
+   keywords:['喜び','成功','活力','明るさ','子どもらしさ'],
+   upright:'明るく喜びにあふれた時期が訪れています。自分らしさを輝かせ、エネルギーに満ちた状態です。成功と幸福が訪れるサインです。人生を楽しんでください。',
+   uprightKeywords:['喜び','成功','活力','明るさ','幸福','子どもの純粋さ'],
+   reversed:'一時的な陰りや活力の低下を示します。太陽は常に輝いていますが、今は雲に隠れているだけかもしれません。自分の内側の光を思い出してください。',
+   reversedKeywords:['一時的な陰り','活力低下','悲観主義','自己表現の抑制'],
+   symbol:'輝く太陽、向日葵の花、白馬に乗る裸の子ども、赤い旗。',
+   element:'火',
+   planet:'太陽',
+   description:'太陽は喜びと生命力の象徴です。白馬に乗る子どもの無邪気な笑顔は、純粋な幸福と成功を表しています。太陽のカードは、タロットの中で最もポジティブなエネルギーを持つカードの一つです。'},
+
+  {num:'XX',name:'審判',en:'Judgement',img:'images/tarot/20_Judgement.jpg',
+   keywords:['覚醒','再生','呼び声','許し','変容'],
+   upright:'内なる呼び声に目覚める時です。過去を振り返り、許し、そして新たな自分として再生する機会が訪れています。より高い次元への移行のサインです。',
+   uprightKeywords:['覚醒','再生','内なる呼び声','許し','変容','新たな章'],
+   reversed:'自己批判や変化への恐れが前進を妨げているサインです。過去の失敗を責め続けることをやめ、自分自身を許すことが重要です。',
+   reversedKeywords:['自己批判','変化への恐れ','後悔','自己否定'],
+   symbol:'天使ガブリエルのトランペット、棺から蘇る人々、赤い十字の旗。',
+   element:'火',
+   planet:'冥王星',
+   description:'審判は覚醒と再生の象徴です。天使のトランペットの音で死者が蘇る様子は、高次の呼び声に応えて真の自己が目覚めることを表しています。'},
+
+  {num:'XXI',name:'世界',en:'The World',img:'images/tarot/21_World.jpg',
+   keywords:['完成','達成','統合','充実','終わりと始まり'],
+   upright:'一つのサイクルが完成し、達成感と充実感に満ちた状態です。すべてが統合され、あるべき場所に収まっています。次のより大きな旅への準備が整っています。',
+   uprightKeywords:['完成','達成','統合','充実','旅の終わり','新たな始まり'],
+   reversed:'未完成や目標未達成の感覚を示します。もう少しで完成するのに、最後の一歩を踏み出せていないかもしれません。完成に向けた最後の努力が必要です。',
+   reversedKeywords:['未完成','目標未達','ショートカット','停滞'],
+   symbol:'月桂樹のリース、踊る女性、四大天使（人・鷲・牛・ライオン）。',
+   element:'土',
+   planet:'土星',
+   description:'世界は大アルカナの最後のカードで、完成と統合の象徴です。リースの中で踊る女性は、すべての経験を統合した自由な魂を表しています。愚者の旅はここで一つの完成を見ます。'},
+];
+
+// URLパラメータからカード番号を取得
+const params = new URLSearchParams(window.location.search);
+const cardNum = params.get('card') || '0';
+const cardIndex = CARDS.findIndex(c => c.num === cardNum);
+const card = CARDS[cardIndex !== -1 ? cardIndex : 0];
+
+// メタ情報を設定
+document.getElementById('pageTitle').textContent = `${card.name}（${card.en}）の意味と解説 — 扉と羅針盤`;
+document.getElementById('pageDesc').setAttribute('content',
+  `タロットカード「${card.name}」の正位置・逆位置の意味、キーワード、象徴を詳しく解説。${card.keywords.join('・')}などのテーマを持つカードです。`);
+
+// ヒーロー部分
+document.getElementById('cardImg').src = card.img;
+document.getElementById('cardImg').alt = `タロットカード ${card.name} ${card.en}`;
+document.getElementById('heroEyebrow').textContent = `${card.num}. ${card.en}`;
+document.getElementById('heroTitle').textContent = card.name;
+document.getElementById('heroEn').textContent = card.en;
+
+// キーワード
+const kwWrap = document.getElementById('heroKeywords');
+card.keywords.forEach(k => {
+  const span = document.createElement('span');
+  span.className = 'hero-kw';
+  span.textContent = k;
+  kwWrap.appendChild(span);
+});
+
+// 前後のカード
+const prevCard = CARDS[(cardIndex - 1 + CARDS.length) % CARDS.length];
+const nextCard = CARDS[(cardIndex + 1) % CARDS.length];
+document.getElementById('btnPrev').href = `card-detail.html?card=${prevCard.num}`;
+document.getElementById('btnPrev').textContent = `← ${prevCard.name}`;
+document.getElementById('btnNext').href = `card-detail.html?card=${nextCard.num}`;
+document.getElementById('btnNext').textContent = `${nextCard.name} →`;
+
+// セクション
+const sections = document.getElementById('sections');
+const sectionData = [
+  {label:'Description', title:'カードの説明', text: card.description},
+  {label:'Symbolism', title:'象徴とシンボル', text: card.symbol},
+  {label:'Element & Planet', title:'元素と天体', text: `元素：${card.element}　天体・星座：${card.planet}`},
+];
+sectionData.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'section';
+  div.style.animationDelay = `${0.3 + i * 0.2}s`;
+  div.innerHTML = `
+    <p class="section-label">${s.label}</p>
+    <h2 class="section-title">${s.title}</h2>
+    <p class="section-text">${s.text}</p>
+  `;
+  sections.appendChild(div);
+});
+
+// 正位置・逆位置
+document.getElementById('uprightText').textContent = card.upright;
+document.getElementById('reversedText').textContent = card.reversed;
+const ukw = document.getElementById('uprightKeywords');
+card.uprightKeywords.forEach(k => {
+  const span = document.createElement('span');
+  span.className = 'orientation-kw';
+  span.textContent = k;
+  ukw.appendChild(span);
+});
+const rkw = document.getElementById('reversedKeywords');
+card.reversedKeywords.forEach(k => {
+  const span = document.createElement('span');
+  span.className = 'orientation-kw';
+  span.textContent = k;
+  rkw.appendChild(span);
+});
+
+// 関連カード（前後2枚ずつ）
+const relatedGrid = document.getElementById('relatedGrid');
+const relatedIndices = [
+  (cardIndex - 2 + CARDS.length) % CARDS.length,
+  (cardIndex - 1 + CARDS.length) % CARDS.length,
+  (cardIndex + 1) % CARDS.length,
+];
+relatedIndices.forEach(i => {
+  const rc = CARDS[i];
+  const a = document.createElement('a');
+  a.className = 'related-card';
+  a.href = `card-detail.html?card=${rc.num}`;
+  a.innerHTML = `
+    <div class="related-card-img">
+      <img src="${rc.img}" alt="${rc.name}" loading="lazy" />
+    </div>
+    <div class="related-card-body">
+      <span class="related-card-num">${rc.num}. ${rc.en}</span>
+      <p class="related-card-name">${rc.name}</p>
+    </div>
+  `;
+  relatedGrid.appendChild(a);
+});
+
+// CTAタイトル
+document.getElementById('ctaTitle').textContent = `「${card.name}」を実際に引いてみませんか`;
+
+// カーソル
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button')){
+    cur.style.transform='translate(-50%,-50%) scale(2.2)';
+    ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
+  }else{
+    cur.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.borderColor='var(--mouve)';ring.style.transform='translate(-50%,-50%) scale(1)';
+  }
+});
+
+// ハンバーガー
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobileMenu');
+hamburger.addEventListener('click',()=>{
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
+});
+function closeMenu(){
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow='';
+}
+</script>
+</body>
+</html>
