@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>タロットカード解説 大アルカナ22枚 — 扉と羅針盤</title>
+  <meta name="description" content="タロットカード大アルカナ22枚の意味・象徴を丁寧に解説。愚者から世界まで、正位置・逆位置の意味とキーワードをわかりやすく紹介します。" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
+      --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
+      --ink-lt:#7A7068;--gold:#C9A96E;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+
+    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+    .nav-links{display:flex;gap:44px;list-style:none}
+    .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+
+    .page-header{padding:140px 80px 80px;text-align:center}
+    .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
+    .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
+    .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards;max-width:600px;margin:0 auto;line-height:2}
+
+    /* カードグリッド */
+    .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2px;max-width:1100px;margin:80px auto 80px;padding:0 80px}
+
+    .card-item{background:var(--warm);cursor:none;position:relative;overflow:hidden;opacity:0;animation:fadeUp .6s ease forwards;text-decoration:none;display:block;transition:background .3s}
+    .card-item:hover{background:var(--ink)}
+
+    .card-item-img{width:100%;aspect-ratio:2/3;overflow:hidden;position:relative}
+    .card-item-img img{width:100%;height:100%;object-fit:cover;filter:sepia(15%) contrast(95%) brightness(102%);transition:transform .6s ease,filter .4s ease}
+    .card-item:hover .card-item-img img{transform:scale(1.05);filter:sepia(5%) contrast(98%) brightness(106%)}
+
+    .card-item-body{padding:24px 20px}
+    .card-item-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.4em;color:var(--gold);margin-bottom:8px;display:block}
+    .card-item-name{font-weight:200;font-size:18px;letter-spacing:.2em;color:var(--ink);margin-bottom:6px;transition:color .3s}
+    .card-item:hover .card-item-name{color:var(--cream)}
+    .card-item-en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.15em;color:var(--dust);transition:color .3s}
+    .card-item:hover .card-item-en{color:var(--mouve)}
+    .card-item-keywords{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+    .card-item-kw{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;letter-spacing:.1em;color:var(--ink-lt);border:1px solid rgba(182,169,154,.3);padding:3px 8px;border-radius:2px;transition:all .3s}
+    .card-item:hover .card-item-kw{border-color:rgba(201,169,110,.3);color:var(--mouve)}
+
+    /* CTAバナー */
+    .cta-banner{background:var(--ink);padding:80px;text-align:center;margin:0 0 120px}
+    .cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block}
+    .cta-title{font-weight:200;font-size:clamp(24px,3vw,36px);letter-spacing:.2em;color:var(--cream);margin-bottom:16px;line-height:1.8}
+    .cta-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.2em;color:var(--mouve);margin-bottom:48px;line-height:2}
+    .cta-buttons{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+    .btn-cta{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;padding:20px 52px;cursor:none;position:relative;overflow:hidden;transition:color .4s;text-decoration:none;border-radius:999px;display:inline-block}
+    .btn-cta.primary{color:var(--ink);background:var(--gold);border:none}
+    .btn-cta.primary::before{content:'';position:absolute;inset:0;background:var(--cream);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-cta.primary:hover::before{transform:translateX(0)}
+    .btn-cta.primary:hover{color:var(--ink)}
+    .btn-cta.ghost{color:var(--mouve);background:none;border:1px solid rgba(196,176,192,.4)}
+    .btn-cta.ghost::before{content:'';position:absolute;inset:0;background:rgba(196,176,192,.1);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-cta.ghost:hover::before{transform:translateX(0)}
+    .btn-cta.ghost:hover{color:var(--cream)}
+    .btn-cta span{position:relative;z-index:1}
+
+    /* ハンバーガー */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
+    .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
+    .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    .mobile-menu{position:fixed;top:0;left:0;right:0;background:rgba(245,241,235,.98);backdrop-filter:blur(12px);z-index:150;padding:90px 48px 48px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);border-bottom:1px solid rgba(182,169,154,.3)}
+    .mobile-menu.open{transform:translateY(0)}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:0}
+    .mobile-menu ul li{border-bottom:1px solid rgba(182,169,154,.2)}
+    .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
+    .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:768px){
+      .cursor,.cursor-ring{display:none}
+      body{cursor:auto}
+      a{cursor:pointer}
+      nav{padding:16px 20px}
+      .nav-links{display:none}
+      .nav-logo span{display:none}
+      .page-header{padding:100px 24px 48px}
+      .cards-grid{grid-template-columns:repeat(2,1fr);padding:0 16px;margin:48px auto 48px}
+      .cta-banner{padding:48px 24px}
+      .cta-buttons{flex-direction:column;align-items:center}
+      .btn-cta{padding:18px 40px}
+      .hamburger{display:flex}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+  <ul class="nav-links">
+    <li><a href="tarot.html">カードを引く</a></li>
+    <li><a href="cards.html" style="color:var(--ink)">カード解説</a></li>
+    <li><a href="product.html">鑑定メニュー</a></li>
+    <li><a href="#">コラム</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html" onclick="closeMenu()">トップページ</a></li>
+    <li><a href="tarot.html" onclick="closeMenu()">カードを引く</a></li>
+    <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
+    <li><a href="product.html" onclick="closeMenu()">鑑定メニュー</a></li>
+    <li><a href="#" onclick="closeMenu()">コラム</a></li>
+  </ul>
+</div>
+
+<div class="page-header">
+  <span class="page-eyebrow">Card Library</span>
+  <h1 class="page-title">タロットカード解説</h1>
+  <p class="page-desc">大アルカナ22枚それぞれの意味と象徴を、丁寧に読み解いていきます</p>
+</div>
+
+<div class="cards-grid" id="cardsGrid"></div>
+
+<div class="cta-banner">
+  <span class="cta-eyebrow">Try a Reading</span>
+  <h2 class="cta-title">カードを実際に引いてみませんか</h2>
+  <p class="cta-desc">知識を得たら、次は直感に従って一枚を選んでみてください</p>
+  <div class="cta-buttons">
+    <a href="tarot.html" class="btn-cta primary"><span>今すぐタロットを引く</span></a>
+    <a href="product.html" class="btn-cta ghost"><span>AI深層鑑定を受ける</span></a>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  {num:'0',name:'愚者',en:'The Fool',img:'images/tarot/00_Fool.jpg',keywords:['始まり','自由','冒険','純粋さ','可能性'],upright:'新しい始まり、無限の可能性、自由な精神。',reversed:'無謀、軽率、準備不足。'},
+  {num:'I',name:'魔術師',en:'The Magician',img:'images/tarot/01_Magician.jpg',keywords:['意志','創造','スキル','集中','顕現'],upright:'意志の力、創造性、スキルの発揮。',reversed:'才能の無駄遣い、自信の欠如。'},
+  {num:'II',name:'女教皇',en:'The High Priestess',img:'images/tarot/02_High_Priestess.jpg',keywords:['直感','神秘','潜在意識','沈黙','知恵'],upright:'直感、潜在意識、神秘的な知恵。',reversed:'秘密、内なる声の無視。'},
+  {num:'III',name:'女帝',en:'The Empress',img:'images/tarot/03_Empress.jpg',keywords:['豊かさ','母性','創造','自然','美'],upright:'豊かさ、母性、自然との調和。',reversed:'創造性の枯渇、自己愛の欠如。'},
+  {num:'IV',name:'皇帝',en:'The Emperor',img:'images/tarot/04_Emperor.jpg',keywords:['権威','安定','構造','規律','父性'],upright:'権威、構造、安定した基盤。',reversed:'支配欲、硬直性。'},
+  {num:'V',name:'法王',en:'The Hierophant',img:'images/tarot/05_Hierophant.jpg',keywords:['伝統','信仰','教え','慣習','精神性'],upright:'伝統、精神的な指導、慣習。',reversed:'型破り、制度への反発。'},
+  {num:'VI',name:'恋人',en:'The Lovers',img:'images/tarot/06_Lovers.jpg',keywords:['愛','選択','調和','関係','価値観'],upright:'愛、調和、重要な選択。',reversed:'不調和、誤った選択。'},
+  {num:'VII',name:'戦車',en:'The Chariot',img:'images/tarot/07_Chariot.jpg',keywords:['勝利','意志','前進','自制','目標'],upright:'意志の力、勝利、自己コントロール。',reversed:'方向性の欠如、コントロールの喪失。'},
+  {num:'VIII',name:'力',en:'Strength',img:'images/tarot/08_Strength.jpg',keywords:['勇気','忍耐','内なる力','優しさ','自信'],upright:'内なる力、勇気、忍耐。',reversed:'自己不信、情熱の抑圧。'},
+  {num:'IX',name:'隠者',en:'The Hermit',img:'images/tarot/09_Hermit.jpg',keywords:['内省','孤独','知恵','導き','静寂'],upright:'内省、孤独、内なる指針。',reversed:'孤立、社会からの逃避。'},
+  {num:'X',name:'運命の輪',en:'Wheel of Fortune',img:'images/tarot/10_Wheel_of_Fortune.jpg',keywords:['運命','変化','転機','サイクル','幸運'],upright:'転換点、運命、サイクル。',reversed:'悪運、変化への抵抗。'},
+  {num:'XI',name:'正義',en:'Justice',img:'images/tarot/11_Justice.jpg',keywords:['公正','真実','均衡','責任','判断'],upright:'公正、真実、因果応報。',reversed:'不公正、責任回避。'},
+  {num:'XII',name:'吊るされた男',en:'The Hanged Man',img:'images/tarot/12_Hanged_Man.jpg',keywords:['停止','視点転換','受容','犠牲','悟り'],upright:'一時停止、視点の転換、自己犠牲。',reversed:'停滞、無駄な犠牲。'},
+  {num:'XIII',name:'死神',en:'Death',img:'images/tarot/13_Death.jpg',keywords:['変容','終わり','始まり','手放す','再生'],upright:'終わりと始まり、変容、手放すこと。',reversed:'変化への抵抗、過去への執着。'},
+  {num:'XIV',name:'節制',en:'Temperance',img:'images/tarot/14_Temperance.jpg',keywords:['調和','バランス','癒し','統合','節度'],upright:'バランス、節度、癒し。',reversed:'過剰、不均衡。'},
+  {num:'XV',name:'悪魔',en:'The Devil',img:'images/tarot/15_Devil.jpg',keywords:['束縛','執着','欲望','解放','影'],upright:'束縛、執着、物質主義。',reversed:'解放、力の取り戻し。'},
+  {num:'XVI',name:'塔',en:'The Tower',img:'images/tarot/16_Tower.jpg',keywords:['崩壊','変革','啓示','解放','混乱'],upright:'突然の変化、崩壊、啓示。',reversed:'変化への抵抗、内なる転換。'},
+  {num:'XVII',name:'星',en:'The Star',img:'images/tarot/17_Star.jpg',keywords:['希望','インスピレーション','癒し','信頼','導き'],upright:'希望、インスピレーション、信頼。',reversed:'希望の喪失、自己不信。'},
+  {num:'XVIII',name:'月',en:'The Moon',img:'images/tarot/18_Moon.jpg',keywords:['幻想','潜在意識','夢','不安','神秘'],upright:'幻想、潜在意識、不安。',reversed:'幻想から覚める、真実の発見。'},
+  {num:'XIX',name:'太陽',en:'The Sun',img:'images/tarot/19_Sun.jpg',keywords:['喜び','成功','活力','明るさ','子どもらしさ'],upright:'喜び、活力、成功。',reversed:'一時的な陰り、活力の低下。'},
+  {num:'XX',name:'審判',en:'Judgement',img:'images/tarot/20_Judgement.jpg',keywords:['覚醒','再生','呼び声','許し','変容'],upright:'覚醒、再生、内なる呼び声。',reversed:'自己批判、変化への恐れ。'},
+  {num:'XXI',name:'世界',en:'The World',img:'images/tarot/21_World.jpg',keywords:['完成','達成','統合','充実','終わりと始まり'],upright:'完成、達成、統合。',reversed:'未完成、目標未達成。'},
+];
+
+const grid = document.getElementById('cardsGrid');
+CARDS.forEach((card, i) => {
+  const a = document.createElement('a');
+  a.className = 'card-item';
+  a.href = `card-detail.html?card=${card.num}`;
+  a.style.animationDelay = `${i * 40}ms`;
+  a.innerHTML = `
+    <div class="card-item-img">
+      <img src="${card.img}" alt="タロットカード ${card.name}" loading="lazy" />
+    </div>
+    <div class="card-item-body">
+      <span class="card-item-num">${card.num}. ${card.en}</span>
+      <h2 class="card-item-name">${card.name}</h2>
+      <p class="card-item-en">${card.upright}</p>
+      <div class="card-item-keywords">
+        ${card.keywords.map(k=>`<span class="card-item-kw">${k}</span>`).join('')}
+      </div>
+    </div>
+  `;
+  grid.appendChild(a);
+});
+
+// カーソル
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button')){
+    cur.style.transform='translate(-50%,-50%) scale(2.2)';
+    ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
+  }else{
+    cur.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.borderColor='var(--mouve)';ring.style.transform='translate(-50%,-50%) scale(1)';
+  }
+});
+
+// ハンバーガー
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobileMenu');
+hamburger.addEventListener('click',()=>{
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
+});
+function closeMenu(){
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow='';
+}
+</script>
+</body>
+</html>
