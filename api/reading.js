@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { cards, readingType } = req.body;
+  const { cards, readingType, prompt } = req.body;
 
   if (!cards || !readingType) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -85,7 +85,7 @@ ${cardText}
 占い師として、時間の流れの中でのあなたへの洞察をお願いします。`
   };
 
-  const prompt = prompts[readingType] || prompts.one;
+  const finalPrompt = prompt || prompts[readingType] || prompts.one;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -99,7 +99,7 @@ ${cardText}
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1500,
         messages: [
-          { role: 'user', content: prompt }
+          { role: 'user', content: finalPrompt }
         ]
       })
     });
