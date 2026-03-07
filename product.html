@@ -235,6 +235,22 @@ function closeMenu(){
   mobileMenu.classList.remove('open');
   document.body.style.overflow='';
 }
+// URLパラメータのカード情報をStripeリンクに引き継ぐ
+const params = new URLSearchParams(window.location.search);
+const cards = params.get('cards');
+const theme = params.get('theme');
+
+if (cards && theme) {
+  // 各StripeリンクのリダイレクトURLにカード情報を付加
+  document.querySelectorAll('a[href*="buy.stripe.com"]').forEach(link => {
+    const redirectUrl = `https://tobira-rashinban.vercel.app/reading.html?cards=${encodeURIComponent(cards)}&theme=${encodeURIComponent(theme)}`;
+    link.href = link.href + `?client_reference_id=${encodeURIComponent(cards)}&redirect_to=${encodeURIComponent(redirectUrl)}`;
+  });
+
+  // メニューの説明文を恋愛鑑定用に変更
+  document.querySelector('.page-title').textContent = 'AI深層鑑定';
+  document.querySelector('.page-desc').textContent = `「${theme}」の深層鑑定メニューをお選びください`;
+}
 </script>
 </body>
 </html>
