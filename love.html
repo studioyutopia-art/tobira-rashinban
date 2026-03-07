@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>恋愛占い — 扉と羅針盤</title>
+  <meta name="description" content="タロットカードであの人の気持ち、二人の相性、恋の未来を占います。心を静めてカードを引いてみてください。" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
+      --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
+      --ink-lt:#7A7068;--gold:#C9A96E;
+      --rose:#C4909A;--rose-lt:#E8D0D4;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+
+    .cursor{position:fixed;width:7px;height:7px;background:var(--rose);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--rose);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+    .nav-links{display:flex;gap:44px;list-style:none}
+    .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--rose);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+
+    /* ページヘッダー */
+    .page-header{padding:140px 80px 80px;text-align:center}
+    .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--rose);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
+    .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
+    .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards;max-width:600px;margin:0 auto;line-height:2}
+
+    /* テーマ選択 */
+    .theme-section{max-width:800px;margin:0 auto;padding:0 80px 80px;opacity:0;animation:fadeUp 1s ease .8s forwards}
+    .theme-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--rose);text-align:center;margin-bottom:40px;display:block}
+    .theme-grid{display:flex;flex-direction:column;gap:2px}
+
+    .theme-btn{background:var(--warm);border:none;padding:32px 40px;cursor:none;display:flex;align-items:center;gap:24px;transition:background .3s;text-align:left;width:100%;position:relative;overflow:hidden}
+    .theme-btn::before{content:'';position:absolute;inset:0;background:var(--ink);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94)}
+    .theme-btn:hover::before{transform:translateX(0)}
+    .theme-btn.active{background:var(--ink)}
+
+    .theme-icon{font-size:24px;position:relative;z-index:1;transition:transform .3s;flex-shrink:0}
+    .theme-btn:hover .theme-icon{transform:scale(1.2)}
+
+    .theme-text{position:relative;z-index:1}
+    .theme-name{font-family:'Noto Serif JP',serif;font-weight:200;font-size:18px;letter-spacing:.2em;color:var(--ink);transition:color .3s;display:block;margin-bottom:6px}
+    .theme-btn:hover .theme-name,.theme-btn.active .theme-name{color:var(--cream)}
+    .theme-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.2em;color:var(--dust);transition:color .3s}
+    .theme-btn:hover .theme-sub,.theme-btn.active .theme-sub{color:var(--mouve)}
+
+    .theme-cards{margin-left:auto;position:relative;z-index:1;font-family:'Noto Serif JP',serif;font-weight:200;font-size:13px;letter-spacing:.2em;color:var(--ink-lt);transition:color .3s;flex-shrink:0;background:rgba(182,169,154,.15);padding:6px 14px;border-radius:999px;border:1px solid rgba(182,169,154,.3)}
+    .theme-btn:hover .theme-cards,.theme-btn.active .theme-cards{color:var(--cream);border-color:rgba(196,144,154,.4);background:rgba(196,144,154,.15)}
+
+    /* シャッフルステージ */
+    .shuffle-stage{display:none;flex-direction:column;align-items:center;gap:32px;padding:20px 80px 80px;margin:0 auto;min-height:520px;position:relative;max-width:900px}
+    .shuffle-stage.visible{display:flex}
+
+    .selected-theme{text-align:center;margin-bottom:8px}
+    .selected-theme-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.4em;color:var(--rose);display:block;margin-bottom:8px}
+    .selected-theme-name{font-weight:200;font-size:20px;letter-spacing:.2em}
+
+    .shuffle-message{text-align:center;z-index:10}
+    .shuffle-step-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:16px;letter-spacing:.2em;color:var(--ink);margin-bottom:10px;transition:opacity .5s ease}
+    .shuffle-sub-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust);transition:opacity .5s ease}
+
+    .scatter-field{position:relative;width:100%;max-width:700px;height:340px}
+    .scatter-card{position:absolute;width:80px;height:140px;border-radius:4px;background:linear-gradient(145deg,#3D2A30,#2A1E22);border:1px solid rgba(196,144,154,.25);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(42,38,34,.25);transition:transform 0.8s cubic-bezier(.25,.46,.45,.94),left 0.8s,top 0.8s,opacity 0.6s;cursor:none;overflow:hidden}
+    .scatter-card::before{content:'';position:absolute;inset:5px;border:1px solid rgba(196,144,154,.15);border-radius:2px}
+    .scatter-card-sym{font-family:'Cormorant Garamond',serif;font-size:20px;color:rgba(196,144,154,.5);position:relative;z-index:1}
+    .scatter-card.floating{animation:floatCard 3s ease-in-out infinite}
+    .scatter-card:nth-child(odd).floating{animation:floatCardOdd 3.5s ease-in-out infinite}
+    @keyframes floatCard{0%,100%{margin-top:0}50%{margin-top:-8px}}
+    @keyframes floatCardOdd{0%,100%{margin-top:0}50%{margin-top:-6px}}
+
+    .fan-field{position:relative;width:100%;max-width:700px;height:300px;display:flex;align-items:flex-end;justify-content:center}
+    .fan-card{position:absolute;width:90px;height:158px;border-radius:5px;background:linear-gradient(145deg,#3D2A30,#2A1E22);border:1px solid rgba(196,144,154,.28);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(42,38,34,.3);cursor:none;transform-origin:center bottom;transition:transform .3s ease,box-shadow .3s ease;overflow:hidden}
+    .fan-card::before{content:'';position:absolute;inset:6px;border:1px solid rgba(196,144,154,.18);border-radius:3px}
+    .fan-card-sym{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(196,144,154,.5);position:relative;z-index:1}
+    .fan-card:hover{box-shadow:0 30px 60px rgba(42,38,34,.4);z-index:50!important}
+    .fan-card.pre-selected{box-shadow:0 40px 80px rgba(42,38,34,.5);z-index:50!important;border-color:rgba(196,144,154,.6)}
+
+    .shuffle-controls{display:flex;flex-direction:column;align-items:center;gap:20px;z-index:10}
+    .btn-shuffle{font-family:'Noto Serif JP',serif;font-weight:300;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 52px;cursor:none;position:relative;overflow:hidden;transition:color .4s,opacity .3s;border-radius:999px}
+    .btn-shuffle::before{content:'';position:absolute;inset:0;background:var(--rose);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-shuffle:hover::before{transform:translateX(0)}
+    .btn-shuffle:hover{color:var(--cream)}
+    .btn-shuffle span{position:relative;z-index:1}
+    .btn-shuffle:disabled{opacity:.4}
+
+    .btn-back{background:none;border:none;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.2em;color:var(--dust);cursor:none;transition:color .3s}
+    .btn-back:hover{color:var(--ink-lt)}
+
+    /* 結果エリア */
+    .result-area{max-width:800px;margin:0 auto;padding:0 80px 120px;display:none}
+    .result-area.visible{display:block}
+
+    .result-theme{text-align:center;margin-bottom:48px}
+    .result-theme-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.4em;color:var(--rose);display:block;margin-bottom:8px}
+    .result-theme-name{font-weight:200;font-size:22px;letter-spacing:.2em}
+
+    .result-cards{display:flex;justify-content:center;gap:32px;margin-bottom:56px;flex-wrap:wrap}
+    .result-card{text-align:center}
+    .result-card-position{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.3em;color:var(--rose);margin-bottom:8px;display:block}
+    .result-card-img-wrap{width:130px;height:228px;border-radius:6px;overflow:hidden;margin:0 auto 16px;box-shadow:0 20px 48px rgba(42,38,34,.2)}
+    .result-card-img-wrap img{width:100%;height:100%;object-fit:cover;filter:sepia(15%) contrast(95%) brightness(102%)}
+    .result-card-img-wrap.reversed img{transform:rotate(180deg)}
+    .result-card-name{font-size:13px;letter-spacing:.2em;color:var(--ink-mid)}
+    .result-card-orientation{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.2em;color:var(--dust)}
+
+    .result-divider{width:40px;height:1px;background:var(--rose-lt);margin:0 auto 56px}
+
+    .result-messages{display:flex;flex-direction:column;gap:32px;margin-bottom:64px}
+    .result-message-block{background:var(--warm);padding:40px}
+    .result-message-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.4em;color:var(--rose);margin-bottom:16px;display:block}
+    .result-message-title{font-weight:200;font-size:17px;letter-spacing:.2em;margin-bottom:16px}
+    .result-message-text{font-size:13px;line-height:3;letter-spacing:.08em;color:var(--ink-mid)}
+
+    /* AI深層鑑定CTA */
+    .ai-cta{background:var(--ink);padding:56px 48px;text-align:center;margin-bottom:48px}
+    .ai-cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--rose);margin-bottom:20px;display:block}
+    .ai-cta-title{font-weight:200;font-size:22px;letter-spacing:.2em;color:var(--cream);margin-bottom:12px;line-height:1.8}
+    .ai-cta-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--mouve);margin-bottom:36px;line-height:2}
+    .ai-cta-features{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:36px}
+    .ai-cta-feature{font-size:11px;letter-spacing:.15em;color:rgba(245,241,235,.6);padding:6px 16px;border:1px solid rgba(196,144,154,.3);border-radius:2px}
+    .btn-ai{font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.4em;color:var(--ink);background:var(--rose);border:none;padding:22px 64px;cursor:none;position:relative;overflow:hidden;transition:color .4s;border-radius:999px;display:inline-block;text-decoration:none}
+    .btn-ai::before{content:'';position:absolute;inset:0;background:var(--cream);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-ai:hover::before{transform:translateX(0)}
+    .btn-ai:hover{color:var(--ink)}
+    .btn-ai span{position:relative;z-index:1}
+
+    .result-actions{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+    .btn-action{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--ink-lt);background:none;border:1px solid rgba(182,169,154,.4);padding:18px 40px;cursor:none;position:relative;overflow:hidden;transition:all .4s;text-decoration:none;border-radius:999px;display:inline-block}
+    .btn-action::before{content:'';position:absolute;inset:0;background:var(--warm);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-action:hover::before{transform:translateX(0)}
+    .btn-action:hover{color:var(--ink)}
+    .btn-action span{position:relative;z-index:1}
+
+    /* ハンバーガー */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
+    .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
+    .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    .mobile-menu{position:fixed;top:0;left:0;right:0;background:rgba(245,241,235,.98);backdrop-filter:blur(12px);z-index:150;padding:90px 48px 48px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);border-bottom:1px solid rgba(182,169,154,.3)}
+    .mobile-menu.open{transform:translateY(0)}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:0}
+    .mobile-menu ul li{border-bottom:1px solid rgba(182,169,154,.2)}
+    .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
+    .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:768px){
+      .cursor,.cursor-ring{display:none}
+      body{cursor:auto}
+      a,button{cursor:pointer}
+      nav{padding:16px 20px}
+      .nav-links{display:none}
+      .nav-logo span{display:none}
+      .page-header{padding:100px 24px 48px}
+      .theme-section{padding:0 24px 48px}
+      .theme-btn{padding:24px 20px;gap:16px}
+      .shuffle-stage{padding:20px 16px 60px}
+      .scatter-field{height:260px}
+      .scatter-card{width:60px;height:105px}
+      .fan-card{width:38px;height:66px}
+      .result-area{padding:0 24px 80px}
+      .result-card-img-wrap{width:100px;height:175px}
+      .ai-cta{padding:40px 24px}
+      .ai-cta-features{gap:12px}
+      .hamburger{display:flex}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+  <ul class="nav-links">
+    <li><a href="today.html">今日の占い</a></li>
+    <li><a href="love.html" style="color:var(--ink)">恋愛占い</a></li>
+    <li><a href="tarot.html">カードを引く</a></li>
+    <li><a href="cards.html">カード解説</a></li>
+    <li><a href="product.html">鑑定メニュー</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html" onclick="closeMenu()">トップページ</a></li>
+    <li><a href="today.html" onclick="closeMenu()">今日の占い</a></li>
+    <li><a href="love.html" onclick="closeMenu()">恋愛占い</a></li>
+    <li><a href="tarot.html" onclick="closeMenu()">カードを引く</a></li>
+    <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
+    <li><a href="product.html" onclick="closeMenu()">鑑定メニュー</a></li>
+  </ul>
+</div>
+
+<div class="page-header">
+  <span class="page-eyebrow">Love Reading</span>
+  <h1 class="page-title">恋愛占い</h1>
+  <p class="page-desc">心に浮かぶあの人を思いながら、カードを引いてください</p>
+</div>
+
+<!-- テーマ選択 -->
+<div class="theme-section" id="themeSection">
+  <span class="theme-label">— テーマを選んでください —</span>
+  <div class="theme-grid">
+    <button class="theme-btn" onclick="selectTheme('feeling')">
+      <span class="theme-icon">💭</span>
+      <span class="theme-text">
+        <span class="theme-name">あの人の気持ち</span>
+        <span class="theme-sub">今あの人はあなたのことをどう思っている？</span>
+      </span>
+      <span class="theme-cards">1枚</span>
+    </button>
+    <button class="theme-btn" onclick="selectTheme('compatibility')">
+      <span class="theme-icon">💑</span>
+      <span class="theme-text">
+        <span class="theme-name">二人の相性</span>
+        <span class="theme-sub">あなたと彼の相性・二人が引き合う理由</span>
+      </span>
+      <span class="theme-cards">2枚</span>
+    </button>
+    <button class="theme-btn" onclick="selectTheme('future')">
+      <span class="theme-icon">🌸</span>
+      <span class="theme-text">
+        <span class="theme-name">恋の未来</span>
+        <span class="theme-sub">この恋はどこへ向かっていく？</span>
+      </span>
+      <span class="theme-cards">3枚</span>
+    </button>
+  </div>
+</div>
+
+<!-- シャッフルステージ -->
+<div class="shuffle-stage" id="shuffleStage">
+  <div class="selected-theme">
+    <span class="selected-theme-label" id="selectedThemeLabel"></span>
+    <p class="selected-theme-name" id="selectedThemeName"></p>
+  </div>
+  <div class="shuffle-message">
+    <p class="shuffle-step-text" id="shuffleStepText">あの人を思い浮かべながら、心を静めてください</p>
+    <p class="shuffle-sub-text" id="shuffleSubText">準備ができたらシャッフルを始めてください</p>
+  </div>
+  <div class="shuffle-controls">
+    <button class="btn-shuffle" id="shuffleBtn"><span>シャッフルを始める</span></button>
+    <button class="btn-back" onclick="backToTheme()">← テーマを選び直す</button>
+  </div>
+  <div class="scatter-field" id="scatterField"></div>
+</div>
+
+<!-- 結果エリア -->
+<div class="result-area" id="resultArea">
+  <div class="result-theme">
+    <span class="result-theme-label" id="resultThemeLabel"></span>
+    <p class="result-theme-name" id="resultThemeName"></p>
+  </div>
+  <div class="result-cards" id="resultCards"></div>
+  <div class="result-divider"></div>
+  <div class="result-messages" id="resultMessages"></div>
+
+  <!-- AI深層鑑定CTA -->
+  <div class="ai-cta">
+    <span class="ai-cta-eyebrow">AI Deep Reading</span>
+    <h2 class="ai-cta-title">このカードをさらに深く読み解きませんか</h2>
+    <p class="ai-cta-desc">同じカードを使って、AIがより詳しい鑑定を行います</p>
+    <div class="ai-cta-features">
+      <span class="ai-cta-feature">相手の本音</span>
+      <span class="ai-cta-feature">恋の進展予測</span>
+      <span class="ai-cta-feature">あなたが取るべき行動</span>
+    </div>
+    <a href="product.html" class="btn-ai" id="btnAiReading"><span>AI深層鑑定を受ける</span></a>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn-action" onclick="backToTheme()"><span>別のテーマで占う</span></button>
+    <a href="tarot.html" class="btn-action"><span>通常のタロットを引く</span></a>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  {num:'0',name:'愚者',en:'The Fool',img:'images/tarot/00_Fool.jpg'},
+  {num:'I',name:'魔術師',en:'The Magician',img:'images/tarot/01_Magician.jpg'},
+  {num:'II',name:'女教皇',en:'The High Priestess',img:'images/tarot/02_High_Priestess.jpg'},
+  {num:'III',name:'女帝',en:'The Empress',img:'images/tarot/03_Empress.jpg'},
+  {num:'IV',name:'皇帝',en:'The Emperor',img:'images/tarot/04_Emperor.jpg'},
+  {num:'V',name:'法王',en:'The Hierophant',img:'images/tarot/05_Hierophant.jpg'},
+  {num:'VI',name:'恋人',en:'The Lovers',img:'images/tarot/06_Lovers.jpg'},
+  {num:'VII',name:'戦車',en:'The Chariot',img:'images/tarot/07_Chariot.jpg'},
+  {num:'VIII',name:'力',en:'Strength',img:'images/tarot/08_Strength.jpg'},
+  {num:'IX',name:'隠者',en:'The Hermit',img:'images/tarot/09_Hermit.jpg'},
+  {num:'X',name:'運命の輪',en:'Wheel of Fortune',img:'images/tarot/10_Wheel_of_Fortune.jpg'},
+  {num:'XI',name:'正義',en:'Justice',img:'images/tarot/11_Justice.jpg'},
+  {num:'XII',name:'吊るされた男',en:'The Hanged Man',img:'images/tarot/12_Hanged_Man.jpg'},
+  {num:'XIII',name:'死神',en:'Death',img:'images/tarot/13_Death.jpg'},
+  {num:'XIV',name:'節制',en:'Temperance',img:'images/tarot/14_Temperance.jpg'},
+  {num:'XV',name:'悪魔',en:'The Devil',img:'images/tarot/15_Devil.jpg'},
+  {num:'XVI',name:'塔',en:'The Tower',img:'images/tarot/16_Tower.jpg'},
+  {num:'XVII',name:'星',en:'The Star',img:'images/tarot/17_Star.jpg'},
+  {num:'XVIII',name:'月',en:'The Moon',img:'images/tarot/18_Moon.jpg'},
+  {num:'XIX',name:'太陽',en:'The Sun',img:'images/tarot/19_Sun.jpg'},
+  {num:'XX',name:'審判',en:'Judgement',img:'images/tarot/20_Judgement.jpg'},
+  {num:'XXI',name:'世界',en:'The World',img:'images/tarot/21_World.jpg'},
+];
+
+const THEMES = {
+  feeling: {
+    label:'Love Reading',
+    name:'あの人の気持ち',
+    cardCount: 1,
+    positions: ['あの人の気持ち'],
+    messages: (cards) => [{
+      label: 'あの人の気持ち',
+      title: cards[0].reversed ? `${cards[0].name}（逆位置）があの人の気持ちを語ります` : `${cards[0].name}（正位置）があの人の気持ちを語ります`,
+      text: getLoveMessage('feeling', cards[0])
+    }]
+  },
+  compatibility: {
+    label:'Compatibility',
+    name:'二人の相性',
+    cardCount: 2,
+    positions: ['あなた', 'あの人'],
+    messages: (cards) => [
+      {label:'あなたのエネルギー', title: `${cards[0].name}が示すあなたの気持ち`, text: getLoveMessage('you', cards[0])},
+      {label:'あの人のエネルギー', title: `${cards[1].name}が示す相手の気持ち`, text: getLoveMessage('partner', cards[1])},
+      {label:'二人の相性', title: '二人が出会う意味', text: getCompatibilityMessage(cards[0], cards[1])}
+    ]
+  },
+  future: {
+    label:'Love Future',
+    name:'恋の未来',
+    cardCount: 3,
+    positions: ['現在の状況', 'この恋の課題', '恋の行方'],
+    messages: (cards) => [
+      {label:'現在', title: `${cards[0].name}が示す今の状況`, text: getLoveMessage('now', cards[0])},
+      {label:'課題', title: `${cards[1].name}が示すこの恋の課題`, text: getLoveMessage('challenge', cards[1])},
+      {label:'未来', title: `${cards[2].name}が示す恋の行方`, text: getLoveMessage('future', cards[2])}
+    ]
+  }
+};
+
+// 恋愛メッセージ生成
+function getLoveMessage(context, cardData) {
+  const {name, reversed} = cardData;
+  const messages = {
+    feeling: {
+      '愚者':      {u:'あの人の心は自由で無邪気。あなたへの気持ちは始まったばかりで、純粋な好奇心と期待が混じり合っています。',r:'あの人はまだ気持ちを整理できていないようです。焦らず、自然な流れに任せてみましょう。'},
+      '魔術師':    {u:'あの人はあなたに対して積極的な気持ちを持っています。行動を起こしたいという意志が高まっています。',r:'あの人は気持ちはあるものの、どう表現すればいいか迷っているようです。'},
+      '女教皇':    {u:'あの人はあなたのことを深く、静かに想っています。言葉にはしないけれど、確かな感情があります。',r:'あの人は自分の気持ちを隠しています。もう少し時間が必要かもしれません。'},
+      '女帝':      {u:'あの人はあなたに対して温かく豊かな愛情を感じています。あなたといると安らぐようです。',r:'あの人は感情を表に出すことに戸惑いを感じています。'},
+      '皇帝':      {u:'あの人はあなたをしっかりと守りたいという気持ちがあります。頼りになる存在でいたいと思っています。',r:'あの人は感情よりも理性で考えすぎているかもしれません。'},
+      '法王':      {u:'あの人はあなたとの関係を真剣に考えています。誠実で長続きする関係を望んでいます。',r:'あの人は慎重すぎて、気持ちを表現できずにいます。'},
+      '恋人':      {u:'あの人はあなたへの強い愛情を感じています。あなたを特別な存在として見ています。',r:'あの人は気持ちと現実の間で揺れています。選択を迷っているようです。'},
+      '戦車':      {u:'あの人はあなたへの気持ちをしっかり持っています。積極的に関係を進めたいと思っています。',r:'あの人は感情をコントロールしようとして、素直になれていないようです。'},
+      '力':        {u:'あの人はあなたに対して優しく深い愛情を持っています。強さの中に柔らかさがあります。',r:'あの人は気持ちはあるものの、自信を持てずにいるようです。'},
+      '隠者':      {u:'あの人はあなたのことを静かに、深く思っています。一人の時間にあなたのことを考えています。',r:'あの人は距離を置こうとしているかもしれません。自分の気持ちを整理したいようです。'},
+      '運命の輪':  {u:'あの人はあなたとの出会いを運命的に感じています。タイミングが整いつつあります。',r:'今はタイミングが合っていないようです。でも、流れは必ず変わります。'},
+      '正義':      {u:'あの人はあなたに対して公正で誠実な気持ちを持っています。嘘のない感情です。',r:'あの人は気持ちと行動の間にずれを感じています。'},
+      '吊るされた男':{u:'あの人は今、あなたへの気持ちをじっくり見つめ直しています。答えを探している最中です。',r:'あの人は感情が停滞しているようです。もう少し待ってみましょう。'},
+      '死神':      {u:'あの人の気持ちは大きく変化しています。新しい感情が芽生えつつあります。',r:'あの人は過去の感情を引きずっています。変化には少し時間が必要です。'},
+      '節制':      {u:'あの人はあなたへの気持ちを穏やかに、丁寧に育てています。焦らない愛情です。',r:'あの人は感情のバランスを取ろうとしています。'},
+      '悪魔':      {u:'あの人はあなたへの強い引力を感じています。惹きつけられていることは確かです。',r:'あの人は何かに縛られていて、素直な気持ちを表現できていないようです。'},
+      '塔':        {u:'あの人の気持ちに大きな変化が訪れています。本音が表れてくるタイミングです。',r:'あの人は感情的な混乱の中にいます。少し距離を置く時間が必要かもしれません。'},
+      '星':        {u:'あの人はあなたへの希望と憧れを持っています。あなたの存在が心の光になっています。',r:'あの人は少し自信を失っているようです。でも、気持ちは消えていません。'},
+      '月':        {u:'あの人の気持ちは複雑で、まだ形になっていません。でも確かな感情はあります。',r:'あの人は自分の気持ちに戸惑いを感じています。時間が必要です。'},
+      '太陽':      {u:'あの人はあなたへの明るく純粋な愛情を持っています。一緒にいると幸せを感じています。',r:'あの人の気持ちは一時的に曇っています。でも根底の愛情は変わりません。'},
+      '審判':      {u:'あの人はあなたへの気持ちに気づき、真剣に向き合おうとしています。',r:'あの人は過去の経験から踏み出すことを躊躇しています。'},
+      '世界':      {u:'あの人はあなたとの関係に完成された美しさを感じています。深い満足と愛情があります。',r:'あの人はまだ気持ちを完全に受け入れられていないようです。'},
+    },
+    you: {
+      default: (name, rev) => rev
+        ? `${name}が示すあなたの心は、今少し迷いの中にあります。でも、その迷いこそがあなたの正直な気持ちの表れです。`
+        : `${name}が示すあなたは、この恋に対して真剣で純粋な気持ちを持っています。その感情は本物です。`
+    },
+    partner: {
+      default: (name, rev) => rev
+        ? `${name}が示す相手の心には、まだ整理しきれていない感情があるようです。焦らず見守りましょう。`
+        : `${name}が示す相手はあなたに対してポジティブなエネルギーを持っています。二人の間に温かい流れがあります。`
+    },
+    now: {
+      default: (name, rev) => rev
+        ? `${name}（逆位置）が示す今の状況は、少し停滞しているかもしれません。でも、それは次へ進むための準備期間です。`
+        : `${name}が示す今の状況には、恋愛の芽が確かに存在しています。この流れを大切にしてください。`
+    },
+    challenge: {
+      default: (name, rev) => rev
+        ? `${name}（逆位置）が示す課題は、内側にあるようです。自分の気持ちに正直になることが鍵です。`
+        : `${name}が示す課題を乗り越えることで、二人の絆はより深くなります。恐れずに向き合いましょう。`
+    },
+    future: {
+      default: (name, rev) => rev
+        ? `${name}（逆位置）が示す未来には、まだ不確かな要素があります。でも、流れは必ず良い方向へ向かいます。`
+        : `${name}が示す恋の行方は明るいものです。あなたの誠実な気持ちが、美しい未来を引き寄せます。`
+    }
+  };
+
+  if (context === 'feeling') {
+    const msg = messages.feeling[name];
+    return msg ? (reversed ? msg.r : msg.u) : (reversed
+      ? `${name}（逆位置）はあの人の気持ちにまだ迷いがあることを示しています。時間をかけて見守りましょう。`
+      : `${name}はあの人があなたに対してポジティブな感情を持っていることを示しています。`);
+  }
+  const ctx = messages[context];
+  return ctx.default(name, reversed);
+}
+
+function getCompatibilityMessage(card1, card2) {
+  return `${card1.name}と${card2.name}の組み合わせは、二人の間に独自の化学反応があることを示しています。${card1.reversed ? '少し慎重さが必要ですが、' : ''}${card2.reversed ? '相手のペースを尊重しながら、' : ''}お互いの違いを受け入れることで、より深い絆が生まれるでしょう。二人の出会いには必ず意味があります。`;
+}
+
+// 占い状態
+let currentTheme = null;
+let shufflePhase = 'idle';
+let shuffled = [];
+let selectedCards = [];
+const symbols = ['♡','✦','☽','⊙','♀','✧','❋','◈','☿','♄'];
+
+function selectTheme(themeKey) {
+  currentTheme = themeKey;
+  const theme = THEMES[themeKey];
+
+  document.getElementById('themeSection').style.display = 'none';
+  const stage = document.getElementById('shuffleStage');
+  stage.classList.add('visible');
+
+  document.getElementById('selectedThemeLabel').textContent = theme.label;
+  document.getElementById('selectedThemeName').textContent = theme.name;
+
+  resetShuffleState();
+  stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function backToTheme() {
+  document.getElementById('themeSection').style.display = 'block';
+  document.getElementById('shuffleStage').classList.remove('visible');
+  document.getElementById('resultArea').classList.remove('visible');
+  resetShuffleState();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetShuffleState() {
+  shufflePhase = 'idle';
+  selectedCards = [];
+  const btn = document.getElementById('shuffleBtn');
+  btn.innerHTML = '<span>シャッフルを始める</span>';
+  btn.disabled = false;
+  btn.onclick = null;
+  document.getElementById('shuffleStepText').textContent = 'あの人を思い浮かべながら、心を静めてください';
+  document.getElementById('shuffleSubText').textContent = '準備ができたらシャッフルを始めてください';
+  const sf = document.getElementById('scatterField');
+  sf.innerHTML = '';
+  sf.style.display = 'block';
+  sf.style.opacity = '1';
+  const ff = document.getElementById('fanField');
+  if (ff) ff.remove();
+  document.getElementById('resultArea').classList.remove('visible');
+}
+
+const shuffleBtn = document.getElementById('shuffleBtn');
+const scatterField = document.getElementById('scatterField');
+
+shuffleBtn.addEventListener('click', () => {
+  if (shufflePhase === 'idle') {
+    shufflePhase = 'scattering';
+    shuffleBtn.innerHTML = '<span>カードを混ぜる</span>';
+    document.getElementById('shuffleStepText').textContent = 'カードが広がりました';
+    document.getElementById('shuffleSubText').textContent = 'あの人を思いながら、カードを混ぜてください';
+    scatterCards();
+  } else if (shufflePhase === 'scattering') {
+    shufflePhase = 'gathering';
+    shuffleBtn.innerHTML = '<span>扇状に広げる</span>';
+    document.getElementById('shuffleStepText').textContent = 'カードがまとまりました';
+    document.getElementById('shuffleSubText').textContent = '準備ができたら扇状に広げてください';
+    gatherCards();
+  } else if (shufflePhase === 'gathering') {
+    shufflePhase = 'fanning';
+    shuffleBtn.disabled = true;
+    document.getElementById('shuffleStepText').textContent = 'カードを扇状に広げました';
+    document.getElementById('shuffleSubText').textContent = '心が反応したカードを選んでください';
+    fanCards();
+  }
+});
+
+function scatterCards() {
+  shuffled = shuffleArr([...CARDS]);
+  scatterField.innerHTML = '';
+  const fw = scatterField.offsetWidth || 600;
+  const fh = scatterField.offsetHeight || 340;
+  setTimeout(() => scatterField.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+  for (let i = 0; i < 22; i++) {
+    const card = document.createElement('div');
+    card.className = 'scatter-card';
+    const sym = document.createElement('div');
+    sym.className = 'scatter-card-sym';
+    sym.textContent = symbols[i % symbols.length];
+    card.appendChild(sym);
+    card.style.left = Math.random() * (fw - 80) + 'px';
+    card.style.top = Math.random() * (fh - 140) + 'px';
+    card.style.transform = `rotate(${(Math.random() - 0.5) * 60}deg)`;
+    card.style.zIndex = i;
+    card.style.opacity = '0';
+    scatterField.appendChild(card);
+    setTimeout(() => { card.style.opacity = '1'; setTimeout(() => card.classList.add('floating'), 100); }, i * 40);
+  }
+}
+
+function gatherCards() {
+  const cards = scatterField.querySelectorAll('.scatter-card');
+  const fw = scatterField.offsetWidth || 600;
+  const fh = scatterField.offsetHeight || 340;
+  cards.forEach((card, i) => {
+    card.classList.remove('floating');
+    card.style.left = fw / 2 - 40 + 'px';
+    card.style.top = fh / 2 - 70 + 'px';
+    card.style.transform = `rotate(${(Math.random() - 0.5) * 8}deg)`;
+    card.style.zIndex = i;
+  });
+}
+
+function fanCards() {
+  scatterField.style.transition = 'opacity 0.6s ease';
+  scatterField.style.opacity = '0';
+  setTimeout(() => {
+    scatterField.style.display = 'none';
+    const fanField = document.createElement('div');
+    fanField.className = 'fan-field';
+    fanField.id = 'fanField';
+    document.getElementById('shuffleStage').insertBefore(fanField, document.getElementById('shuffleStage').querySelector('.shuffle-controls'));
+    const isMobile = window.innerWidth <= 768;
+    const total = 22;
+    const spreadAngle = isMobile ? 140 : 160;
+    const radius = isMobile ? 95 : 280;
+    for (let i = 0; i < total; i++) {
+      const card = document.createElement('div');
+      card.className = 'fan-card';
+      const sym = document.createElement('div');
+      sym.className = 'fan-card-sym';
+      sym.textContent = symbols[i % symbols.length];
+      card.appendChild(sym);
+      const angle = -spreadAngle / 2 + (spreadAngle / (total - 1)) * i;
+      const x = Math.sin(angle * Math.PI / 180) * radius;
+      card.style.left = isMobile ? 'calc(50% - 19px)' : 'calc(50% - 45px)';
+      card.style.transform = `translateX(${x}px) rotate(${angle}deg)`;
+      card.style.zIndex = i;
+      card.style.opacity = '0';
+      card.style.bottom = '0';
+      card.addEventListener('click', () => onFanCardClick(card, i));
+      fanField.appendChild(card);
+      setTimeout(() => { card.style.opacity = '1'; }, i * 30);
+    }
+  }, 600);
+}
+
+function onFanCardClick(card, index) {
+  if (shufflePhase !== 'fanning') return;
+  const prev = document.querySelector('.fan-card.pre-selected');
+  if (prev === card) {
+    confirmCard(index);
+  } else {
+    if (prev) {
+      prev.classList.remove('pre-selected');
+      prev.style.transform = prev.dataset.originalTransform;
+      prev.style.boxShadow = '';
+      prev.style.borderColor = '';
+    }
+    card.dataset.originalTransform = card.style.transform;
+    card.classList.add('pre-selected');
+    card.style.transform = card.style.transform + ' translateY(-20px)';
+    card.style.borderColor = 'rgba(196,144,154,.6)';
+    card.style.boxShadow = '0 30px 60px rgba(42,38,34,.4)';
+    card.style.zIndex = 100;
+    document.getElementById('shuffleStepText').textContent = 'このカードでよいですか？';
+    document.getElementById('shuffleSubText').textContent = 'もう一度タップで確定、別のカードをタップで選び直せます';
+    shuffleBtn.innerHTML = '<span>このカードに決める</span>';
+    shuffleBtn.disabled = false;
+    shuffleBtn.onclick = () => confirmCard(index);
+  }
+}
+
+function confirmCard(index) {
+  const cardData = shuffled[index] || CARDS[index % CARDS.length];
+  const reversed = Math.random() < 0.25;
+  selectedCards.push({ card: cardData, reversed });
+
+  const theme = THEMES[currentTheme];
+  if (selectedCards.length < theme.cardCount) {
+    const pos = theme.positions[selectedCards.length];
+    document.getElementById('shuffleStepText').textContent = `次は「${pos}」のカードを選んでください`;
+    document.getElementById('shuffleSubText').textContent = '心が反応したカードを選んでください';
+    shuffleBtn.innerHTML = '<span>直感で選んでください</span>';
+    shuffleBtn.disabled = true;
+    shufflePhase = 'fanning';
+    document.querySelectorAll('.fan-card.pre-selected').forEach(c => {
+      c.classList.remove('pre-selected');
+      c.style.pointerEvents = 'none';
+      c.style.opacity = '0.3';
+    });
+    return;
+  }
+
+  // 結果表示
+  document.getElementById('shuffleStage').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('shuffleStage').style.display = 'none';
+    showResult();
+  }, 400);
+}
+
+function showResult() {
+  const theme = THEMES[currentTheme];
+  const resultArea = document.getElementById('resultArea');
+  resultArea.classList.add('visible');
+
+  document.getElementById('resultThemeLabel').textContent = theme.label;
+  document.getElementById('resultThemeName').textContent = theme.name;
+
+  // カード表示
+  const resultCards = document.getElementById('resultCards');
+  resultCards.innerHTML = '';
+  selectedCards.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'result-card';
+    div.innerHTML = `
+      <span class="result-card-position">${theme.positions[i]}</span>
+      <div class="result-card-img-wrap ${item.reversed ? 'reversed' : ''}">
+        <img src="${item.card.img}" alt="${item.card.name}" />
+      </div>
+      <p class="result-card-name">${item.card.num}. ${item.card.name}</p>
+      <p class="result-card-orientation">${item.reversed ? '逆位置' : '正位置'}</p>
+    `;
+    resultCards.appendChild(div);
+  });
+
+  // メッセージ表示
+  const messagesWrap = document.getElementById('resultMessages');
+  messagesWrap.innerHTML = '';
+  const cardsWithReversed = selectedCards.map(item => ({...item.card, reversed: item.reversed}));
+  const messages = theme.messages(cardsWithReversed);
+  messages.forEach(msg => {
+    const div = document.createElement('div');
+    div.className = 'result-message-block';
+    div.innerHTML = `
+      <span class="result-message-label">${msg.label}</span>
+      <h3 class="result-message-title">${msg.title}</h3>
+      <p class="result-message-text">${msg.text}</p>
+    `;
+    messagesWrap.appendChild(div);
+  });
+
+  // AI鑑定リンクにカード情報を付加
+  const cardNames = selectedCards.map(item =>
+    `${item.card.name}（${item.reversed ? '逆位置' : '正位置'}）`).join('・');
+  document.getElementById('btnAiReading').href =
+    `product.html?cards=${encodeURIComponent(cardNames)}&theme=${encodeURIComponent(theme.name)}`;
+
+  resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function shuffleArr(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// カーソル
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button,.fan-card')){
+    cur.style.transform='translate(-50%,-50%) scale(2.2)';
+    ring.style.borderColor='var(--rose)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
+  }else{
+    cur.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.borderColor='var(--rose)';ring.style.transform='translate(-50%,-50%) scale(1)';
+  }
+});
+
+// ハンバーガー
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobileMenu');
+hamburger.addEventListener('click',()=>{
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
+});
+function closeMenu(){
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow='';
+}
+</script>
+</body>
+</html>
