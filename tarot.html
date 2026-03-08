@@ -95,7 +95,7 @@
     /* モーダル */
     .overlay{position:fixed;inset:0;z-index:500;background:rgba(42,38,34,.75);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s ease;padding:24px}
     .overlay.open{opacity:1;pointer-events:all}
-    .modal{background:var(--cream);max-width:720px;width:100%;display:grid;grid-template-columns:240px 1fr;border-radius:4px;overflow:hidden;transform:translateY(24px) scale(.97);transition:transform .5s cubic-bezier(.25,.46,.45,.94);box-shadow:0 60px 120px rgba(42,38,34,.4);max-height:90vh}
+    .modal{background:var(--cream);max-width:720px;width:100%;display:grid;grid-template-columns:240px 1fr;border-radius:4px;overflow:hidden;transform:translateY(24px) scale(.97);transition:transform .5s cubic-bezier(.25,.46,.45,.94);box-shadow:0 60px 120px rgba(42,38,34,.4);max-height:95vh}
     .overlay.open .modal{transform:translateY(0) scale(1)}
     .modal-card{background:linear-gradient(145deg,#2A2622,#3A3028);display:flex;align-items:center;justify-content:center;padding:32px;position:relative}
     .modal-card-img{width:100%;border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,.5);filter:sepia(10%) contrast(96%) brightness(104%)}
@@ -475,21 +475,21 @@ function onFanCardClick(card, index) {
     const reversed = Math.random() < 0.25;
 
     shuffleBtn.onclick = () => {
-      shufflePhase = 'done';
-      card.style.animation = 'none';
-      card.style.setProperty('--card-base-transform', card.dataset.originalTransform);
-      card.classList.add('shaking');
-      setTimeout(() => {
-        card.classList.remove('shaking');
-        showRevealAnimation(cardData, reversed, () => {
-          shuffleStage.style.opacity = '0';
+          shufflePhase = 'done';
+          card.style.animation = 'none';
+          card.style.setProperty('--card-base-transform', card.dataset.originalTransform);
+          card.classList.add('shaking');
           setTimeout(() => {
-            shuffleStage.style.display = 'none';
-            openModal(cardData, reversed);
-          }, 400);
-        });
-      }, 500);
-    };
+            card.classList.remove('shaking');
+            showRevealAnimation(cardData, reversed, () => {
+              shuffleStage.style.opacity = '0';
+              setTimeout(() => {
+                shuffleStage.style.display = 'none';
+                openModal(cardData, reversed);
+              }, 400);
+            });
+          }, 500);
+        };
 
   } else {
     // 別のカードをタップ→仮選択に切り替え
@@ -520,13 +520,21 @@ function onFanCardClick(card, index) {
     const reversed = Math.random() < 0.25;
 
     shuffleBtn.onclick = () => {
-      shufflePhase = 'done';
-      shuffleStage.style.opacity = '0';
-      setTimeout(() => {
-        shuffleStage.style.display = 'none';
-        openModal(cardData, reversed);
-      }, 400);
-    };
+          shufflePhase = 'done';
+          card.style.animation = 'none';
+          card.style.setProperty('--card-base-transform', card.dataset.originalTransform);
+          card.classList.add('shaking');
+          setTimeout(() => {
+            card.classList.remove('shaking');
+            showRevealAnimation(cardData, reversed, () => {
+              shuffleStage.style.opacity = '0';
+              setTimeout(() => {
+                shuffleStage.style.display = 'none';
+                openModal(cardData, reversed);
+              }, 400);
+            });
+          }, 500);
+        };
   }
 }
 
