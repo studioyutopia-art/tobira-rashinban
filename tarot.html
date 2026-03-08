@@ -390,6 +390,7 @@ function fanCards() {
     const fanField = document.createElement('div');
     fanField.className = 'fan-field';
     fanField.id = 'fanField';
+    @keyframes guideFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
     shuffleStage.insertBefore(fanField, shuffleStage.querySelector('.shuffle-controls'));
 
     const total = 22;
