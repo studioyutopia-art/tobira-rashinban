@@ -478,6 +478,8 @@ function onFanCardClick(card, index) {
     // 新しいカードを仮選択
     card.dataset.originalTransform = card.style.transform;
     card.classList.add('pre-selected');
+    const fanGuide = document.getElementById('fanGuide');
+    if (fanGuide) fanGuide.remove();
     card.style.transform = card.style.transform + ' translateY(-20px)';
     card.style.borderColor = 'rgba(201,169,110,.6)';
     card.style.boxShadow = '0 30px 60px rgba(42,38,34,.4)';
