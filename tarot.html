@@ -273,6 +273,10 @@
         <span class="modal-section-label">メッセージ</span>
         <p class="modal-text" id="modalMessage"></p>
       </div>
+      <div style="text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid rgba(182,169,154,.2)">
+        <p style="font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.2em;color:var(--ink-lt);margin-bottom:12px;">AIがこのカードを深く鑑定します</p>
+        <button onclick="goToReading()" style="font-family:'Noto Serif JP',serif;font-weight:300;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--ink);padding:16px 32px;border:none;border-radius:999px;cursor:pointer;width:100%;">あなたへの本当のメッセージを見る</button>
+      </div>
       <button class="modal-close" onclick="closeOverlay()">閉じる ✕</button>
     </div>
   </div>
@@ -699,6 +703,13 @@ function showRevealAnimation(card, reversed, callback) {
   }, 1800);
 }
 
+function goToReading() {
+  if (!currentCardData) return;
+  const { card, reversed } = currentCardData;
+  localStorage.setItem('tobira_reading_cards', card.name + (reversed ? '（逆位置）' : '（正位置）'));
+  localStorage.setItem('tobira_reading_theme', 'カードを引く');
+  window.location.href = 'product.html';
+}
 function closeOverlay() {
   document.getElementById('overlay').classList.remove('open');
   document.body.style.overflow = '';
