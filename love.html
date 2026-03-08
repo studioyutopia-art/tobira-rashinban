@@ -154,7 +154,18 @@
     .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
     .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
 
-    
+    @keyframes cardShake{0%,100%{transform:var(--shake-base) translateY(-20px)}20%{transform:var(--shake-base) translateY(-20px) rotate(-3deg)}40%{transform:var(--shake-base) translateY(-20px) rotate(3deg)}60%{transform:var(--shake-base) translateY(-20px) rotate(-2deg)}80%{transform:var(--shake-base) translateY(-20px) rotate(2deg)}}
+    @keyframes cardFlipReveal{0%{transform:rotateY(0deg) scale(1.1)}50%{transform:rotateY(90deg) scale(1.15)}100%{transform:rotateY(0deg) scale(1)}}
+    .fan-card-reveal-overlay{position:fixed;inset:0;z-index:800;display:flex;align-items:center;justify-content:center;background:rgba(42,38,34,0);pointer-events:none;transition:background .3s ease}
+    .fan-card-reveal-overlay.active{background:rgba(42,38,34,.85);pointer-events:all}
+    .reveal-card{width:160px;height:280px;border-radius:8px;transform-style:preserve-3d;position:relative;animation:cardFlipReveal 1.2s cubic-bezier(.4,0,.2,1) forwards}
+    .reveal-card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;overflow:hidden}
+    .reveal-card-back{background:linear-gradient(145deg,#3D2A30,#2A1E22);border:1px solid rgba(196,144,154,.4);display:flex;align-items:center;justify-content:center;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+    .reveal-card-back::before{content:'';position:absolute;inset:8px;border:1px solid rgba(196,144,154,.2);border-radius:4px}
+    .reveal-card-back-sym{font-family:'Cormorant Garamond',serif;font-size:32px;color:rgba(196,144,154,.6);position:relative;z-index:1}
+    .reveal-card-front{transform:rotateY(180deg);background:var(--cream);box-shadow:0 40px 80px rgba(0,0,0,.6)}
+    .reveal-card-front img{width:100%;height:100%;object-fit:cover;filter:sepia(10%) contrast(96%) brightness(104%)}
+    .reveal-card-front.reversed-img img{transform:rotate(180deg)}
     @keyframes guideFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
     .fan-guide{text-align:center;padding:4px 0;position:relative;z-index:10;margin-top:-20px}
     .fan-guide-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--gold);letter-spacing:.3em;display:inline-block;animation:guideFloat 1.5s ease-in-out infinite}
@@ -633,11 +644,26 @@ function confirmCard(index) {
   }
 
   // 結果表示
-  document.getElementById('shuffleStage').style.opacity = '0';
-  setTimeout(() => {
-    document.getElementById('shuffleStage').style.display = 'none';
-    showResult();
-  }, 400);
+  const selectedCard = document.querySelector('.fan-card.pre-selected');
+  if (selectedCard) {
+    selectedCard.style.setProperty('--shake-base', selectedCard.dataset.originalTransform);
+    selectedCard.style.animation = 'cardShake 0.5s ease-in-out';
+    setTimeout(() => {
+      showRevealAnimation(cardData, reversed, () => {
+        document.getElementById('shuffleStage').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('shuffleStage').style.display = 'none';
+          showResult();
+        }, 400);
+      });
+    }, 500);
+  } else {
+    document.getElementById('shuffleStage').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('shuffleStage').style.display = 'none';
+      showResult();
+    }, 400);
+  }
 }
 
 function showResult() {
@@ -692,6 +718,30 @@ function showResult() {
   resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+function showRevealAnimation(card, reversed, callback) {
+  const overlay = document.createElement('div');
+  overlay.className = 'fan-card-reveal-overlay';
+  document.body.appendChild(overlay);
+  const revealCard = document.createElement('div');
+  revealCard.className = 'reveal-card';
+  const back = document.createElement('div');
+  back.className = 'reveal-card-face reveal-card-back';
+  back.innerHTML = '<span class="reveal-card-back-sym">♡</span>';
+  const front = document.createElement('div');
+  front.className = 'reveal-card-face reveal-card-front' + (reversed ? ' reversed-img' : '');
+  front.innerHTML = `<img src="${card.img}" alt="${card.name}" />`;
+  revealCard.appendChild(back);
+  revealCard.appendChild(front);
+  overlay.appendChild(revealCard);
+  requestAnimationFrame(() => { overlay.classList.add('active'); });
+  setTimeout(() => {
+    overlay.style.background = 'rgba(42,38,34,0)';
+    setTimeout(() => {
+      overlay.remove();
+      callback();
+    }, 400);
+  }, 1600);
+}
 function shuffleArr(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
