@@ -618,6 +618,11 @@ function confirmCard(index) {
     shuffleBtn.innerHTML = '<span>直感で選んでください</span>';
     shuffleBtn.disabled = true;
     shufflePhase = 'fanning';
+    const guideEl2 = document.createElement('div');
+    guideEl2.className = 'fan-guide';
+    guideEl2.id = 'fanGuide';
+    guideEl2.innerHTML = '<span class="fan-guide-text">↓ カードに触れてください ↓</span>';
+    document.getElementById('shuffleStage').insertBefore(guideEl2, document.getElementById('fanField'));
     document.querySelectorAll('.fan-card.pre-selected').forEach(c => {
       c.classList.remove('pre-selected');
       c.style.pointerEvents = 'none';
