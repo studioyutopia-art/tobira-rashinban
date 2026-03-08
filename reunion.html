@@ -601,6 +601,8 @@ function confirmCard(index) {
     guideEl2.id = 'fanGuide';
     guideEl2.innerHTML = '<span class="fan-guide-text">↓ カードに触れてください ↓</span>';
     document.getElementById('shuffleStage').insertBefore(guideEl2, document.getElementById('fanField'));
+    const oldGuide = document.getElementById('fanGuide');
+    if (oldGuide) oldGuide.remove();
     updatePositionDisplay();
     document.getElementById('currentPositionLabel').scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
