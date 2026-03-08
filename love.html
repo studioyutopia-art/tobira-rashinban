@@ -154,6 +154,11 @@
     .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
     .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
 
+    .fan-guide{display:none;text-align:center;margin-bottom:16px;animation:guideFloat 1.5s ease-in-out infinite}
+    .fan-guide.visible{display:block}
+    .fan-guide-arrow{font-size:28px;color:var(--gold);letter-spacing:.3em}
+    @keyframes guideFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}    
+
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
     @media(max-width:768px){
@@ -540,6 +545,12 @@ function fanCards() {
     const fanField = document.createElement('div');
     fanField.className = 'fan-field';
     fanField.id = 'fanField';
+    const guide = document.createElement('div');
+    guide.className = 'fan-guide';
+    guide.id = 'fanGuide';
+    guide.innerHTML = '<div class="fan-guide-arrow">↓ ↓ ↓</div>';
+    shuffleStage.insertBefore(guide, fanField);
+    setTimeout(() => guide.classList.add('visible'), 800);
     document.getElementById('shuffleStage').insertBefore(fanField, document.getElementById('shuffleStage').querySelector('.shuffle-controls'));
     const isMobile = window.innerWidth <= 768;
     const total = 22;
