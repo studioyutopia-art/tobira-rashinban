@@ -114,7 +114,6 @@
     .rev-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.3em;color:var(--mouve);border:1px solid var(--mouve);padding:4px 14px;border-radius:2px;width:fit-content}
 
     /* アニメーション */
-    @keyframes guideFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
     /* ハンバーガー */
@@ -391,7 +390,6 @@ function fanCards() {
     const fanField = document.createElement('div');
     fanField.className = 'fan-field';
     fanField.id = 'fanField';
-    @keyframes guideFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
     shuffleStage.insertBefore(fanField, shuffleStage.querySelector('.shuffle-controls'));
 
     const total = 22;
