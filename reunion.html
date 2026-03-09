@@ -494,6 +494,25 @@ shuffleBtn.addEventListener('click', () => {
 function scatterCards() {
   shuffled = shuffleArr([...CARDS]);
   scatterField.innerHTML = '';
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => {
+      const buf = ctx.createBuffer(1, ctx.sampleRate * 0.09, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let j = 0; j < data.length; j++) {
+        const t = j / ctx.sampleRate;
+        data[j] = (Math.random() * 2 - 1) * 0.3 * Math.exp(-t * 60)
+                + Math.sin(2 * Math.PI * 1200 * t) * 0.1 * Math.exp(-t * 80);
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const gain = ctx.createGain();
+      gain.gain.value = 0.2;
+      src.connect(gain);
+      gain.connect(ctx.destination);
+      src.start();
+    }, i * 110);
+  }
   const fw = scatterField.offsetWidth || 600;
   const fh = scatterField.offsetHeight || 340;
   setTimeout(() => scatterField.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
