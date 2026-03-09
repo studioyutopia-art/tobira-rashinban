@@ -354,8 +354,8 @@ function formatDate(date) {
 function getCardIndex(birthdate, today) {
   const b = new Date(birthdate);
   const seed =
-    (b.getFullYear() + b.getMonth() + b.getDate() +
-     today.getFullYear() + today.getMonth() + today.getDate()) % 22;
+    (b.getFullYear() * 13 + b.getMonth() * 7 + b.getDate() * 3 +
+     today.getFullYear() * 400 + today.getMonth() * 31 + today.getDate() * 97) % 22;
   return seed;
 }
 
@@ -363,9 +363,9 @@ function getCardIndex(birthdate, today) {
 function getReversed(birthdate, today) {
   const b = new Date(birthdate);
   const seed =
-    (b.getFullYear() * b.getMonth() + b.getDate() * 7 +
-     today.getMonth() * today.getDate()) % 4;
-  return seed === 0; // 25%の確率で逆位置
+    (b.getFullYear() * 17 + b.getMonth() * 11 + b.getDate() * 5 +
+     today.getFullYear() * 300 + today.getMonth() * 41 + today.getDate() * 73) % 4;
+  return seed === 0;
 }
 
 function startReading() {
