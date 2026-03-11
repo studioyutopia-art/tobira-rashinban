@@ -715,6 +715,13 @@ function showResult() {
     `;
     resultCards.appendChild(div);
   });
+  if (selectedCards.length === 1) {
+    const wrap = document.querySelector('.result-card-img-wrap');
+    if (wrap) {
+      wrap.style.width = '180px';
+      wrap.style.height = '316px';
+    }
+  }
 
   // メッセージ表示
   const messagesWrap = document.getElementById('resultMessages');
