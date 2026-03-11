@@ -197,7 +197,8 @@
   <p class="result-message" id="resultMessage"></p>
   <div class="result-actions">
     <a href="tarot.html" class="btn-action"><span>自分でカードを引く</span></a>
-    <a href="product.html" class="btn-action ghost"><span>AI深層鑑定を受ける</span></a>
+    <!-- ▼ AI深層鑑定ボタン：Stripe決済リンク①（¥300）へ直接遷移 -->
+    <a id="btnDeepReading" href="https://buy.stripe.com/test_00w9AS3TqdcK8mW6152VG03" class="btn-action ghost" onclick="saveReadingData()"><span>AI深層鑑定を受ける（¥300）</span></a>
     <div class="share-wrap">
       <a id="btnShareX" href="#" target="_blank" class="btn-share">X でシェア</a>
     </div>
@@ -368,13 +369,16 @@ function getReversed(birthdate, today) {
   return seed === 0;
 }
 
+// 現在表示中のカード情報を保持
+let _currentCard = null;
+let _currentReversed = false;
+
 function startReading() {
   const input = document.getElementById('birthdateInput').value;
   if (!input) {
     alert('生年月日を入力してください');
     return;
   }
-  // ブラウザに保存
   localStorage.setItem('tobira_birthdate', input);
   showReading(input);
 }
@@ -385,6 +389,10 @@ function showReading(birthdate) {
   const reversed = getReversed(birthdate, today);
   const card = CARDS[cardIndex];
 
+  // 現在のカード情報を保持
+  _currentCard = card;
+  _currentReversed = reversed;
+
   // 入力画面を隠す
   document.getElementById('inputScreen').style.display = 'none';
   const result = document.getElementById('resultScreen');
@@ -394,7 +402,6 @@ function showReading(birthdate) {
   document.getElementById('resultDate').textContent = formatDate(today);
 
   // 挨拶
-  const b = new Date(birthdate);
   const hour = today.getHours();
   const timeGreet = hour < 12 ? 'おはようございます' : hour < 18 ? 'こんにちは' : 'こんばんは';
   document.getElementById('resultGreeting').textContent =
@@ -437,6 +444,15 @@ function showReading(birthdate) {
     `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent('https://tobira-rashinban.vercel.app/today.html')}`;
 }
 
+// AI深層鑑定ボタン押下時：reading.html用データをlocalStorageに保存
+function saveReadingData() {
+  if (_currentCard) {
+    const orientation = _currentReversed ? '逆位置' : '正位置';
+    localStorage.setItem('tobira_reading_cards', `${_currentCard.name}（${orientation}）`);
+    localStorage.setItem('tobira_reading_theme', '今日の1枚');
+  }
+}
+
 function resetReading() {
   localStorage.removeItem('tobira_birthdate');
   location.reload();
@@ -446,7 +462,6 @@ function resetReading() {
 window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('tobira_birthdate');
   if (saved) {
-    // 中間画面を表示
     const welcome = document.getElementById('welcomeScreen');
     const today = new Date();
     document.getElementById('welcomeDate').textContent = formatDate(today);

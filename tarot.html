@@ -32,11 +32,6 @@
     .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
     .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards}
 
-    .mode-selector{display:flex;justify-content:center;gap:2px;margin:48px 0;opacity:0;animation:fadeUp 1s ease .8s forwards}
-    .mode-btn{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.35em;color:var(--ink-lt);background:none;border:1px solid rgba(182,169,154,.3);padding:14px 32px;cursor:none;transition:all .3s}
-    .mode-btn.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
-    .mode-btn:hover:not(.active){border-color:var(--gold);color:var(--ink)}
-
     .instruction{text-align:center;margin-bottom:40px;opacity:0;animation:fadeUp 1s ease 1s forwards}
     .instruction p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.2em;color:var(--dust)}
 
@@ -162,8 +157,6 @@
       .page-header{padding:90px 24px 40px}
       .page-title{font-size:28px}
       .page-desc{font-size:13px}
-      .mode-selector{margin:32px 16px}
-      .mode-btn{padding:12px 20px;font-size:10px}
       .instruction{margin-bottom:32px;padding:0 24px}
       .shuffle-stage{padding:20px 16px 60px;min-height:440px}
       .scatter-field{height:260px}
@@ -179,16 +172,7 @@
       .modal-body{padding:24px 24px 40px;gap:16px;overflow-y:auto;max-height:calc(92vh - 280px)}
       .modal-title{font-size:22px}
       .hamburger{display:flex}
-      .fan-field {
-        position: relative;
-        width: 100%;
-        max-width: 700px;
-        height: 220px;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        overflow: visible;
-      }
+      .fan-field{position:relative;width:100%;max-width:700px;height:220px;display:flex;align-items:flex-end;justify-content:center;overflow:visible}
     }
   </style>
 </head>
@@ -221,8 +205,6 @@
     <li><a href="reunion.html" onclick="closeMenu()">復縁できる？</a></li>
     <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
     <li><a href="product.html" onclick="closeMenu()">本格AI鑑定</a></li>
-    <li><a href="#" onclick="closeMenu()">コラム</a></li>
-    <li><a href="#" onclick="closeMenu()">ショップ</a></li>
   </ul>
 </div>
 
@@ -232,11 +214,7 @@
   <p class="page-desc">心を静め、問いを胸に抱いてください</p>
 </div>
 
-<div class="mode-selector">
-  <button class="mode-btn active" onclick="setMode('one')">一枚引き</button>
-  <button class="mode-btn" onclick="setMode('three')">三枚引き</button>
-</div>
-
+<!-- ▼ 三枚引きボタンを削除。一枚引きのみ表示 -->
 <div class="instruction">
   <p id="instr-text">準備ができたらカードに触れてシャッフルしてください</p>
 </div>
@@ -277,9 +255,10 @@
         <span class="modal-section-label">メッセージ</span>
         <p class="modal-text" id="modalMessage"></p>
       </div>
+      <!-- ▼ AI深層鑑定ボタン：Stripe決済リンク②（¥500）へ直接遷移 -->
       <div style="text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid rgba(182,169,154,.2)">
         <p style="font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.2em;color:var(--ink-lt);margin-bottom:12px;">AIがこのカードを深く鑑定します</p>
-        <button onclick="goToReading()" style="font-family:'Noto Serif JP',serif;font-weight:300;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--ink);padding:16px 32px;border:none;border-radius:999px;cursor:pointer;width:100%;">あなたへの本当のメッセージを見る</button>
+        <button onclick="goToReading()" style="font-family:'Noto Serif JP',serif;font-weight:300;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--ink);padding:16px 32px;border:none;border-radius:999px;cursor:pointer;width:100%;">あなたへの本当のメッセージを見る（¥500）</button>
       </div>
       <button class="modal-close" onclick="closeOverlay()">閉じる ✕</button>
     </div>
@@ -373,7 +352,6 @@ function scatterCards() {
     }, i * 110);
   }
 
-  // カードが散らばる場所まで自動スクロール
   setTimeout(() => {
     scatterField.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, 100);
@@ -483,11 +461,9 @@ function fanCards() {
 function onFanCardClick(card, index) {
   if (shufflePhase !== 'fanning') return;
 
-  // すでに仮選択されているカードがある場合
   const prevSelected = document.querySelector('.fan-card.pre-selected');
 
   if (prevSelected === card) {
-    // 同じカードを再度タップ→確定
     shufflePhase = 'done';
     shuffleStepText.textContent = 'カードが選ばれました';
     shuffleSubText.textContent = 'めくってメッセージを受け取ってください';
@@ -498,33 +474,30 @@ function onFanCardClick(card, index) {
     const reversed = Math.random() < 0.25;
 
     shuffleBtn.onclick = () => {
-          shufflePhase = 'done';
-          card.style.animation = 'none';
-          card.style.setProperty('--card-base-transform', card.dataset.originalTransform);
-          card.classList.add('shaking');
+      shufflePhase = 'done';
+      card.style.animation = 'none';
+      card.style.setProperty('--card-base-transform', card.dataset.originalTransform);
+      card.classList.add('shaking');
+      setTimeout(() => {
+        card.classList.remove('shaking');
+        showRevealAnimation(cardData, reversed, () => {
+          shuffleStage.style.opacity = '0';
           setTimeout(() => {
-            card.classList.remove('shaking');
-            showRevealAnimation(cardData, reversed, () => {
-              shuffleStage.style.opacity = '0';
-              setTimeout(() => {
-                shuffleStage.style.display = 'none';
-                openModal(cardData, reversed);
-              }, 400);
-            });
-          }, 500);
-        };
+            shuffleStage.style.display = 'none';
+            openModal(cardData, reversed);
+          }, 400);
+        });
+      }, 500);
+    };
 
   } else {
-    // 別のカードをタップ→仮選択に切り替え
     if (prevSelected) {
-      // 前の仮選択を元に戻す
       prevSelected.classList.remove('pre-selected');
       prevSelected.style.transform = prevSelected.dataset.originalTransform;
       prevSelected.style.boxShadow = '';
       prevSelected.style.borderColor = '';
     }
 
-    // 新しいカードを仮選択
     card.dataset.originalTransform = card.style.transform;
     card.classList.add('pre-selected');
     const fanGuide = document.getElementById('fanGuide');
@@ -543,21 +516,21 @@ function onFanCardClick(card, index) {
     const reversed = Math.random() < 0.25;
 
     shuffleBtn.onclick = () => {
-          shufflePhase = 'done';
-          card.style.animation = 'none';
-          card.style.setProperty('--card-base-transform', card.dataset.originalTransform);
-          card.classList.add('shaking');
+      shufflePhase = 'done';
+      card.style.animation = 'none';
+      card.style.setProperty('--card-base-transform', card.dataset.originalTransform);
+      card.classList.add('shaking');
+      setTimeout(() => {
+        card.classList.remove('shaking');
+        showRevealAnimation(cardData, reversed, () => {
+          shuffleStage.style.opacity = '0';
           setTimeout(() => {
-            card.classList.remove('shaking');
-            showRevealAnimation(cardData, reversed, () => {
-              shuffleStage.style.opacity = '0';
-              setTimeout(() => {
-                shuffleStage.style.display = 'none';
-                openModal(cardData, reversed);
-              }, 400);
-            });
-          }, 500);
-        };
+            shuffleStage.style.display = 'none';
+            openModal(cardData, reversed);
+          }, 400);
+        });
+      }, 500);
+    };
   }
 }
 
@@ -580,16 +553,6 @@ function resetShuffle() {
   if (fanGuide) fanGuide.remove();
   const grid = document.getElementById('cardGrid');
   grid.style.display = 'none';
-}
-
-// ── モード切替 ──
-function setMode(m) {
-  mode = m;
-  selectedCards = [];
-  document.querySelectorAll('.mode-btn').forEach((b,i)=>{
-    b.classList.toggle('active',(i===0&&m==='one')||(i===1&&m==='three'));
-  });
-  resetShuffle();
 }
 
 // ── シャッフル ──
@@ -639,47 +602,25 @@ function renderCards() {
   });
 }
 
-// ── カードクリック ──
+// ── カードクリック（一枚引きのみ） ──
 function onCardClick(wrap, card) {
-  if (mode === 'one') {
-    if (wrap.classList.contains('flipped') || wrap.classList.contains('reversed')) {
-      openModal(card, wrap.classList.contains('reversed'));
-      return;
-    }
-    document.querySelectorAll('.card-wrap').forEach(w => {
-      if (w !== wrap) w.style.opacity = '0.3';
-    });
-    const rev = Math.random() < 0.25;
-    if (rev) wrap.classList.add('reversed');
-    else wrap.classList.add('flipped');
-    setTimeout(() => openModal(card, rev), 750);
-  } else {
-    if (wrap.classList.contains('flipped') || wrap.classList.contains('reversed')) {
-      const idx = selectedCards.findIndex(s=>s.card===card);
-      const rev = idx>=0 ? selectedCards[idx].rev : false;
-      openModal(card, rev);
-      return;
-    }
-    if (selectedCards.length >= 3) return;
-    const rev = Math.random() < 0.25;
-    if (rev) wrap.classList.add('reversed');
-    else wrap.classList.add('flipped');
-    selectedCards.push({card, rev});
-    if (selectedCards.length === 3) {
-      document.querySelectorAll('.card-wrap:not(.flipped):not(.reversed)').forEach(w=>w.style.opacity='0.3');
-    }
+  if (wrap.classList.contains('flipped') || wrap.classList.contains('reversed')) {
+    openModal(card, wrap.classList.contains('reversed'));
+    return;
   }
+  document.querySelectorAll('.card-wrap').forEach(w => {
+    if (w !== wrap) w.style.opacity = '0.3';
+  });
+  const rev = Math.random() < 0.25;
+  if (rev) wrap.classList.add('reversed');
+  else wrap.classList.add('flipped');
+  setTimeout(() => openModal(card, rev), 750);
 }
 
 // ── モーダル ──
 function openModal(card, reversed) {
   currentCardData = {card, reversed};
-  const labels = ['過去','現在','未来'];
-  let eyebrow = reversed ? '逆位置 · Reversed' : '正位置 · Upright';
-  if (mode==='three') {
-    const idx = selectedCards.findIndex(s=>s.card===card);
-    if (idx>=0) eyebrow = labels[idx] + ' · ' + (reversed?'逆位置':'正位置');
-  }
+  const eyebrow = reversed ? '逆位置 · Reversed' : '正位置 · Upright';
   document.getElementById('modalEyebrow').textContent = eyebrow;
   document.getElementById('modalTitle').textContent = `${card.num}. ${card.name}`;
   document.getElementById('modalSubtitle').textContent = card.en;
@@ -701,6 +642,7 @@ function openModal(card, reversed) {
 function closeModal(e) {
   if (e.target === document.getElementById('overlay')) closeOverlay();
 }
+
 function showRevealAnimation(card, reversed, callback) {
   const overlay = document.createElement('div');
   overlay.className = 'fan-card-reveal-overlay';
@@ -721,43 +663,43 @@ function showRevealAnimation(card, reversed, callback) {
   revealCard.appendChild(front);
   overlay.appendChild(revealCard);
 
-  requestAnimationFrame(() => {
-    overlay.classList.add('active');
-  });
+  requestAnimationFrame(() => { overlay.classList.add('active'); });
+
   setTimeout(() => {
     const flash = document.createElement('div');
     flash.className = 'reveal-flash';
     document.body.appendChild(flash);
     setTimeout(() => flash.remove(), 600);
   }, 600);
+
   setTimeout(() => {
-      const colors = ['#C9A96E','#E8D4A8','#D4B896','#F0E4C4','#BFA97E','rgba(255,255,255,.9)'];
-      for (let i = 0; i < 80; i++) {
-        setTimeout(() => {
-          const p = document.createElement('div');
-          p.className = 'particle';
-          const size = (1.5 + Math.random() * 3.5) + 'px';
-          p.style.width = size;
-          p.style.height = size;
-          p.style.left = (Math.random() * 100) + 'vw';
-          p.style.top = (Math.random() * 60) + 'vh';
-          p.style.borderRadius = '50%';
-          p.style.background = colors[Math.floor(Math.random() * colors.length)];
-          p.style.boxShadow = `0 0 ${3 + Math.random() * 6}px ${colors[Math.floor(Math.random() * colors.length)]}, 0 0 ${6 + Math.random() * 10}px rgba(255,220,100,.8), 0 0 ${10 + Math.random() * 8}px rgba(255,255,255,.5)`;
-          p.style.animationDuration = (1.5 + Math.random() * 1.2) + 's';
-          const inner = document.createElement('div');
-          inner.className = 'particle-inner';
-          inner.style.background = 'inherit';
-          inner.style.borderRadius = 'inherit';
-          inner.style.width = '100%';
-          inner.style.height = '100%';
-          inner.style.animationDelay = (Math.random() * 0.4) + 's';
-          p.appendChild(inner);
-          document.body.appendChild(p);
-          setTimeout(() => p.remove(), 2800);
-        }, i * 40);
-      }
-    }, 800);
+    const colors = ['#C9A96E','#E8D4A8','#D4B896','#F0E4C4','#BFA97E','rgba(255,255,255,.9)'];
+    for (let i = 0; i < 80; i++) {
+      setTimeout(() => {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = (1.5 + Math.random() * 3.5) + 'px';
+        p.style.width = size;
+        p.style.height = size;
+        p.style.left = (Math.random() * 100) + 'vw';
+        p.style.top = (Math.random() * 60) + 'vh';
+        p.style.borderRadius = '50%';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.boxShadow = `0 0 ${3 + Math.random() * 6}px ${colors[Math.floor(Math.random() * colors.length)]}, 0 0 ${6 + Math.random() * 10}px rgba(255,220,100,.8), 0 0 ${10 + Math.random() * 8}px rgba(255,255,255,.5)`;
+        p.style.animationDuration = (1.5 + Math.random() * 1.2) + 's';
+        const inner = document.createElement('div');
+        inner.className = 'particle-inner';
+        inner.style.background = 'inherit';
+        inner.style.borderRadius = 'inherit';
+        inner.style.width = '100%';
+        inner.style.height = '100%';
+        inner.style.animationDelay = (Math.random() * 0.4) + 's';
+        p.appendChild(inner);
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 2800);
+      }, i * 40);
+    }
+  }, 800);
 
   setTimeout(() => {
     overlay.style.background = 'rgba(42,38,34,0)';
@@ -768,13 +710,15 @@ function showRevealAnimation(card, reversed, callback) {
   }, 1800);
 }
 
+// ── AI深層鑑定：localStorageに保存してStripe決済リンク②（¥500）へ遷移 ──
 function goToReading() {
   if (!currentCardData) return;
   const { card, reversed } = currentCardData;
   localStorage.setItem('tobira_reading_cards', card.name + (reversed ? '（逆位置）' : '（正位置）'));
   localStorage.setItem('tobira_reading_theme', 'カードを引く');
-  window.location.href = 'product.html';
+  window.location.href = 'https://buy.stripe.com/test_8x2bJ0du0a0y9r0exB2VG04';
 }
+
 function closeOverlay() {
   document.getElementById('overlay').classList.remove('open');
   document.body.style.overflow = '';
