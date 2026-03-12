@@ -29,13 +29,11 @@
     .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--purple);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
     .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
 
-    /* ページヘッダー */
     .page-header{padding:140px 80px 60px;text-align:center}
     .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--purple);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
     .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
     .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards;max-width:600px;margin:0 auto;line-height:2}
 
-    /* スプレッド説明 */
     .spread-intro{max-width:800px;margin:0 auto;padding:0 80px 64px;opacity:0;animation:fadeUp 1s ease .8s forwards}
     .spread-label{font-family:'Noto Serif JP',serif;font-weight:200;font-size:13px;letter-spacing:.3em;color:var(--ink-mid);text-align:center;margin-bottom:32px;display:block}
     .spread-positions{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
@@ -50,12 +48,12 @@
     .btn-start-reading:hover{color:var(--cream)}
     .btn-start-reading span{position:relative;z-index:1}
 
-    /* シャッフルステージ */
     .shuffle-stage{display:none;flex-direction:column;align-items:center;gap:32px;padding:20px 80px 80px;margin:0 auto;min-height:520px;position:relative;max-width:900px}
     .shuffle-stage.visible{display:flex}
 
     .current-position{text-align:center;background:var(--warm);padding:20px 40px;border-left:2px solid var(--purple)}
-    .current-position-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.4em;color:var(--purple);display:block;margin-bottom:12px;font-weight:400}    .current-position-name{font-weight:200;font-size:18px;letter-spacing:.2em}
+    .current-position-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.4em;color:var(--purple);display:block;margin-bottom:12px;font-weight:400}
+    .current-position-name{font-weight:200;font-size:18px;letter-spacing:.2em}
 
     .shuffle-message{text-align:center;z-index:10}
     .shuffle-step-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:16px;letter-spacing:.2em;color:var(--ink);margin-bottom:10px}
@@ -84,7 +82,6 @@
     .btn-shuffle span{position:relative;z-index:1}
     .btn-shuffle:disabled{opacity:.4}
 
-    /* 結果エリア */
     .result-area{max-width:800px;margin:0 auto;padding:0 80px 120px;display:none}
     .result-area.visible{display:block}
 
@@ -113,7 +110,6 @@
     .result-message-text{font-size:13px;line-height:3;letter-spacing:.08em;color:var(--ink-mid)}
     .result-message-block:nth-child(2) .result-message-text{color:rgba(245,241,235,.7)}
 
-    /* 復縁可能性メーター */
     .possibility-meter{background:var(--ink);padding:48px;text-align:center;margin-bottom:2px}
     .possibility-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--purple-lt);margin-bottom:24px;display:block}
     .possibility-title{font-weight:200;font-size:20px;letter-spacing:.2em;color:var(--cream);margin-bottom:32px}
@@ -124,7 +120,6 @@
     .meter-unit{font-size:14px;letter-spacing:.2em;color:var(--mouve)}
     .possibility-message{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.2em;color:var(--mouve);line-height:2;margin-top:20px}
 
-    /* AI鑑定CTA */
     .ai-cta{background:var(--warm);padding:56px 48px;text-align:center;margin-bottom:48px}
     .ai-cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--purple);margin-bottom:20px;display:block}
     .ai-cta-title{font-weight:200;font-size:22px;letter-spacing:.2em;color:var(--ink);margin-bottom:12px;line-height:1.8}
@@ -144,7 +139,6 @@
     .btn-action:hover{color:var(--ink)}
     .btn-action span{position:relative;z-index:1}
 
-    /* ハンバーガー */
     .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
     .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
     .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
@@ -240,7 +234,6 @@
   <p class="page-desc">あの人との別れ、今の気持ち、そして復縁の可能性を<br>3枚のカードで読み解きます</p>
 </div>
 
-<!-- スプレッド説明 -->
 <div class="spread-intro" id="spreadIntro">
   <span class="spread-label">— 3枚のカードの配置 —</span>
   <div class="spread-positions">
@@ -263,7 +256,6 @@
   <button class="btn-start-reading" onclick="startReading()"><span>カードを引き始める</span></button>
 </div>
 
-<!-- シャッフルステージ -->
 <div class="shuffle-stage" id="shuffleStage">
   <div class="current-position">
     <span class="current-position-label" id="currentPositionLabel">Position I</span>
@@ -279,7 +271,6 @@
   <div class="scatter-field" id="scatterField"></div>
 </div>
 
-<!-- 結果エリア -->
 <div class="result-area" id="resultArea">
   <div class="result-header">
     <span class="result-eyebrow">Reunion Reading</span>
@@ -289,7 +280,6 @@
   <div class="result-divider"></div>
   <div class="result-messages" id="resultMessages"></div>
 
-  <!-- 復縁可能性メーター -->
   <div class="possibility-meter">
     <span class="possibility-label">Reunion Possibility</span>
     <p class="possibility-title">復縁の可能性</p>
@@ -300,7 +290,7 @@
     <p class="possibility-message" id="possibilityMessage"></p>
   </div>
 
-  <!-- AI鑑定CTA -->
+  <!-- ▼ AI鑑定CTA：Stripe決済リンク⑥（¥980）へ直接遷移 -->
   <div class="ai-cta">
     <span class="ai-cta-eyebrow">AI Deep Reading</span>
     <h2 class="ai-cta-title">復縁への道をさらに深く読み解きませんか</h2>
@@ -310,7 +300,7 @@
       <span class="ai-cta-feature">復縁の可能性</span>
       <span class="ai-cta-feature">あなたが取るべき行動</span>
     </div>
-    <a href="product.html" class="btn-ai" id="btnAiReading"><span>AI深層鑑定を受ける</span></a>
+    <a href="#" class="btn-ai" id="btnAiReading"><span>AI深層鑑定を受ける（¥980）</span></a>
   </div>
 
   <div class="result-actions">
@@ -353,7 +343,6 @@ const HINTS = [
   '二人の未来への願いを込めてカードを選んでください'
 ];
 
-// 復縁メッセージデータ
 const REUNION_MESSAGES = {
   reason: {
     '愚者':     {u:'二人はまだ準備ができていなかったのかもしれません。別れは終わりではなく、お互いが成長するための時間だったようです。',r:'衝動的な選択や無責任な行動が別れの引き金になった可能性があります。しかし、その経験があなたを成長させました。'},
@@ -398,7 +387,6 @@ const REUNION_MESSAGES = {
   }
 };
 
-// 復縁可能性スコア計算
 const POSSIBILITY_SCORES = {
   '愚者':80,'魔術師':65,'女教皇':55,'女帝':70,'皇帝':50,
   '法王':60,'恋人':85,'戦車':60,'力':70,'隠者':45,
@@ -619,7 +607,6 @@ function confirmCard(index) {
   selectedCards.push({ card: cardData, reversed });
 
   if (selectedCards.length < 3) {
-    // 次のカードへ
     shufflePhase = 'idle';
     shuffleBtn.innerHTML = '<span>シャッフルを始める</span>';
     shuffleBtn.disabled = false;
@@ -632,11 +619,6 @@ function confirmCard(index) {
     document.querySelectorAll('.fan-card.pre-selected').forEach(c => {
       c.classList.remove('pre-selected');
     });
-    const guideEl2 = document.createElement('div');
-    guideEl2.className = 'fan-guide';
-    guideEl2.id = 'fanGuide';
-    guideEl2.innerHTML = '<span class="fan-guide-text">↓ カードに触れてください ↓</span>';
-    document.getElementById('shuffleStage').insertBefore(guideEl2, document.getElementById('fanField'));
     const oldGuide = document.getElementById('fanGuide');
     if (oldGuide) oldGuide.remove();
     updatePositionDisplay();
@@ -644,7 +626,6 @@ function confirmCard(index) {
     return;
   }
 
-  // 3枚揃ったら結果表示
   const selectedCard = document.querySelector('.fan-card.pre-selected');
   if (selectedCard) {
     selectedCard.style.setProperty('--shake-base', selectedCard.dataset.originalTransform);
@@ -672,7 +653,6 @@ function showResult() {
   resultArea.style.display = 'block';
   resultArea.classList.add('visible');
 
-  // カード表示
   const resultCards = document.getElementById('resultCards');
   resultCards.innerHTML = '';
   selectedCards.forEach((item, i) => {
@@ -689,25 +669,21 @@ function showResult() {
     resultCards.appendChild(div);
   });
 
-  // メッセージ表示
   const messagesWrap = document.getElementById('resultMessages');
   messagesWrap.innerHTML = '';
 
-  // 別れた理由
   const reasonCard = selectedCards[0];
   const reasonData = REUNION_MESSAGES.reason[reasonCard.card.name];
   const reasonText = reasonData
     ? (reasonCard.reversed ? reasonData.r : reasonData.u)
     : `${reasonCard.card.name}が別れの本質的な原因を示しています。`;
 
-  // 今の相手の気持ち
   const feelingCard = selectedCards[1];
   const feelingData = REUNION_MESSAGES.feeling[feelingCard.card.name];
   const feelingText = feelingData
-    ? (feelingCard.reversed ? feelingData.r : feelingCard.reversed === false ? feelingData.u : feelingData.u)
+    ? (feelingCard.reversed ? feelingData.r : feelingData.u)
     : REUNION_MESSAGES.feeling.default(feelingCard.card.name, feelingCard.reversed);
 
-  // 復縁の可能性
   const score = getScore(selectedCards);
   const possCard = selectedCards[2];
   const possText = REUNION_MESSAGES.possibility.default(possCard.card.name, possCard.reversed, score);
@@ -729,7 +705,6 @@ function showResult() {
     messagesWrap.appendChild(div);
   });
 
-  // 復縁可能性メーター
   setTimeout(() => {
     document.getElementById('meterFill').style.width = score + '%';
     let current = 0;
@@ -741,12 +716,15 @@ function showResult() {
     document.getElementById('possibilityMessage').textContent = getPossibilityMessage(score);
   }, 800);
 
-  // AI鑑定リンク
+  // カード情報をlocalStorageに保存
   const cardNames = selectedCards.map(item =>
     `${item.card.name}（${item.reversed ? '逆位置' : '正位置'}）`).join('・');
   localStorage.setItem('tobira_reading_cards', cardNames);
   localStorage.setItem('tobira_reading_theme', '復縁占い');
-  document.getElementById('btnAiReading').href = 'product.html';
+
+  // ▼ Stripe決済リンク⑥（¥980）へ直接遷移
+  const reunionBtn = document.getElementById('btnAiReading');
+  reunionBtn.href = 'https://buy.stripe.com/test_5kQ28qfC82y65aKgFJ2VG08';
 
   resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -809,6 +787,7 @@ function showRevealAnimation(card, reversed, callback) {
     }, 300);
   }, 1800);
 }
+
 function shuffleArr(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
