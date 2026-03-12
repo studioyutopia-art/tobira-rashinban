@@ -295,7 +295,7 @@
   <div class="result-divider"></div>
   <div class="result-messages" id="resultMessages"></div>
 
-  <!-- AI深層鑑定CTA -->
+  <!-- ▼ AI深層鑑定CTA：テーマに応じてStripe決済リンクをJSで動的に設定 -->
   <div class="ai-cta">
     <span class="ai-cta-eyebrow">AI Deep Reading</span>
     <h2 class="ai-cta-title">このカードをさらに深く読み解きませんか</h2>
@@ -305,7 +305,7 @@
       <span class="ai-cta-feature">恋の進展予測</span>
       <span class="ai-cta-feature">あなたが取るべき行動</span>
     </div>
-    <a href="product.html" class="btn-ai" id="btnAiReading"><span>AI深層鑑定を受ける</span></a>
+    <a href="#" class="btn-ai" id="btnAiReading"><span>AI深層鑑定を受ける</span></a>
   </div>
 
   <div class="result-actions">
@@ -739,13 +739,26 @@ function showResult() {
     messagesWrap.appendChild(div);
   });
 
-  // AI鑑定リンクにカード情報を付加
+  // カード情報をlocalStorageに保存
   const cardNames = selectedCards.map(item =>
     `${item.card.name}（${item.reversed ? '逆位置' : '正位置'}）`).join('・');
-  // カード情報をブラウザに保存
   localStorage.setItem('tobira_reading_cards', cardNames);
   localStorage.setItem('tobira_reading_theme', theme.name);
-  document.getElementById('btnAiReading').href = 'product.html';
+
+  // ▼ テーマに応じてStripe決済リンク（③④⑤）を動的に設定
+  const stripeLinks = {
+    feeling:       'https://buy.stripe.com/test_aFa28qfC8goWbz8gFJ2VG05', // ③ ¥400
+    compatibility: 'https://buy.stripe.com/test_fZu28q9dKdcK6eOblp2VG06', // ④ ¥600
+    future:        'https://buy.stripe.com/test_00w28q9dKfkScDcgFJ2VG07', // ⑤ ¥800
+  };
+  const stripeLabels = {
+    feeling:       'AI深層鑑定を受ける（¥400）',
+    compatibility: 'AI深層鑑定を受ける（¥600）',
+    future:        'AI深層鑑定を受ける（¥800）',
+  };
+  const btn = document.getElementById('btnAiReading');
+  btn.href = stripeLinks[currentTheme] || '#';
+  btn.querySelector('span').textContent = stripeLabels[currentTheme] || 'AI深層鑑定を受ける';
 
   resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -808,6 +821,7 @@ function showRevealAnimation(card, reversed, callback) {
     }, 300);
   }, 1800);
 }
+
 function shuffleArr(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
