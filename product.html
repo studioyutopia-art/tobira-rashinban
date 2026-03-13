@@ -113,8 +113,10 @@
 
     @media(max-width:900px){
       .menus{grid-template-columns:1fr}
-      .menu-card.featured{grid-column:span 1}
+      .menu-card{grid-column:span 1!important}
       .menu-card.featured .menu-card-inner{grid-template-columns:1fr}
+      .reunion-inner{flex-direction:column!important;gap:24px!important}
+      .reunion-inner > div{min-width:unset!important}
     }
     @media(max-width:768px){
       .cursor,.cursor-ring{display:none}
@@ -127,8 +129,13 @@
       .flow{padding:0 24px}
       .flow-inner{flex-direction:column;gap:12px;padding:24px}
       .flow-arrow{transform:rotate(90deg);padding:0}
-      .menus{padding:0 24px;margin-top:48px}
-      .menu-card{padding:36px 24px}
+      .menus{padding:0 24px;margin-top:48px;grid-template-columns:1fr}
+      .menu-card{padding:36px 24px;grid-column:span 1!important}
+      .menu-card.featured .menu-card-inner{grid-template-columns:1fr;gap:24px}
+      .reunion-inner{flex-direction:column!important;gap:24px!important}
+      .reunion-inner > div{min-width:unset!important;flex:unset!important;width:100%!important}
+      .menu-card-price-num{font-size:32px}
+      .btn-menu{max-width:none!important}
       .note{padding:48px 24px 80px}
       .hamburger{display:flex}
     }
@@ -276,7 +283,7 @@
   <!-- 復縁占い -->
   <div class="menu-card" style="grid-column:span 2;background:var(--warm)">
     <p class="menu-card-eyebrow">Reunion Reading</p>
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap">
+    <div class="reunion-inner" style="display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap">
       <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:20px">
         <div class="menu-card-header">
           <h2 class="menu-card-title">復縁占い<br>AI深層鑑定</h2>
