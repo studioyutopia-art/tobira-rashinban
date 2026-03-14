@@ -266,6 +266,75 @@
 </div>
 
 <script>
+// ── サウンドマネージャー ──
+const SOUNDS = {
+  card_spread: { src: 'sounds/card_spread.mp3', offset: 0, duration: 0.696 },
+  // 今後追加予定: card_gather, card_fan, card_pick, card_flip, card_reveal
+};
+let _audioCtx = null;
+const _soundBuffers = {};
+let _muted = false;
+
+function _getAudioCtx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
+}
+
+async function _loadSound(key) {
+  if (_soundBuffers[key]) return _soundBuffers[key];
+  const ctx = _getAudioCtx();
+  try {
+    const res = await fetch(SOUNDS[key].src);
+    const arrayBuf = await res.arrayBuffer();
+    const audioBuf = await ctx.decodeAudioData(arrayBuf);
+    _soundBuffers[key] = audioBuf;
+    return audioBuf;
+  } catch(e) {
+    console.warn('Sound load failed:', key, e);
+    return null;
+  }
+}
+
+async function preloadSounds() {
+  for (const key of Object.keys(SOUNDS)) {
+    await _loadSound(key);
+  }
+}
+
+function playSound(key, volumeScale = 1.0) {
+  if (_muted) return;
+  const s = SOUNDS[key];
+  if (!s) return;
+  const ctx = _getAudioCtx();
+  const doPlay = () => {
+    const buf = _soundBuffers[key];
+    if (!buf) {
+      _loadSound(key).then(b => { if (b) doPlay(); });
+      return;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.55 * volumeScale;
+    src.connect(gain);
+    gain.connect(ctx.destination);
+    src.start(0, s.offset || 0, s.duration || buf.duration);
+  };
+  if (ctx.state === 'suspended') {
+    ctx.resume().then(doPlay);
+  } else {
+    doPlay();
+  }
+}
+
+function toggleMute() {
+  _muted = !_muted;
+  const btn = document.getElementById('muteBtn');
+  if (btn) btn.textContent = _muted ? '🔇' : '🔊';
+}
+
+// プリロードは最初のユーザー操作時に行う（Autoplay Policy対策）
+
 const CARDS = [
   {num:'0',name:'愚者',en:'The Fool',img:'images/tarot/00_Fool.jpg',upright:'新しい始まり、無限の可能性、自由な精神。恐れを手放し、未知の旅に踏み出す勇気を持つとき。',reversed:'無謀、軽率、準備不足。衝動的な行動が思わぬトラブルを招く可能性。',keywords:['始まり','自由','冒険','純粋さ','可能性'],message:'今こそ一歩を踏み出す時です。完璧な準備を待つのではなく、軽やかな心で新しい扉を開いてください。'},
   {num:'I',name:'魔術師',en:'The Magician',img:'images/tarot/01_Magician.jpg',upright:'意志の力、創造性、スキルの発揮。あなたが必要なものはすべて既に手の中にある。',reversed:'才能の無駄遣い、詐欺、自信の欠如。持っている能力を疑いすぎている。',keywords:['意志','創造','スキル','集中','顕現'],message:'あなたには変化を起こす力があります。目の前の道具を使いこなし、意図を現実へと変えてください。'},
@@ -306,6 +375,8 @@ const symbols = ['✦','☽','⊙','☉','♃','♀','✧','◈','☿','♄'];
 
 // ── シャッフルボタン ──
 shuffleBtn.addEventListener('click', () => {
+  // 初回クリック時にサウンドをプリロード（Autoplay Policy対策）
+  if (Object.keys(_soundBuffers).length === 0) preloadSounds();
   if (shufflePhase === 'idle') {
     shufflePhase = 'scattering';
     shuffleBtn.innerHTML = '<span>シャッフルを始める</span>';
@@ -332,25 +403,7 @@ shuffleBtn.addEventListener('click', () => {
 function scatterCards() {
   shuffled = shuffle(CARDS);
   scatterField.innerHTML = '';
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  for (let i = 0; i < 8; i++) {
-    setTimeout(() => {
-      const buf = ctx.createBuffer(1, ctx.sampleRate * 0.09, ctx.sampleRate);
-      const data = buf.getChannelData(0);
-      for (let j = 0; j < data.length; j++) {
-        const t = j / ctx.sampleRate;
-        data[j] = (Math.random() * 2 - 1) * 0.3 * Math.exp(-t * 60)
-                + Math.sin(2 * Math.PI * 1200 * t) * 0.1 * Math.exp(-t * 80);
-      }
-      const src = ctx.createBufferSource();
-      src.buffer = buf;
-      const gain = ctx.createGain();
-      gain.gain.value = 0.2;
-      src.connect(gain);
-      gain.connect(ctx.destination);
-      src.start();
-    }, i * 110);
-  }
+  playSound('card_spread');
 
   setTimeout(() => {
     scatterField.scrollIntoView({ behavior: 'smooth', block: 'center' });
