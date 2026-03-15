@@ -269,7 +269,8 @@
 // ── サウンドマネージャー ──
 const SOUNDS = {
   card_spread: { src: 'sounds/card_spread.mp3', offset: 0, duration: 0.696 },
-  // 今後追加予定: card_gather, card_fan, card_pick, card_flip, card_reveal
+  card_gather: { src: 'sounds/card_gather.mp3', offset: 0, duration: 0.496 },
+  // 今後追加予定: card_fan, card_pick, card_flip, card_reveal
 };
 let _audioCtx = null;
 const _soundBuffers = {};
@@ -438,6 +439,7 @@ function scatterCards() {
 
 // ── 束に集める ──
 function gatherCards() {
+  playSound('card_gather');
   const cards = scatterField.querySelectorAll('.scatter-card');
   const fieldW = scatterField.offsetWidth || 600;
   const fieldH = scatterField.offsetHeight || 340;
