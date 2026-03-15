@@ -177,6 +177,16 @@
     .fan-guide-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--gold);letter-spacing:.3em;display:inline-block;animation:guideFloat 1.5s ease-in-out infinite}
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
+    /* チラ見せUI */
+    .teaser-wrap{background:var(--ink);padding:24px 28px;border-radius:4px;margin-bottom:36px}
+    .teaser-hook{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--rose);margin-bottom:12px;display:block;line-height:1.8}
+    .teaser-preview{border-left:2px solid rgba(196,144,154,.4);padding-left:16px;margin-bottom:16px}
+    .teaser-preview-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;letter-spacing:.35em;color:var(--mouve);display:block;margin-bottom:8px}
+    .teaser-preview-text{font-size:12px;line-height:2.4;letter-spacing:.08em;color:rgba(245,241,235,.7);position:relative}
+    .teaser-preview-text::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom,transparent,var(--ink))}
+    .teaser-btn{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--ink);background:var(--rose);border:none;padding:16px 32px;border-radius:999px;cursor:pointer;width:100%;transition:opacity .3s}
+    .teaser-btn:hover{opacity:.85}
+
     @media(max-width:768px){
       .cursor,.cursor-ring{display:none}
       body{cursor:auto}
@@ -298,8 +308,18 @@
   <div class="result-divider"></div>
   <div class="result-messages" id="resultMessages"></div>
 
+  <!-- ▼ チラ見せUI -->
+  <div class="teaser-wrap" id="teaserWrap">
+    <span class="teaser-hook" id="teaserHook"></span>
+    <div class="teaser-preview">
+      <span class="teaser-preview-label">AI鑑定より（一部）</span>
+      <p class="teaser-preview-text" id="teaserPreview"></p>
+    </div>
+    <button class="teaser-btn" id="teaserBtn" onclick="document.getElementById('btnAiReading').click()">続きをAI深層鑑定で見る</button>
+  </div>
+
   <!-- ▼ AI深層鑑定CTA：テーマに応じてStripe決済リンクをJSで動的に設定 -->
-  <div class="ai-cta">
+  <div class="ai-cta" style="display:none" id="aiCtaBlock">
     <span class="ai-cta-eyebrow">AI Deep Reading</span>
     <h2 class="ai-cta-title">このカードをさらに深く読み解きませんか</h2>
     <p class="ai-cta-desc">同じカードを使って、AIがより詳しい鑑定を行います</p>
@@ -309,6 +329,7 @@
       <span class="ai-cta-feature">あなたが取るべき行動</span>
     </div>
     <a href="#" class="btn-ai" id="btnAiReading"><span>AI深層鑑定を受ける</span></a>
+  </div>
   </div>
 
   <div class="result-actions">
@@ -829,6 +850,14 @@ function showResult() {
   btn.href = stripeLinks[currentTheme] || '#';
   btn.querySelector('span').textContent = stripeLabels[currentTheme] || 'AI深層鑑定を受ける';
 
+  // チラ見せテキスト設定
+  const teaserContent = getTeaserContent(selectedCards, currentTheme);
+  document.getElementById('teaserHook').textContent = teaserContent.hook;
+  document.getElementById('teaserPreview').textContent = teaserContent.preview;
+  // teaserBtnのラベルを価格付きに
+  const teaserBtnLabels = { feeling:'続きをAI深層鑑定で見る（¥400）', compatibility:'続きをAI深層鑑定で見る（¥600）', future:'続きをAI深層鑑定で見る（¥800）' };
+  document.getElementById('teaserBtn').textContent = teaserBtnLabels[currentTheme] || '続きをAI深層鑑定で見る';
+
   resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -893,6 +922,67 @@ function showRevealAnimation(card, reversed, callback) {
       callback();
     }, 300);
   }, 1800);
+}
+
+// ── チラ見せデータ ──
+const CARD_GROUPS = {
+  A: ['恋人','星','太陽','世界','女帝','力'],
+  B: ['死神','塔','審判','運命の輪','愚者'],
+  C: ['女教皇','隠者','月','吊るされた男','節制'],
+  D: ['魔術師','戦車','皇帝','法王'],
+  E: ['悪魔','正義'],
+};
+const TEASER_TEXTS = {
+  A: {
+    u: { hook: 'AIがこのカードをさらに深く読み解きました。あなたの恋愛に、想像以上の可能性が隠れています…', preview: '「{card}」はあなたの恋愛において、まだ気づいていない大きなポテンシャルが眠っていることを示しています。AIはそのサインを読み取りましたが、それが動き出すには、ある条件が…' },
+    r: { hook: 'AIがこのカードを読み解きました。表面には見えていない感情のすれ違いが起きている可能性があります…', preview: '「{card}」（逆位置）はあなたと相手の間に、まだ言葉にされていない感情のずれがある可能性を示しています。AIはその原因を読み取りました。実はそれは…' },
+  },
+  B: {
+    u: { hook: 'AIがこのカードを読み解きました。まだ気づいていない大きな転機が近づいている可能性があります…', preview: '「{card}」はあなたの状況に、近づいている転機のサインを示しています。AIはそのタイミングとあなたが取るべき行動を読み取りました。それによると…' },
+    r: { hook: 'AIがこのカードから気になるメッセージを受け取りました。ある重要な変化を見逃している可能性があります…', preview: '「{card}」（逆位置）はあなたが今、重要な変化の岐路に立っている可能性を示しています。このままでは…' },
+  },
+  C: {
+    u: { hook: 'AIがこのカードを読み解きました。あなたの内側に、まだ表に出ていない深い感情が眠っています…', preview: '「{card}」はあなたの内側に、まだ気づいていない深い感情や直感が眠っていることを示しています。AIはそのメッセージを読み解きましたが、それはあなたの現状に…' },
+    r: { hook: 'AIがこのカードから気になるメッセージを受け取りました。自分でも気づいていない何かに縛られている可能性があります…', preview: '「{card}」（逆位置）はあなたが今、自覚していない何かに影響されている可能性を示しています。AIはその正体を読み取りました。それは意外にも…' },
+  },
+  D: {
+    u: { hook: 'AIがこのカードを読み解きました。あなたの中に、まだ発揮されていない大きな力が眠っています…', preview: '「{card}」はあなたの中に、まだ十分に活かされていない強い力と可能性が眠っていることを示しています。AIはそれを引き出す鍵を読み取りました。今あなたに最も必要なのは…' },
+    r: { hook: 'AIがこのカードから気になるメッセージを受け取りました。本来の力がうまく発揮できていない可能性があります…', preview: '「{card}」（逆位置）はあなたが本来持っている力が、ある理由でうまく発揮できていない可能性を示しています。AIはその原因を読み取りました。鍵を握っているのは…' },
+  },
+  E: {
+    u: { hook: 'AIがこのカードを読み解きました。ある人物や出来事が予想以上に大きな影響を与えている可能性があります…', preview: '「{card}」はあなたの状況に、ある人物や出来事が想像以上に深く関わっている可能性を示しています。AIはそのつながりを読み取りましたが、注目すべきは…' },
+    r: { hook: 'AIがこのカードから気になるメッセージを受け取りました。気づかないうちに自分を縛っているものがある可能性があります…', preview: '「{card}」（逆位置）はあなたが今、無意識のうちに自分を縛っているものがある可能性を示しています。AIはその正体と解放へのヒントを読み取りました。それによると…' },
+  },
+};
+// 複数枚引きの場合は最後のカード（メインカード）を使用
+const TEASER_THEME_HOOK = {
+  feeling:       'AIがあなたの引いたカードを深く読み解きました。あの人の本当の気持ちに、まだ気づいていない感情が隠れています…',
+  compatibility: 'AIがあなたの引いた2枚のカードを深く読み解きました。二人の間に、まだ表に出ていない大切なサインが隠れています…',
+  future:        'AIがあなたの引いた3枚のカードを深く読み解きました。この恋の未来に、まだ気づいていない重要な転機が近づいています…',
+};
+const TEASER_THEME_PREVIEW = {
+  feeling:       'あなたが引いたカードは、あの人の心の奥にまだ言葉にされていない感情が眠っていることを示しています。AIはその本音を読み取りましたが、それは意外にも…',
+  compatibility: 'あなたが引いた2枚のカードは、二人の間に見えない引力と、まだ気づいていない課題が存在する可能性を示しています。AIはそのつながりを読み取りましたが、注目すべきは…',
+  future:        'あなたが引いた3枚のカードは、この恋に近づいている転機のサインを示しています。AIはそのタイミングと、あなたが今取るべき行動を読み取りました。それによると…',
+};
+function getCardGroup(cardName) {
+  for (const [group, cards] of Object.entries(CARD_GROUPS)) {
+    if (cards.includes(cardName)) return group;
+  }
+  return 'A';
+}
+function getTeaserContent(selectedCards, themeKey) {
+  if (selectedCards.length === 1) {
+    const item = selectedCards[0];
+    const group = getCardGroup(item.card.name);
+    const data = TEASER_TEXTS[group][item.reversed ? 'r' : 'u'];
+    return { hook: data.hook, preview: data.preview.replace('{card}', item.card.name) };
+  }
+  // 複数枚：テーマ別の固定文を使用
+  return {
+    hook: TEASER_THEME_HOOK[themeKey] || TEASER_THEME_HOOK.feeling,
+    preview: TEASER_THEME_PREVIEW[themeKey] || TEASER_THEME_PREVIEW.feeling,
+  };
 }
 
 function shuffleArr(arr) {
