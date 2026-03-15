@@ -389,20 +389,10 @@ async function fetchReading() {
 
 function cleanText(str) {
   return str
-    .replace(/\*\*(.+?)\*\*/g, '$1')   // **太字** を除去
-    .replace(/\*(.+?)\*/g, '$1')        // *斜体* を除去
-    .replace(/#{1,6}\s/g, '')           // # 見出し記号を除去
-    .replace(/^\s*[-・]\s*/gm, '')      // 箇条書き記号を除去
-    .replace(/\n{3,}/g, '\n\n')         // 3行以上の空行を2行に統一
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/#{1,6}\s/g, '')
     .trim();
-}
-
-function formatText(str) {
-  // 改行を<br>に変換し、空行は段落区切りとして処理
-  return str
-    .split('\n\n')
-    .map(para => `<span style="display:block;margin-bottom:1.2em">${para.replace(/\n/g, '<br>')}</span>`)
-    .join('');
 }
 
 function showReading(text) {
@@ -428,14 +418,14 @@ function showReading(text) {
       div.innerHTML = `
         <p class="reading-block-label">Deep Reading</p>
         <h2 class="reading-block-title">【${pair.title}】</h2>
-        <p class="reading-block-text">${formatText(pair.text)}</p>
+        <p class="reading-block-text">${pair.text.replace(/\n/g, '<br>')}</p>
       `;
       blocks.appendChild(div);
     });
   } else {
     const div = document.createElement('div');
     div.className = 'reading-block';
-    div.innerHTML = `<p class="reading-block-text">${formatText(cleaned)}</p>`;
+    div.innerHTML = `<p class="reading-block-text">${cleaned.replace(/\n/g, '<br>')}</p>`;
     blocks.appendChild(div);
   }
 }
