@@ -290,6 +290,9 @@ function buildPrompt(cards, theme) {
 
   // ── 構成テンプレート（全テーマ共通） ──
   const STRUCTURE = `以下の5つのセクションで鑑定を構成してください。
+セクションのタイトルは必ず【】で囲み、タイトル以外の情報（カード名・テーマ名など）は【】の中に含めないでください。
+正しい例：【カードの意味】
+誤った例：【節制（正位置）｜あの人の気持ち】
 
 【カードの意味】約150文字
 このカードが持つ古典的な象徴と、今のあなたへの根本的なメッセージを伝えてください。
@@ -395,6 +398,17 @@ function cleanText(str) {
     .trim();
 }
 
+// セクションタイトルの正規化（余分な情報を除去）
+function normalizeTitle(title) {
+  // 「節制（正位置）｜あの人の気持ち --- 」→ 「カードの意味」など本来のタイトルだけ残す
+  // 「---」「｜」以降を除去
+  return title
+    .replace(/[｜|].*/g, '')
+    .replace(/[-－─—]+.*/g, '')
+    .replace(/（.*?）/g, '')
+    .trim();
+}
+
 function showReading(text) {
   document.getElementById('loadingWrap').style.display = 'none';
   const content = document.getElementById('readingContent');
@@ -404,10 +418,17 @@ function showReading(text) {
   blocks.innerHTML = '';
 
   const cleaned = cleanText(text);
+
+  // 【】形式と「見出し\n」形式の両方に対応
   const sections = cleaned.split(/【(.+?)】/).filter(s => s.trim());
   const pairs = [];
   for (let i = 0; i < sections.length; i += 2) {
-    if (sections[i + 1]) pairs.push({ title: sections[i], text: sections[i + 1].trim() });
+    if (sections[i + 1]) {
+      pairs.push({
+        title: normalizeTitle(sections[i]),
+        text: sections[i + 1].trim()
+      });
+    }
   }
 
   if (pairs.length > 0) {
@@ -423,6 +444,7 @@ function showReading(text) {
       blocks.appendChild(div);
     });
   } else {
+    // 【】が全くない場合はそのまま表示
     const div = document.createElement('div');
     div.className = 'reading-block';
     div.innerHTML = `<p class="reading-block-text">${cleaned.replace(/\n/g, '<br>')}</p>`;
