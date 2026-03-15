@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI深層鑑定 — 扉と羅針盤</title>
+  <title>復縁占い — 扉と羅針盤</title>
+  <meta name="description" content="タロットカードで復縁の可能性を占います。別れた理由、今の相手の気持ち、復縁の可能性を3枚のカードで読み解きます。" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -11,68 +12,132 @@
       --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
       --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
       --ink-lt:#7A7068;--gold:#C9A96E;
+      --purple:#9B8BB4;--purple-lt:#D4CCE4;
     }
     html{scroll-behavior:smooth}
     body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
     body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
 
-    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
-    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+    .cursor{position:fixed;width:7px;height:7px;background:var(--purple);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--purple);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
 
     nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
     .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
     .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
     .nav-links{display:flex;gap:44px;list-style:none}
     .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
-    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--purple);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
     .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
 
-    .page-header{padding:140px 80px 80px;text-align:center}
-    .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
+    .page-header{padding:140px 80px 60px;text-align:center}
+    .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--purple);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
     .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
     .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards;max-width:600px;margin:0 auto;line-height:2}
 
-    .cards-section{max-width:800px;margin:0 auto;padding:0 80px 64px;opacity:0;animation:fadeUp 1s ease .8s forwards}
-    .cards-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--gold);text-align:center;margin-bottom:40px;display:block}
-    .cards-wrap{display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
-    .card-item{text-align:center}
-    .card-position{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.3em;color:var(--gold);margin-bottom:8px;display:block}
-    .card-img-wrap{width:130px;height:228px;border-radius:6px;overflow:hidden;margin:0 auto 16px;box-shadow:0 20px 48px rgba(42,38,34,.2)}
-    .card-img-wrap img{width:100%;height:100%;object-fit:cover;filter:sepia(15%) contrast(95%) brightness(102%)}
-    .card-img-wrap.reversed img{transform:rotate(180deg)}
-    .card-name{font-size:13px;letter-spacing:.2em;color:var(--ink-mid)}
-    .card-orientation{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.2em;color:var(--dust)}
+    .spread-intro{max-width:800px;margin:0 auto;padding:0 80px 64px;opacity:0;animation:fadeUp 1s ease .8s forwards}
+    .spread-label{font-family:'Noto Serif JP',serif;font-weight:200;font-size:13px;letter-spacing:.3em;color:var(--ink-mid);text-align:center;margin-bottom:32px;display:block}
+    .spread-positions{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+    .spread-position{background:var(--warm);padding:28px 24px;text-align:center}
+    .spread-position-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:32px;color:var(--purple);opacity:.4;display:block;margin-bottom:8px}
+    .spread-position-name{font-weight:200;font-size:14px;letter-spacing:.2em;color:var(--ink);margin-bottom:8px}
+    .spread-position-desc{font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.1em;color:var(--ink-mid);line-height:2}
 
-    .theme-badge{display:inline-block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.25em;color:var(--ink-lt);border:1px solid rgba(182,169,154,.4);padding:8px 24px;border-radius:999px;margin-bottom:48px}
+    .btn-start-reading{display:block;text-align:center;font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:22px;cursor:none;position:relative;overflow:hidden;transition:color .4s;border-radius:999px;margin-top:32px;width:100%}
+    .btn-start-reading::before{content:'';position:absolute;inset:0;background:var(--purple);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-start-reading:hover::before{transform:translateX(0)}
+    .btn-start-reading:hover{color:var(--cream)}
+    .btn-start-reading span{position:relative;z-index:1}
 
-    .reading-section{max-width:800px;margin:0 auto;padding:0 80px 120px}
+    .shuffle-stage{display:none;flex-direction:column;align-items:center;gap:32px;padding:20px 80px 80px;margin:0 auto;min-height:520px;position:relative;max-width:900px}
+    .shuffle-stage.visible{display:flex}
 
-    .loading-wrap{text-align:center;padding:80px 0;opacity:0;animation:fadeUp 1s ease 1s forwards}
-    .loading-sym{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);animation:pulse 2s ease-in-out infinite;display:block;margin-bottom:24px}
-    .loading-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.3em;color:var(--dust)}
-    @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+    .current-position{text-align:center;background:var(--warm);padding:20px 40px;border-left:2px solid var(--purple)}
+    .current-position-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.4em;color:var(--purple);display:block;margin-bottom:12px;font-weight:400}
+    .current-position-name{font-weight:200;font-size:18px;letter-spacing:.2em}
 
-    .reading-content{display:none}
-    .reading-divider{width:40px;height:1px;background:var(--mouve);margin:0 auto 64px}
+    .shuffle-message{text-align:center;z-index:10}
+    .shuffle-step-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:16px;letter-spacing:.2em;color:var(--ink);margin-bottom:10px}
+    .shuffle-sub-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust)}
 
-    .reading-block{margin-bottom:48px;opacity:0;animation:fadeUp .8s ease forwards}
-    .reading-block-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:16px}
-    .reading-block-label::after{content:'';flex:1;height:1px;background:rgba(182,169,154,.3)}
-    .reading-block-title{font-weight:200;font-size:18px;letter-spacing:.2em;margin-bottom:20px}
-    .reading-block-text{font-size:14px;line-height:3.2;letter-spacing:.08em;color:var(--ink-mid)}
+    .scatter-field{position:relative;width:100%;max-width:700px;height:340px}
+    .scatter-card{position:absolute;width:80px;height:140px;border-radius:4px;background:linear-gradient(145deg,#2A2230,#1E1A28);border:1px solid rgba(155,139,180,.25);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(42,38,34,.25);transition:transform 0.8s cubic-bezier(.25,.46,.45,.94),left 0.8s,top 0.8s,opacity 0.6s;cursor:none;overflow:hidden}
+    .scatter-card::before{content:'';position:absolute;inset:5px;border:1px solid rgba(155,139,180,.15);border-radius:2px}
+    .scatter-card-sym{font-family:'Cormorant Garamond',serif;font-size:20px;color:rgba(155,139,180,.5);position:relative;z-index:1}
+    .scatter-card.floating{animation:floatCard 3s ease-in-out infinite}
+    .scatter-card:nth-child(odd).floating{animation:floatCardOdd 3.5s ease-in-out infinite}
+    @keyframes floatCard{0%,100%{margin-top:0}50%{margin-top:-8px}}
+    @keyframes floatCardOdd{0%,100%{margin-top:0}50%{margin-top:-6px}}
 
-    .result-actions{display:flex;justify-content:center;gap:16px;margin-top:80px;flex-wrap:wrap}
-    .btn-action{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 48px;cursor:none;position:relative;overflow:hidden;transition:color .4s;text-decoration:none;border-radius:999px;display:inline-block}
-    .btn-action::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .fan-field{position:relative;width:100%;max-width:700px;height:260px;display:flex;align-items:flex-end;justify-content:center}
+    .fan-card{position:absolute;width:90px;height:158px;border-radius:5px;background:linear-gradient(145deg,#2A2230,#1E1A28);border:1px solid rgba(155,139,180,.28);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(42,38,34,.3);cursor:none;transform-origin:center bottom;transition:transform .3s ease,box-shadow .3s ease;overflow:hidden}
+    .fan-card::before{content:'';position:absolute;inset:6px;border:1px solid rgba(155,139,180,.18);border-radius:3px}
+    .fan-card-sym{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(155,139,180,.5);position:relative;z-index:1}
+    .fan-card:hover{box-shadow:0 30px 60px rgba(42,38,34,.4);z-index:50!important}
+    .fan-card.pre-selected{box-shadow:0 40px 80px rgba(42,38,34,.5);z-index:50!important;border-color:rgba(155,139,180,.6)}
+
+    .shuffle-controls{display:flex;flex-direction:column;align-items:center;gap:20px;z-index:10}
+    .btn-shuffle{font-family:'Noto Serif JP',serif;font-weight:300;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 52px;cursor:none;position:relative;overflow:hidden;transition:color .4s,opacity .3s;border-radius:999px}
+    .btn-shuffle::before{content:'';position:absolute;inset:0;background:var(--purple);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-shuffle:hover::before{transform:translateX(0)}
+    .btn-shuffle span{position:relative;z-index:1}
+    .btn-shuffle:disabled{opacity:.4}
+
+    .result-area{max-width:800px;margin:0 auto;padding:0 80px 120px;display:none}
+    .result-area.visible{display:block}
+
+    .result-header{text-align:center;margin-bottom:56px}
+    .result-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--purple);display:block;margin-bottom:16px}
+    .result-title{font-weight:200;font-size:24px;letter-spacing:.2em}
+
+    .result-cards{display:flex;justify-content:center;gap:24px;margin-bottom:64px;flex-wrap:wrap}
+    .result-card{text-align:center}
+    .result-card-position{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.3em;color:var(--purple);margin-bottom:8px;display:block}
+    .result-card-img-wrap{width:120px;height:210px;border-radius:6px;overflow:hidden;margin:0 auto 16px;box-shadow:0 20px 48px rgba(42,38,34,.2)}
+    .result-card-img-wrap img{width:100%;height:100%;object-fit:cover;filter:sepia(15%) contrast(95%) brightness(102%)}
+    .result-card-img-wrap.reversed img{transform:rotate(180deg)}
+    .result-card-name{font-size:13px;letter-spacing:.2em;color:var(--ink-mid)}
+    .result-card-orientation{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.2em;color:var(--dust)}
+
+    .result-divider{width:40px;height:1px;background:var(--purple-lt);margin:0 auto 64px}
+
+    .result-messages{display:flex;flex-direction:column;gap:2px;margin-bottom:64px}
+    .result-message-block{padding:40px;background:var(--warm)}
+    .result-message-block:nth-child(2){background:var(--ink)}
+    .result-message-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.4em;color:var(--purple);margin-bottom:16px;display:block}
+    .result-message-block:nth-child(2) .result-message-label{color:var(--purple-lt)}
+    .result-message-title{font-weight:200;font-size:17px;letter-spacing:.2em;margin-bottom:16px}
+    .result-message-block:nth-child(2) .result-message-title{color:var(--cream)}
+    .result-message-text{font-size:13px;line-height:3;letter-spacing:.08em;color:var(--ink-mid)}
+    .result-message-block:nth-child(2) .result-message-text{color:rgba(245,241,235,.7)}
+
+    .possibility-meter{background:var(--ink);padding:48px;text-align:center;margin-bottom:2px}
+    .possibility-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--purple-lt);margin-bottom:24px;display:block}
+    .possibility-title{font-weight:200;font-size:20px;letter-spacing:.2em;color:var(--cream);margin-bottom:32px}
+    .meter-wrap{max-width:400px;margin:0 auto 24px}
+    .meter-bar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-bottom:16px}
+    .meter-fill{height:100%;background:linear-gradient(to right,var(--purple),var(--purple-lt));border-radius:2px;width:0;transition:width 1.5s ease}
+    .meter-value{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--purple-lt);line-height:1}
+    .meter-unit{font-size:14px;letter-spacing:.2em;color:var(--mouve)}
+    .possibility-message{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.2em;color:var(--mouve);line-height:2;margin-top:20px}
+
+    .ai-cta{background:var(--warm);padding:56px 48px;text-align:center;margin-bottom:48px}
+    .ai-cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--purple);margin-bottom:20px;display:block}
+    .ai-cta-title{font-weight:200;font-size:22px;letter-spacing:.2em;color:var(--ink);margin-bottom:12px;line-height:1.8}
+    .ai-cta-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust);margin-bottom:36px;line-height:2}
+    .ai-cta-features{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:36px}
+    .ai-cta-feature{font-size:11px;letter-spacing:.15em;color:var(--ink-lt);padding:6px 16px;border:1px solid rgba(155,139,180,.3);border-radius:2px}
+    .btn-ai{font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:22px 64px;cursor:none;position:relative;overflow:hidden;transition:color .4s;border-radius:999px;display:inline-block;text-decoration:none}
+    .btn-ai::before{content:'';position:absolute;inset:0;background:var(--purple);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-ai:hover::before{transform:translateX(0)}
+    .btn-ai:hover{color:var(--cream)}
+    .btn-ai span{position:relative;z-index:1}
+
+    .result-actions{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+    .btn-action{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--ink-lt);background:none;border:1px solid rgba(182,169,154,.4);padding:18px 40px;cursor:none;position:relative;overflow:hidden;transition:all .4s;text-decoration:none;border-radius:999px;display:inline-block}
+    .btn-action::before{content:'';position:absolute;inset:0;background:var(--warm);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
     .btn-action:hover::before{transform:translateX(0)}
     .btn-action:hover{color:var(--ink)}
     .btn-action span{position:relative;z-index:1}
-    .btn-action.ghost{background:none;border:1px solid rgba(182,169,154,.4);color:var(--ink-lt)}
-    .btn-action.ghost::before{background:var(--warm)}
-    .btn-action.ghost:hover{color:var(--ink)}
-
-    .error-wrap{text-align:center;padding:80px 24px}
-    .error-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.2em;color:var(--dust);line-height:2.5}
 
     .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
     .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
@@ -86,7 +151,38 @@
     .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
     .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
 
+    @keyframes cardShake{0%,100%{transform:var(--shake-base) translateY(-20px)}20%{transform:var(--shake-base) translateY(-20px) rotate(-3deg)}40%{transform:var(--shake-base) translateY(-20px) rotate(3deg)}60%{transform:var(--shake-base) translateY(-20px) rotate(-2deg)}80%{transform:var(--shake-base) translateY(-20px) rotate(2deg)}}
+    @keyframes cardFlipReveal{0%{transform:rotateY(0deg) scale(1.1)}50%{transform:rotateY(90deg) scale(1.15)}100%{transform:rotateY(0deg) scale(1)}}
+    .fan-card-reveal-overlay{position:fixed;inset:0;z-index:800;display:flex;align-items:center;justify-content:center;background:rgba(42,38,34,0);pointer-events:none;transition:background .3s ease}
+    .fan-card-reveal-overlay.active{background:rgba(42,38,34,.85);pointer-events:all}
+    .reveal-card{width:160px;height:280px;border-radius:8px;transform-style:preserve-3d;position:relative;animation:cardFlipReveal 1.2s cubic-bezier(.4,0,.2,1) forwards}
+    .reveal-card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;overflow:hidden}
+    .reveal-card-back{background:linear-gradient(145deg,#2A2230,#1E1A28);border:1px solid rgba(155,139,180,.4);display:flex;align-items:center;justify-content:center;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+    .reveal-card-back::before{content:'';position:absolute;inset:8px;border:1px solid rgba(155,139,180,.2);border-radius:4px}
+    .reveal-card-back-sym{font-family:'Cormorant Garamond',serif;font-size:32px;color:rgba(155,139,180,.6);position:relative;z-index:1}
+    .reveal-card-front{transform:rotateY(180deg);background:var(--cream);box-shadow:0 40px 80px rgba(0,0,0,.6)}
+    .reveal-card-front img{width:100%;height:100%;object-fit:cover;filter:sepia(10%) contrast(96%) brightness(104%)}
+    .reveal-card-front.reversed-img img{transform:rotate(180deg)}
+    @keyframes flashLight{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+    .reveal-flash{position:fixed;inset:0;z-index:900;background:radial-gradient(circle at center,rgba(255,255,255,.95),rgba(255,255,255,.3));pointer-events:none;opacity:0;animation:flashLight 0.6s ease-out forwards}
+    @keyframes particleFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}60%{opacity:.8}100%{transform:translateY(280px) rotate(540deg);opacity:0}}
+    @keyframes particleGlitter{0%,100%{opacity:.3}50%{opacity:1}}
+    .particle{position:fixed;pointer-events:none;z-index:901;animation:particleFall 2s ease-in forwards}
+    .particle-inner{width:100%;height:100%;animation:particleGlitter .4s ease-in-out infinite}
+    @keyframes guideFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+    .fan-guide{text-align:center;padding:4px 0;position:relative;z-index:10;margin-top:-20px}
+    .fan-guide-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--gold);letter-spacing:.3em;display:inline-block;animation:guideFloat 1.5s ease-in-out infinite}
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    /* チラ見せUI */
+    .teaser-wrap{background:var(--cream);border:1px solid rgba(155,139,180,.3);padding:24px 28px;border-radius:4px;margin-bottom:2px}
+    .teaser-hook{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--purple);margin-bottom:12px;display:block;line-height:1.8}
+    .teaser-preview{border-left:2px solid rgba(155,139,180,.4);padding-left:16px;margin-bottom:16px}
+    .teaser-preview-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;letter-spacing:.35em;color:var(--purple);display:block;margin-bottom:8px}
+    .teaser-preview-text{font-size:12px;line-height:2.4;letter-spacing:.08em;color:var(--ink-mid);position:relative;overflow:hidden;max-height:72px}
+    .teaser-preview-text::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom,transparent,var(--cream))}
+    .teaser-btn{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--purple);border:none;padding:16px 32px;border-radius:999px;cursor:pointer;width:100%;transition:opacity .3s}
+    .teaser-btn:hover{opacity:.85}
 
     @media(max-width:768px){
       .cursor,.cursor-ring{display:none}
@@ -96,11 +192,16 @@
       .nav-links{display:none}
       .nav-logo span{display:none}
       .page-header{padding:100px 24px 48px}
-      .cards-section{padding:0 24px 48px}
-      .reading-section{padding:0 24px 80px}
-      .card-img-wrap{width:100px;height:175px}
-      .result-actions{flex-direction:column;align-items:center}
-      .btn-action{padding:18px 40px;width:100%;max-width:320px;text-align:center}
+      .spread-intro{padding:0 24px 48px}
+      .spread-positions{grid-template-columns:1fr}
+      .shuffle-stage{padding:20px 16px 60px}
+      .scatter-field{height:260px}
+      .scatter-card{width:60px;height:105px}
+      .fan-card{width:38px;height:66px}
+      .result-area{padding:0 24px 80px}
+      .result-card-img-wrap{width:90px;height:158px}
+      .ai-cta{padding:40px 24px}
+      .possibility-meter{padding:40px 24px}
       .hamburger{display:flex}
     }
   </style>
@@ -116,13 +217,16 @@
     <li><a href="today.html">今日の1枚</a></li>
     <li><a href="tarot.html">運命のカードを引く</a></li>
     <li><a href="love.html">あの人の気持ち</a></li>
-    <li><a href="reunion.html">復縁できる？</a></li>
+    <li><a href="reunion.html" style="color:var(--ink)">復縁できる？</a></li>
     <li><a href="cards.html">カード解説</a></li>
     <li><a href="product.html">本格AI鑑定</a></li>
   </ul>
-  <button class="hamburger" id="hamburger" aria-label="メニュー">
-    <span></span><span></span><span></span>
-  </button>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button id="muteBtn" onclick="toggleMute()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink-lt);padding:4px;line-height:1;opacity:.7;transition:opacity .3s" title="音声オン/オフ">🔊</button>
+    <button class="hamburger" id="hamburger" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
@@ -138,321 +242,718 @@
 </div>
 
 <div class="page-header">
-  <span class="page-eyebrow">AI Deep Reading</span>
-  <h1 class="page-title">AI深層鑑定</h1>
-  <p class="page-desc" id="pageDesc">カードの奥に秘められたメッセージを、AIが深く読み解きます</p>
+  <span class="page-eyebrow">Reunion Reading</span>
+  <h1 class="page-title">復縁占い</h1>
+  <p class="page-desc">あの人との別れ、今の気持ち、そして復縁の可能性を<br>3枚のカードで読み解きます</p>
 </div>
 
-<div class="cards-section" id="cardsSection">
-  <span class="cards-label">Your Cards</span>
-  <div style="text-align:center;margin-bottom:32px">
-    <span class="theme-badge" id="themeBadge"></span>
+<div class="spread-intro" id="spreadIntro">
+  <span class="spread-label">— 3枚のカードの配置 —</span>
+  <div class="spread-positions">
+    <div class="spread-position">
+      <span class="spread-position-num">I</span>
+      <p class="spread-position-name">別れた理由</p>
+      <p class="spread-position-desc">二人の間に何が起きたのか。別れの本質的な原因を読み解きます</p>
+    </div>
+    <div class="spread-position">
+      <span class="spread-position-num">II</span>
+      <p class="spread-position-name">今の相手の気持ち</p>
+      <p class="spread-position-desc">今この瞬間、あの人はあなたのことをどう思っているのか</p>
+    </div>
+    <div class="spread-position">
+      <span class="spread-position-num">III</span>
+      <p class="spread-position-name">復縁の可能性</p>
+      <p class="spread-position-desc">二人が再び結ばれる可能性と、そのために必要なこと</p>
+    </div>
   </div>
-  <div class="cards-wrap" id="cardsWrap"></div>
+  <button class="btn-start-reading" onclick="startReading()"><span>カードを引き始める</span></button>
 </div>
 
-<div class="reading-section">
-  <div class="loading-wrap" id="loadingWrap">
-    <span class="loading-sym">✦</span>
-    <p class="loading-text">カードのメッセージを深く読み解いています</p>
+<div class="shuffle-stage" id="shuffleStage">
+  <div class="current-position">
+    <span class="current-position-label" id="currentPositionLabel">Position I</span>
+    <p class="current-position-name" id="currentPositionName">別れた理由</p>
   </div>
-  <div class="reading-content" id="readingContent">
-    <div class="reading-divider"></div>
-    <div id="readingBlocks"></div>
-    <div class="result-actions">
-      <a id="btnBack" href="love.html" class="btn-action ghost"><span>占いに戻る</span></a>
-      <a href="product.html" class="btn-action"><span>別のメニューを選ぶ</span></a>
-    </div>
+  <div class="shuffle-message">
+    <p class="shuffle-step-text" id="shuffleStepText">あの人との別れを思いながら、心を静めてください</p>
+    <p class="shuffle-sub-text" id="shuffleSubText">準備ができたらシャッフルを始めてください</p>
   </div>
-  <div class="error-wrap" id="errorWrap" style="display:none">
-    <p class="error-text" id="errorText">
-      メッセージの取得中にエラーが発生しました。<br>
-      しばらく経ってからもう一度お試しください。
-    </p>
-    <div class="result-actions" style="margin-top:40px">
-      <a id="btnBackError" href="love.html" class="btn-action ghost"><span>占いに戻る</span></a>
+  <div class="shuffle-controls">
+    <button class="btn-shuffle" id="shuffleBtn"><span>シャッフルを始める</span></button>
+  </div>
+  <div class="scatter-field" id="scatterField"></div>
+</div>
+
+<div class="result-area" id="resultArea">
+  <div class="result-header">
+    <span class="result-eyebrow">Reunion Reading</span>
+    <h2 class="result-title">復縁占いの結果</h2>
+  </div>
+  <div class="result-cards" id="resultCards"></div>
+  <div class="result-divider"></div>
+  <div class="result-messages" id="resultMessages"></div>
+
+  <div class="possibility-meter">
+    <span class="possibility-label">Reunion Possibility</span>
+    <p class="possibility-title">復縁の可能性</p>
+    <div class="meter-wrap">
+      <div class="meter-bar"><div class="meter-fill" id="meterFill"></div></div>
+      <div class="meter-value"><span id="meterValue">0</span><span class="meter-unit">%</span></div>
     </div>
+    <p class="possibility-message" id="possibilityMessage"></p>
+  </div>
+
+  <!-- ▼ チラ見せUI -->
+  <div class="teaser-wrap" id="teaserWrap">
+    <span class="teaser-hook" id="teaserHook"></span>
+    <div class="teaser-preview">
+      <span class="teaser-preview-label">AI鑑定より（一部）</span>
+      <p class="teaser-preview-text" id="teaserPreview"></p>
+    </div>
+    <button class="teaser-btn" onclick="document.getElementById('btnAiReading').click()">続きをAI深層鑑定で見る（¥980）</button>
+  </div>
+
+  <!-- ▼ AI鑑定CTA：Stripe決済リンク⑥（¥980）へ直接遷移 -->
+  <div class="ai-cta">
+    <span class="ai-cta-eyebrow">AI Deep Reading</span>
+    <h2 class="ai-cta-title">復縁への道をさらに深く読み解きませんか</h2>
+    <p class="ai-cta-desc">同じカードを使って、AIがより詳しい復縁鑑定を行います</p>
+    <div class="ai-cta-features">
+      <span class="ai-cta-feature">相手の本音</span>
+      <span class="ai-cta-feature">復縁の可能性</span>
+      <span class="ai-cta-feature">あなたが取るべき行動</span>
+    </div>
+    <a href="#" class="btn-ai" id="btnAiReading"><span>AI深層鑑定を受ける（¥980）</span></a>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn-action" onclick="resetReading()"><span>もう一度占う</span></button>
+    <a href="love.html" class="btn-action"><span>恋愛占いへ</span></a>
   </div>
 </div>
 
 <script>
-const CARD_IMAGES = {
-  '愚者':'images/tarot/00_Fool.jpg',
-  '魔術師':'images/tarot/01_Magician.jpg',
-  '女教皇':'images/tarot/02_High_Priestess.jpg',
-  '女帝':'images/tarot/03_Empress.jpg',
-  '皇帝':'images/tarot/04_Emperor.jpg',
-  '法王':'images/tarot/05_Hierophant.jpg',
-  '恋人':'images/tarot/06_Lovers.jpg',
-  '戦車':'images/tarot/07_Chariot.jpg',
-  '力':'images/tarot/08_Strength.jpg',
-  '隠者':'images/tarot/09_Hermit.jpg',
-  '運命の輪':'images/tarot/10_Wheel_of_Fortune.jpg',
-  '正義':'images/tarot/11_Justice.jpg',
-  '吊るされた男':'images/tarot/12_Hanged_Man.jpg',
-  '死神':'images/tarot/13_Death.jpg',
-  '節制':'images/tarot/14_Temperance.jpg',
-  '悪魔':'images/tarot/15_Devil.jpg',
-  '塔':'images/tarot/16_Tower.jpg',
-  '星':'images/tarot/17_Star.jpg',
-  '月':'images/tarot/18_Moon.jpg',
-  '太陽':'images/tarot/19_Sun.jpg',
-  '審判':'images/tarot/20_Judgement.jpg',
-  '世界':'images/tarot/21_World.jpg',
+// ── サウンドマネージャー ──
+const SOUNDS = {
+  card_spread: { src: 'sounds/card_spread.mp3', offset: 0, duration: 0.696 },
+  card_gather: { src: 'sounds/card_gather.mp3', offset: 0, duration: 0.496 },
+  card_fan:    { src: 'sounds/card_fan.mp3',    offset: 0, duration: 1.097 },
+  card_pick:   { src: 'sounds/card_pick.mp3',   offset: 0, duration: 0.575 },
+  card_flip:   { src: 'sounds/card_flip.mp3',   offset: 0, duration: 0.496 },
+  card_reveal: { src: 'sounds/card_reveal.mp3', offset: 0, duration: 7.0 },
 };
+let _audioCtx = null;
+const _soundBuffers = {};
+let _muted = false;
 
-const POSITION_LABELS = {
-  'あの人の気持ち': ['あの人の気持ち'],
-  '二人の相性': ['あなた', 'あの人'],
-  '恋の未来': ['現在の状況', 'この恋の課題', '恋の行方'],
-  '復縁占い': ['別れた理由', '今の相手の気持ち', '復縁の可能性'],
-  '今日の1枚': ['今日のカード'],
-  'カードを引く': ['あなたのカード'],
-};
-
-const params = new URLSearchParams(window.location.search);
-const cardsParam = params.get('cards') || localStorage.getItem('tobira_reading_cards') || '';
-const theme = params.get('theme') || localStorage.getItem('tobira_reading_theme') || '総合鑑定';
-
-function parseCards(cardsStr) {
-  if (!cardsStr) return [];
-  return cardsStr.split('・').map(s => {
-    const match = s.match(/^(.+?)（(正位置|逆位置)）$/);
-    if (match) return { name: match[1], reversed: match[2] === '逆位置' };
-    return { name: s, reversed: false };
-  });
+function _getAudioCtx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
 }
 
-const cards = parseCards(cardsParam);
-const positions = POSITION_LABELS[theme] || cards.map((_, i) => `カード${i + 1}`);
-
-document.getElementById('themeBadge').textContent = theme;
-
-const backUrl = theme === '復縁占い' ? 'reunion.html'
-              : theme === '今日の1枚' ? 'today.html'
-              : theme === 'カードを引く' ? 'tarot.html'
-              : 'love.html';
-document.getElementById('btnBack').href = backUrl;
-document.getElementById('btnBackError').href = backUrl;
-
-const cardsWrap = document.getElementById('cardsWrap');
-if (cards.length === 0) {
-  cardsWrap.innerHTML = '<p style="text-align:center;color:var(--dust);font-family:\'Cormorant Garamond\',serif;font-style:italic;letter-spacing:.2em">カード情報が見つかりませんでした</p>';
-} else {
-  cards.forEach((card, i) => {
-    const img = CARD_IMAGES[card.name] || '';
-    const pos = positions[i] || `カード${i + 1}`;
-    const div = document.createElement('div');
-    div.className = 'card-item';
-    div.innerHTML = `
-      <span class="card-position">${pos}</span>
-      <div class="card-img-wrap ${card.reversed ? 'reversed' : ''}">
-        <img src="${img}" alt="${card.name}" />
-      </div>
-      <p class="card-name">${card.name}</p>
-      <p class="card-orientation">${card.reversed ? '逆位置' : '正位置'}</p>
-    `;
-    cardsWrap.appendChild(div);
-  });
+async function _loadSound(key) {
+  if (_soundBuffers[key]) return _soundBuffers[key];
+  const ctx = _getAudioCtx();
+  try {
+    const res = await fetch(SOUNDS[key].src);
+    const arrayBuf = await res.arrayBuffer();
+    const audioBuf = await ctx.decodeAudioData(arrayBuf);
+    _soundBuffers[key] = audioBuf;
+    return audioBuf;
+  } catch(e) {
+    console.warn('Sound load failed:', key, e);
+    return null;
+  }
 }
 
-function buildPrompt(cards, theme) {
-  const cardText = cards.map((c, i) => {
-    const pos = positions[i] || `カード${i + 1}`;
-    return `${pos}：${c.name}（${c.reversed ? '逆位置' : '正位置'}）`;
-  }).join('\n');
+async function preloadSounds() {
+  for (const key of Object.keys(SOUNDS)) {
+    await _loadSound(key);
+  }
+}
 
-  const themePrompts = {
-    'あの人の気持ち': `ユーザーは恋愛占いをしています。
-引いたカードは以下の通りです。
-${cardText}
-テーマは「あの人の気持ち」です。
-タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
-必ず各セクションを丁寧に、具体的に記述してください。
-
-【相手の本音】
-相手が心の奥で感じていること・言葉にできない気持ち、そしてあなたへの想いに隠された深層心理を300字程度で。表面には見えていない感情にも必ず触れてください。
-
-【恋の進展】
-この恋がこれからどう動いていくか、転機となるタイミングや二人の関係に影響を与える出来事の可能性を300字程度で。
-
-【あなたが取るべき行動】
-具体的なアドバイスと心構えを300字程度で。あなた自身の中に眠る力や可能性にも触れてください。`,
-
-    '二人の相性': `ユーザーは恋愛占いをしています。
-引いたカードは以下の通りです。
-${cardText}
-テーマは「二人の相性」です。
-タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
-必ず各セクションを丁寧に、具体的に記述してください。
-
-【相手の本音】
-相手があなたに対して感じている本当の気持ち、まだ言葉にされていない深層の感情を300字程度で。
-
-【二人の相性の深層】
-二人の間にある見えない引力と課題、そしてこの出会いが持つ意味を300字程度で。転機となる可能性にも触れてください。
-
-【あなたが取るべき行動】
-この相性を活かすための具体的なアドバイスを300字程度で。あなた自身が持つ力をどう活かすかにも触れてください。`,
-
-    '恋の未来': `ユーザーは恋愛占いをしています。
-引いたカードは以下の通りです。
-${cardText}
-テーマは「恋の未来」です。
-タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
-必ず各セクションを丁寧に、具体的に記述してください。
-
-【相手の本音】
-相手が今あなたに対して感じている本音、表には出ていない深層の感情を300字程度で。
-
-【恋の進展予測】
-この恋が今後どのように展開していくか、近づいている転機やターニングポイントを300字程度で具体的に。
-
-【あなたが取るべき行動】
-恋を成就させるための具体的なアドバイスを300字程度で。あなた自身の中に眠る可能性にも必ず触れてください。`,
-
-    '復縁占い': `ユーザーは復縁占いをしています。
-引いたカードは以下の通りです。
-${cardText}
-タロット占い師として、以下の構成で温かく深い復縁鑑定メッセージを日本語で書いてください。
-必ず各セクションを丁寧に、具体的に記述してください。
-
-【相手の本音】
-別れた後、相手が今あなたに対して感じている本当の気持ち、心の奥に残っている感情を300字程度で。まだ表に出ていない想いにも必ず触れてください。
-
-【復縁の可能性と道筋】
-復縁の現実的な可能性と、そのために必要な流れを300字程度で。転機となるタイミングや、関係が動き出すきっかけにも触れてください。
-
-【あなたが取るべき行動】
-復縁を引き寄せるための具体的なアドバイスと心構えを300字程度で。あなた自身の力や魅力をどう活かすかにも触れてください。`,
-
-    '今日の1枚': `ユーザーは今日の運勢占いをしています。
-引いたカードは以下の通りです。
-${cardText}
-タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
-必ず各セクションを丁寧に、具体的に記述してください。
-
-【カードが示す今日のエネルギー】
-このカードが今日のあなたに伝えようとしているメッセージ、まだ気づいていない深層のサインを300字程度で。表面には見えていない意味にも必ず触れてください。
-
-【今日訪れる可能性のある転機】
-今日という日に潜む転機やターニングポイント、見逃してはいけない出来事や出会いの可能性を300字程度で。
-
-【あなたが取るべき行動】
-今日一日を最善にするための具体的なアドバイスを300字程度で。あなた自身の中に眠る力や可能性にも必ず触れてください。`,
-
-    'カードを引く': `ユーザーはタロット占いをしています。
-引いたカードは以下の通りです。
-${cardText}
-タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
-必ず各セクションを丁寧に、具体的に記述してください。
-
-【カードが示す深層のメッセージ】
-このカードがあなたに伝えようとしている深い意味、まだ表に出ていない重要なサインを300字程度で。カードの象徴的な意味にも触れてください。
-
-【あなたの状況への洞察】
-今のあなたの状況にこのカードがどう関わっているか、近づいている転機や変化の可能性を300字程度で。
-
-【あなたが取るべき行動】
-具体的なアドバイスと心構えを300字程度で。あなた自身の中に眠る力・まだ発揮されていない可能性にも必ず触れてください。`,
+function playSound(key, volumeScale = 1.0, lowpass = null) {
+  if (_muted) return;
+  const s = SOUNDS[key];
+  if (!s) return;
+  const ctx = _getAudioCtx();
+  const doPlay = () => {
+    const buf = _soundBuffers[key];
+    if (!buf) {
+      _loadSound(key).then(b => { if (b) doPlay(); });
+      return;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.55 * volumeScale;
+    if (lowpass) {
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = lowpass;
+      filter.Q.value = 0.8;
+      src.connect(filter);
+      filter.connect(gain);
+    } else {
+      src.connect(gain);
+    }
+    gain.connect(ctx.destination);
+    src.start(0, s.offset || 0, s.duration || buf.duration);
   };
-
-  return themePrompts[theme] || `タロット占い師として、以下のカードの深層鑑定を日本語で行ってください。
-
-引いたカード：
-${cardText}
-テーマ：${theme}
-
-以下の構成で温かく深いメッセージを書いてください。
-
-【カードからのメッセージ】
-このカードが示す深い意味、まだ表に出ていない重要なサインを300字程度で。
-
-【今のあなたへ】
-現在の状況への洞察と、近づいている転機の可能性を300字程度で。
-
-【これからの道しるべ】
-具体的なアドバイスと、あなた自身の中に眠る力・可能性について300字程度で。`;
+  if (ctx.state === 'suspended') {
+    ctx.resume().then(doPlay);
+  } else {
+    doPlay();
+  }
 }
 
-async function fetchReading() {
-  if (cards.length === 0) {
-    document.getElementById('loadingWrap').style.display = 'none';
-    document.getElementById('errorWrap').style.display = 'block';
-    document.getElementById('errorText').innerHTML = 'カード情報が見つかりませんでした。<br>占いページからやり直してください。';
+function toggleMute() {
+  _muted = !_muted;
+  const btn = document.getElementById('muteBtn');
+  if (btn) btn.textContent = _muted ? '🔇' : '🔊';
+}
+
+const CARDS = [
+  {num:'0',name:'愚者',en:'The Fool',img:'images/tarot/00_Fool.jpg'},
+  {num:'I',name:'魔術師',en:'The Magician',img:'images/tarot/01_Magician.jpg'},
+  {num:'II',name:'女教皇',en:'The High Priestess',img:'images/tarot/02_High_Priestess.jpg'},
+  {num:'III',name:'女帝',en:'The Empress',img:'images/tarot/03_Empress.jpg'},
+  {num:'IV',name:'皇帝',en:'The Emperor',img:'images/tarot/04_Emperor.jpg'},
+  {num:'V',name:'法王',en:'The Hierophant',img:'images/tarot/05_Hierophant.jpg'},
+  {num:'VI',name:'恋人',en:'The Lovers',img:'images/tarot/06_Lovers.jpg'},
+  {num:'VII',name:'戦車',en:'The Chariot',img:'images/tarot/07_Chariot.jpg'},
+  {num:'VIII',name:'力',en:'Strength',img:'images/tarot/08_Strength.jpg'},
+  {num:'IX',name:'隠者',en:'The Hermit',img:'images/tarot/09_Hermit.jpg'},
+  {num:'X',name:'運命の輪',en:'Wheel of Fortune',img:'images/tarot/10_Wheel_of_Fortune.jpg'},
+  {num:'XI',name:'正義',en:'Justice',img:'images/tarot/11_Justice.jpg'},
+  {num:'XII',name:'吊るされた男',en:'The Hanged Man',img:'images/tarot/12_Hanged_Man.jpg'},
+  {num:'XIII',name:'死神',en:'Death',img:'images/tarot/13_Death.jpg'},
+  {num:'XIV',name:'節制',en:'Temperance',img:'images/tarot/14_Temperance.jpg'},
+  {num:'XV',name:'悪魔',en:'The Devil',img:'images/tarot/15_Devil.jpg'},
+  {num:'XVI',name:'塔',en:'The Tower',img:'images/tarot/16_Tower.jpg'},
+  {num:'XVII',name:'星',en:'The Star',img:'images/tarot/17_Star.jpg'},
+  {num:'XVIII',name:'月',en:'The Moon',img:'images/tarot/18_Moon.jpg'},
+  {num:'XIX',name:'太陽',en:'The Sun',img:'images/tarot/19_Sun.jpg'},
+  {num:'XX',name:'審判',en:'Judgement',img:'images/tarot/20_Judgement.jpg'},
+  {num:'XXI',name:'世界',en:'The World',img:'images/tarot/21_World.jpg'},
+];
+
+const POSITIONS = ['別れた理由', '今の相手の気持ち', '復縁の可能性'];
+const POSITION_LABELS = ['Position I', 'Position II', 'Position III'];
+const HINTS = [
+  'あの人との別れを思いながら、心を静めてください',
+  'あの人が今どんな気持ちでいるか思い浮かべてください',
+  '二人の未来への願いを込めてカードを選んでください'
+];
+
+const REUNION_MESSAGES = {
+  reason: {
+    '愚者':     {u:'二人はまだ準備ができていなかったのかもしれません。別れは終わりではなく、お互いが成長するための時間だったようです。',r:'衝動的な選択や無責任な行動が別れの引き金になった可能性があります。しかし、その経験があなたを成長させました。'},
+    '魔術師':   {u:'どちらかが自分の力を誤った方向に使ってしまったのかもしれません。意図的ではなくても、言葉や行動が相手を傷つけてしまった可能性があります。',r:'コミュニケーション不足や力の不均衡が原因だったようです。'},
+    '女教皇':   {u:'言葉にされなかった感情や、伝えられなかった想いが積み重なって別れに至ったようです。お互いが本音を隠していたのかもしれません。',r:'秘密や信頼の欠如が関係を壊してしまった可能性があります。'},
+    '女帝':     {u:'愛情の与え方のすれ違いが原因だったかもしれません。お互いの愛の形が違っていたようです。',r:'過保護や依存関係が関係を重くしてしまったのかもしれません。'},
+    '皇帝':     {u:'どちらかが支配的になりすぎたか、お互いの自由を尊重できなかったことが原因かもしれません。',r:'頑固さやコントロール欲が関係にひびを入れてしまったようです。'},
+    '法王':     {u:'価値観や生き方の違いが最終的な障壁になったようです。家族や社会的な圧力も影響していたかもしれません。',r:'型にはまった考え方が二人の可能性を狭めてしまったのかもしれません。'},
+    '恋人':     {u:'どちらかが重要な選択を迫られ、あなたとの関係を選べなかったのかもしれません。でも、その選択は今でも揺らいでいる可能性があります。',r:'価値観のずれや優柔不断さが関係を不安定にしてしまったようです。'},
+    '戦車':     {u:'どちらかの目標や野心が関係よりも優先されてしまったようです。別れは意図的というより、流れに押し流された結果かもしれません。',r:'感情を抑えすぎて、お互いの本音が見えなくなってしまったのかもしれません。'},
+    '力':       {u:'内側にある恐れや自信のなさが、関係を維持する妨げになってしまったようです。',r:'感情の抑圧や自己不信が関係に影を落としていたかもしれません。'},
+    '隠者':     {u:'どちらかが孤独を必要としすぎて、関係の中で距離が生まれてしまったようです。',r:'引きこもりや心の壁が、二人の間に越えられない溝を作ってしまったかもしれません。'},
+    '運命の輪': {u:'タイミングが合わなかった別れだったようです。運命のサイクルが、一度二人を離れ離れにしたのかもしれません。',r:'状況の変化に対応できず、流れに飲み込まれてしまったようです。'},
+    '正義':     {u:'何らかの公正さを欠いた出来事が関係を壊してしまったようです。過去の行動の結果として別れが訪れたのかもしれません。',r:'不公平感や不誠実な行動が信頼を損なってしまったのかもしれません。'},
+    '吊るされた男':{u:'どちらかが身動きが取れない状況にあり、関係を続けることができなかったようです。',r:'停滞や諦めが関係を終わらせる原因になってしまったかもしれません。'},
+    '死神':     {u:'この別れは必然的な変容の一部だったようです。古い関係の形が終わり、新しい可能性が生まれる転換点だったのかもしれません。',r:'変化への抵抗や過去への執着が関係を消耗させてしまったようです。'},
+    '節制':     {u:'バランスの崩れが徐々に関係を蝕んでいったようです。小さなすれ違いが積み重なった結果かもしれません。',r:'過剰な期待や不均衡な関係が最終的に限界を迎えてしまったようです。'},
+    '悪魔':     {u:'執着や依存、または外部からの束縛が関係を壊してしまったようです。',r:'有害なパターンや依存関係が二人を苦しめていたのかもしれません。'},
+    '塔':       {u:'突然の出来事や衝撃的な真実が関係を崩壊させてしまったようです。しかし、壊れたものは必ずより良い形で再建できます。',r:'爆発的な感情や制御できない状況が関係を終わらせてしまったようです。'},
+    '星':       {u:'夢や理想と現実のギャップが別れの原因になってしまったようです。それでも、希望の光は消えていません。',r:'自己不信や希望の喪失が関係を諦めさせてしまったのかもしれません。'},
+    '月':       {u:'誤解や幻想、見えない恐れが関係を不安定にしてしまったようです。真実が見えていなかったのかもしれません。',r:'猜疑心や幻想が関係を壊してしまったようです。'},
+    '太陽':     {u:'外から見れば輝かしく見えた関係でも、内側では問題を抱えていたのかもしれません。',r:'自己中心的な行動や楽観的すぎる態度が問題を見えにくくしてしまったようです。'},
+    '審判':     {u:'過去の行動の結果として別れが訪れたようです。しかし、それは新しい自分へと生まれ変わるための呼び声でもあります。',r:'後悔や自己批判が関係を前に進めなくしてしまったようです。'},
+    '世界':     {u:'一つの完結した関係の章が終わったのかもしれません。この別れは終わりであると同時に、新しい始まりの準備です。',r:'どちらかが関係に完全にコミットできなかったことが原因かもしれません。'},
+  },
+  feeling: {
+    default: (name, rev) => rev
+      ? `${name}（逆位置）が示す今の相手の気持ちには、まだ整理しきれていない感情があるようです。あなたへの想いは消えていませんが、素直に表現できない状況にあるかもしれません。`
+      : `${name}が示す今の相手の気持ちには、あなたへのポジティブなエネルギーが残っています。完全に気持ちが消えたわけではないことを、カードは示しています。`,
+    '恋人': {u:'あなたへの気持ちはまだ確かに残っています。選択を迷っている状態ですが、あなたのことを忘れられずにいるようです。',r:'気持ちと現実の間で葛藤しています。あなたへの想いはあっても、踏み出す勇気が持てないでいるようです。'},
+    '星':   {u:'あなたへの希望と憧れをまだ持っています。あなたの存在が心の片隅で光り続けているようです。',r:'自信を失っているようですが、あなたへの気持ちは消えていません。'},
+    '月':   {u:'複雑な気持ちを抱えています。夢の中でもあなたのことを思っているかもしれません。',r:'自分の気持ちに戸惑いを感じています。でも、その戸惑いはあなたへの気持ちが残っている証拠です。'},
+    '太陽': {u:'あなたとの思い出を明るく温かく覚えています。再会を望んでいる可能性が高いです。',r:'表面上は明るく振る舞っていても、内側ではあなたへの想いを抱えているようです。'},
+    '審判': {u:'あなたへの気持ちに改めて向き合おうとしています。内なる呼び声があなたのことを思い出させているようです。',r:'後悔の気持ちを持っているようですが、自分を責めて前に進めていないようです。'},
+  },
+  possibility: {
+    default: (name, rev, score) => {
+      if (score >= 70) return `${name}が示す復縁の可能性は高いです。二人の間にはまだ確かなエネルギーが流れています。`;
+      if (score >= 40) return `${name}が示す復縁の可能性はあります。正しいアプローチと時間が鍵になりそうです。`;
+      return `${name}が示す状況は、今すぐの復縁は難しいかもしれません。でも、それはあなたが新しいステージへ向かうサインかもしれません。`;
+    }
+  }
+};
+
+const POSSIBILITY_SCORES = {
+  '愚者':80,'魔術師':65,'女教皇':55,'女帝':70,'皇帝':50,
+  '法王':60,'恋人':85,'戦車':60,'力':70,'隠者':45,
+  '運命の輪':75,'正義':55,'吊るされた男':50,'死神':65,
+  '節制':70,'悪魔':45,'塔':40,'星':80,'月':55,
+  '太陽':85,'審判':75,'世界':70
+};
+
+function getScore(cards) {
+  let total = 0;
+  cards.forEach(item => {
+    const base = POSSIBILITY_SCORES[item.card.name] || 60;
+    total += item.reversed ? base * 0.7 : base;
+  });
+  return Math.round(Math.min(95, Math.max(15, total / cards.length)));
+}
+
+function getPossibilityMessage(score) {
+  if (score >= 80) return '二人の縁はまだ強く結ばれています。誠実な気持ちで向き合えば、再び結ばれる可能性は十分にあります。';
+  if (score >= 65) return 'あの人の心にはあなたへの気持ちが残っています。焦らず、自分を磨きながら自然な再会を待ちましょう。';
+  if (score >= 45) return '今すぐではないかもしれませんが、縁は続いています。まずは自分自身を整えることが復縁への近道です。';
+  return '今は自分のための時間を大切にする時期かもしれません。あなたの幸せが最優先です。新しい可能性もあなたを待っています。';
+}
+
+let shufflePhase = 'idle';
+let shuffled = [];
+let selectedCards = [];
+const symbols = ['☽','✦','⊙','♀','✧','❋','◈','☿','♄','✵'];
+
+function startReading() {
+  document.getElementById('spreadIntro').style.display = 'none';
+  const stage = document.getElementById('shuffleStage');
+  stage.classList.add('visible');
+  updatePositionDisplay();
+  stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updatePositionDisplay() {
+  const i = selectedCards.length;
+  document.getElementById('currentPositionLabel').textContent = POSITION_LABELS[i];
+  document.getElementById('currentPositionName').textContent = POSITIONS[i];
+  document.getElementById('shuffleStepText').textContent = HINTS[i];
+  document.getElementById('shuffleSubText').textContent = '準備ができたらシャッフルを始めてください';
+}
+
+function resetReading() {
+  selectedCards = [];
+  shufflePhase = 'idle';
+  const btn = document.getElementById('shuffleBtn');
+  btn.innerHTML = '<span>シャッフルを始める</span>';
+  btn.disabled = false;
+  btn.onclick = null;
+  const sf = document.getElementById('scatterField');
+  sf.innerHTML = '';
+  sf.style.display = 'block';
+  sf.style.opacity = '1';
+  const ff = document.getElementById('fanField');
+  if (ff) ff.remove();
+  const fanGuide = document.getElementById('fanGuide');
+  if (fanGuide) fanGuide.remove();
+  document.getElementById('spreadIntro').style.display = 'block';
+  document.getElementById('shuffleStage').classList.remove('visible');
+  document.getElementById('resultArea').classList.remove('visible');
+  document.getElementById('resultArea').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+const shuffleBtn = document.getElementById('shuffleBtn');
+const scatterField = document.getElementById('scatterField');
+
+shuffleBtn.addEventListener('click', () => {
+  preloadSounds();
+  if (shufflePhase === 'idle') {
+    shufflePhase = 'scattering';
+    shuffleBtn.innerHTML = '<span>カードを混ぜる</span>';
+    document.getElementById('shuffleStepText').textContent = 'カードが広がりました';
+    document.getElementById('shuffleSubText').textContent = '気持ちを込めながらカードを混ぜてください';
+    scatterCards();
+  } else if (shufflePhase === 'scattering') {
+    shufflePhase = 'gathering';
+    shuffleBtn.innerHTML = '<span>扇状に広げる</span>';
+    document.getElementById('shuffleStepText').textContent = 'カードがまとまりました';
+    document.getElementById('shuffleSubText').textContent = '準備ができたら扇状に広げてください';
+    gatherCards();
+  } else if (shufflePhase === 'gathering') {
+    shufflePhase = 'fanning';
+    shuffleBtn.disabled = true;
+    document.getElementById('shuffleStepText').textContent = 'カードを扇状に広げました';
+    document.getElementById('shuffleSubText').textContent = '心が反応したカードを選んでください';
+    fanCards();
+  }
+});
+
+function scatterCards() {
+  shuffled = shuffleArr([...CARDS]);
+  scatterField.innerHTML = '';
+  playSound('card_spread');
+  const fw = scatterField.offsetWidth || 600;
+  const fh = scatterField.offsetHeight || 340;
+  setTimeout(() => scatterField.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+  for (let i = 0; i < 22; i++) {
+    const card = document.createElement('div');
+    card.className = 'scatter-card';
+    const sym = document.createElement('div');
+    sym.className = 'scatter-card-sym';
+    sym.textContent = symbols[i % symbols.length];
+    card.appendChild(sym);
+    card.style.left = Math.random() * (fw - 80) + 'px';
+    card.style.top = Math.random() * (fh - 140) + 'px';
+    card.style.transform = `rotate(${(Math.random() - 0.5) * 60}deg)`;
+    card.style.zIndex = i;
+    card.style.opacity = '0';
+    scatterField.appendChild(card);
+    setTimeout(() => { card.style.opacity = '1'; setTimeout(() => card.classList.add('floating'), 100); }, i * 40);
+  }
+}
+
+function gatherCards() {
+  setTimeout(() => playSound('card_gather'), 300);
+  const cards = scatterField.querySelectorAll('.scatter-card');
+  const fw = scatterField.offsetWidth || 600;
+  const fh = scatterField.offsetHeight || 340;
+  cards.forEach((card, i) => {
+    card.classList.remove('floating');
+    card.style.left = fw / 2 - 40 + 'px';
+    card.style.top = fh / 2 - 70 + 'px';
+    card.style.transform = `rotate(${(Math.random() - 0.5) * 8}deg)`;
+    card.style.zIndex = i;
+  });
+}
+
+function fanCards() {
+  scatterField.style.transition = 'opacity 0.6s ease';
+  scatterField.style.opacity = '0';
+  setTimeout(() => playSound('card_fan'), 400);
+  setTimeout(() => {
+    scatterField.style.display = 'none';
+    const fanField = document.createElement('div');
+    fanField.className = 'fan-field';
+    fanField.id = 'fanField';
+    document.getElementById('shuffleStage').insertBefore(fanField, document.getElementById('shuffleStage').querySelector('.shuffle-controls'));
+    const guideEl = document.createElement('div');
+    guideEl.className = 'fan-guide';
+    guideEl.id = 'fanGuide';
+    guideEl.innerHTML = '<span class="fan-guide-text">↓ カードに触れてください ↓</span>';
+    document.getElementById('shuffleStage').insertBefore(guideEl, fanField);
+    const isMobile = window.innerWidth <= 768;
+    const total = 22;
+    const spreadAngle = isMobile ? 140 : 160;
+    const radius = isMobile ? 95 : 280;
+    for (let i = 0; i < total; i++) {
+      const card = document.createElement('div');
+      card.className = 'fan-card';
+      const sym = document.createElement('div');
+      sym.className = 'fan-card-sym';
+      sym.textContent = symbols[i % symbols.length];
+      card.appendChild(sym);
+      const angle = -spreadAngle / 2 + (spreadAngle / (total - 1)) * i;
+      const x = Math.sin(angle * Math.PI / 180) * radius;
+      card.style.left = isMobile ? 'calc(50% - 19px)' : 'calc(50% - 45px)';
+      card.style.transform = `translateX(${x}px) rotate(${angle}deg)`;
+      card.style.zIndex = i;
+      card.style.opacity = '0';
+      card.style.bottom = '0';
+      card.addEventListener('click', () => onFanCardClick(card, i));
+      fanField.appendChild(card);
+      setTimeout(() => { card.style.opacity = '1'; }, i * 30);
+    }
+  }, 600);
+}
+
+function onFanCardClick(card, index) {
+  if (shufflePhase !== 'fanning') return;
+  const prev = document.querySelector('.fan-card.pre-selected');
+  if (prev === card) {
+    confirmCard(index);
+  } else {
+    if (prev) {
+      prev.classList.remove('pre-selected');
+      prev.style.transform = prev.dataset.originalTransform;
+      prev.style.boxShadow = '';
+      prev.style.borderColor = '';
+    }
+    const fanGuide = document.getElementById('fanGuide');
+    if (fanGuide) fanGuide.remove();
+    card.dataset.originalTransform = card.style.transform;
+    card.classList.add('pre-selected');
+    card.style.transform = card.style.transform + ' translateY(-20px)';
+    playSound('card_pick', 0.35);
+    card.style.borderColor = 'rgba(155,139,180,.6)';
+    card.style.boxShadow = '0 30px 60px rgba(42,38,34,.4)';
+    card.style.zIndex = 100;
+    document.getElementById('shuffleStepText').textContent = 'このカードでよいですか？';
+    document.getElementById('shuffleSubText').textContent = 'もう一度タップで確定、別のカードをタップで選び直せます';
+    shuffleBtn.innerHTML = '<span>このカードに決める</span>';
+    shuffleBtn.disabled = false;
+    shuffleBtn.onclick = () => confirmCard(index);
+  }
+}
+
+function confirmCard(index) {
+  const cardData = shuffled[index] || CARDS[index % CARDS.length];
+  const reversed = Math.random() < 0.25;
+  selectedCards.push({ card: cardData, reversed });
+
+  if (selectedCards.length < 3) {
+    shufflePhase = 'idle';
+    shuffleBtn.innerHTML = '<span>シャッフルを始める</span>';
+    shuffleBtn.disabled = false;
+    shuffleBtn.onclick = null;
+    scatterField.innerHTML = '';
+    scatterField.style.display = 'block';
+    scatterField.style.opacity = '1';
+    const ff = document.getElementById('fanField');
+    if (ff) ff.remove();
+    document.querySelectorAll('.fan-card.pre-selected').forEach(c => {
+      c.classList.remove('pre-selected');
+    });
+    const oldGuide = document.getElementById('fanGuide');
+    if (oldGuide) oldGuide.remove();
+    updatePositionDisplay();
+    document.getElementById('currentPositionLabel').scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
-  try {
-    const response = await fetch('/api/reading', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        cards: cards,
-        readingType: theme,
-        prompt: buildPrompt(cards, theme)
-      })
-    });
-
-    const data = await response.json();
-    if (data.error) throw new Error(data.error);
-
-    showReading(data.reading);
-
-  } catch (error) {
-    document.getElementById('loadingWrap').style.display = 'none';
-    document.getElementById('errorWrap').style.display = 'block';
-  }
-}
-
-function showReading(text) {
-  document.getElementById('loadingWrap').style.display = 'none';
-  const content = document.getElementById('readingContent');
-  content.style.display = 'block';
-
-  const blocks = document.getElementById('readingBlocks');
-  blocks.innerHTML = '';
-
-  const sections = text.split(/【(.+?)】/).filter(s => s.trim());
-  const pairs = [];
-  for (let i = 0; i < sections.length; i += 2) {
-    if (sections[i + 1]) pairs.push({ title: sections[i], text: sections[i + 1].trim() });
-  }
-
-  if (pairs.length > 0) {
-    pairs.forEach((pair, i) => {
-      const div = document.createElement('div');
-      div.className = 'reading-block';
-      div.style.animationDelay = `${i * 0.3}s`;
-      div.innerHTML = `
-        <p class="reading-block-label">Deep Reading</p>
-        <h2 class="reading-block-title">【${pair.title}】</h2>
-        <p class="reading-block-text">${pair.text.replace(/\n/g, '<br>')}</p>
-      `;
-      blocks.appendChild(div);
-    });
+  const selectedCard = document.querySelector('.fan-card.pre-selected');
+  if (selectedCard) {
+    selectedCard.style.setProperty('--shake-base', selectedCard.dataset.originalTransform);
+    selectedCard.style.animation = 'cardShake 0.5s ease-in-out';
+    setTimeout(() => {
+      showRevealAnimation(cardData, reversed, () => {
+        document.getElementById('shuffleStage').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('shuffleStage').style.display = 'none';
+          showResult();
+        }, 400);
+      });
+    }, 500);
   } else {
-    const div = document.createElement('div');
-    div.className = 'reading-block';
-    div.innerHTML = `<p class="reading-block-text">${text.replace(/\n/g, '<br>')}</p>`;
-    blocks.appendChild(div);
+    document.getElementById('shuffleStage').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('shuffleStage').style.display = 'none';
+      showResult();
+    }, 400);
   }
 }
 
+function showResult() {
+  const resultArea = document.getElementById('resultArea');
+  resultArea.style.display = 'block';
+  resultArea.classList.add('visible');
+
+  const resultCards = document.getElementById('resultCards');
+  resultCards.innerHTML = '';
+  selectedCards.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'result-card';
+    div.innerHTML = `
+      <span class="result-card-position">${POSITIONS[i]}</span>
+      <div class="result-card-img-wrap ${item.reversed ? 'reversed' : ''}">
+        <img src="${item.card.img}" alt="${item.card.name}" />
+      </div>
+      <p class="result-card-name">${item.card.num}. ${item.card.name}</p>
+      <p class="result-card-orientation">${item.reversed ? '逆位置' : '正位置'}</p>
+    `;
+    resultCards.appendChild(div);
+  });
+
+  const messagesWrap = document.getElementById('resultMessages');
+  messagesWrap.innerHTML = '';
+
+  const reasonCard = selectedCards[0];
+  const reasonData = REUNION_MESSAGES.reason[reasonCard.card.name];
+  const reasonText = reasonData
+    ? (reasonCard.reversed ? reasonData.r : reasonData.u)
+    : `${reasonCard.card.name}が別れの本質的な原因を示しています。`;
+
+  const feelingCard = selectedCards[1];
+  const feelingData = REUNION_MESSAGES.feeling[feelingCard.card.name];
+  const feelingText = feelingData
+    ? (feelingCard.reversed ? feelingData.r : feelingData.u)
+    : REUNION_MESSAGES.feeling.default(feelingCard.card.name, feelingCard.reversed);
+
+  const score = getScore(selectedCards);
+  const possCard = selectedCards[2];
+  const possText = REUNION_MESSAGES.possibility.default(possCard.card.name, possCard.reversed, score);
+
+  const messages = [
+    { label: 'Position I', title: `${reasonCard.card.name}が示す別れた理由`, text: reasonText },
+    { label: 'Position II', title: `${feelingCard.card.name}が示す今の相手の気持ち`, text: feelingText },
+    { label: 'Position III', title: `${possCard.card.name}が示す復縁へのメッセージ`, text: possText },
+  ];
+
+  messages.forEach(msg => {
+    const div = document.createElement('div');
+    div.className = 'result-message-block';
+    div.innerHTML = `
+      <span class="result-message-label">${msg.label}</span>
+      <h3 class="result-message-title">${msg.title}</h3>
+      <p class="result-message-text">${msg.text}</p>
+    `;
+    messagesWrap.appendChild(div);
+  });
+
+  setTimeout(() => {
+    document.getElementById('meterFill').style.width = score + '%';
+    let current = 0;
+    const timer = setInterval(() => {
+      current += 2;
+      if (current >= score) { current = score; clearInterval(timer); }
+      document.getElementById('meterValue').textContent = current;
+    }, 30);
+    document.getElementById('possibilityMessage').textContent = getPossibilityMessage(score);
+  }, 800);
+
+  // カード情報をlocalStorageに保存
+  const cardNames = selectedCards.map(item =>
+    `${item.card.name}（${item.reversed ? '逆位置' : '正位置'}）`).join('・');
+  localStorage.setItem('tobira_reading_cards', cardNames);
+  localStorage.setItem('tobira_reading_theme', '復縁占い');
+
+  // チラ見せテキスト設定
+  const teaserContent = getTeaserContent(selectedCards);
+  document.getElementById('teaserHook').textContent = teaserContent.hook;
+  document.getElementById('teaserPreview').textContent = teaserContent.preview;
+
+  // ▼ Stripe決済リンク⑥（¥980）へ直接遷移
+  const reunionBtn = document.getElementById('btnAiReading');
+  reunionBtn.href = 'https://buy.stripe.com/test_5kQ28qfC82y65aKgFJ2VG08';
+
+  resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showRevealAnimation(card, reversed, callback) {
+  const overlay = document.createElement('div');
+  overlay.className = 'fan-card-reveal-overlay';
+  document.body.appendChild(overlay);
+  const revealCard = document.createElement('div');
+  revealCard.className = 'reveal-card';
+  const back = document.createElement('div');
+  back.className = 'reveal-card-face reveal-card-back';
+  back.innerHTML = '<span class="reveal-card-back-sym">☽</span>';
+  const front = document.createElement('div');
+  front.className = 'reveal-card-face reveal-card-front' + (reversed ? ' reversed-img' : '');
+  front.innerHTML = `<img src="${card.img}" alt="${card.name}" />`;
+  revealCard.appendChild(back);
+  revealCard.appendChild(front);
+  overlay.appendChild(revealCard);
+  requestAnimationFrame(() => {
+    overlay.classList.add('active');
+    setTimeout(() => playSound('card_flip'), 300);
+  });
+  setTimeout(() => {
+    const flash = document.createElement('div');
+    flash.className = 'reveal-flash';
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 600);
+  }, 600);
+  setTimeout(() => playSound('card_reveal', 0.6, 3500), 1200);
+  setTimeout(() => {
+    const colors = ['#C9A96E','#E8D4A8','#D4B896','#F0E4C4','#BFA97E','rgba(255,255,255,.9)'];
+    for (let i = 0; i < 80; i++) {
+      setTimeout(() => {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = (1.5 + Math.random() * 3.5) + 'px';
+        p.style.width = size;
+        p.style.height = size;
+        p.style.left = (Math.random() * 100) + 'vw';
+        p.style.top = (Math.random() * 60) + 'vh';
+        p.style.borderRadius = '50%';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.boxShadow = `0 0 ${3 + Math.random() * 6}px ${colors[Math.floor(Math.random() * colors.length)]}, 0 0 ${6 + Math.random() * 10}px rgba(255,220,100,.8), 0 0 ${10 + Math.random() * 8}px rgba(255,255,255,.5)`;
+        p.style.animationDuration = (1.5 + Math.random() * 1.2) + 's';
+        const inner = document.createElement('div');
+        inner.className = 'particle-inner';
+        inner.style.background = 'inherit';
+        inner.style.borderRadius = 'inherit';
+        inner.style.width = '100%';
+        inner.style.height = '100%';
+        inner.style.animationDelay = (Math.random() * 0.4) + 's';
+        p.appendChild(inner);
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 2800);
+      }, i * 40);
+    }
+  }, 800);
+  setTimeout(() => {
+    overlay.style.background = 'rgba(42,38,34,0)';
+    setTimeout(() => {
+      overlay.remove();
+      callback();
+    }, 300);
+  }, 1800);
+}
+
+// ── チラ見せデータ ──
+const CARD_GROUPS = {
+  A: ['恋人','星','太陽','世界','女帝','力'],
+  B: ['死神','塔','審判','運命の輪','愚者'],
+  C: ['女教皇','隠者','月','吊るされた男','節制'],
+  D: ['魔術師','戦車','皇帝','法王'],
+  E: ['悪魔','正義'],
+};
+const TEASER_TEXTS = {
+  A: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。復縁の可能性に、まだ気づいていない大きなサインが隠れています…', preview: 'あなたが引いた3枚のカードは、あの人の心にまだ消えていない感情が残っている可能性を示しています。AIはその本音と復縁への道筋を読み取りましたが、それが動き出すには、ある条件が…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。復縁への道に、まだ気づいていない感情のすれ違いが隠れています…', preview: 'あなたが引いた3枚のカードは、二人の間にまだ整理されていない感情が残っている可能性を示しています。AIはその原因と解決の糸口を読み取りました。実はそれは…' },
+  },
+  B: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。復縁への大きな転機が近づいている可能性があります…', preview: 'あなたが引いた3枚のカードは、二人の関係に近づいている転機のサインを示しています。AIはそのタイミングとあなたが今取るべき行動を読み取りました。それによると…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。今、重要な変化を見逃している可能性があります…', preview: 'あなたが引いた3枚のカードは、復縁の流れに重要な変化が起きている可能性を示しています。AIはその内容を読み取りました。このままでは…' },
+  },
+  C: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。あの人の内側に、まだ表に出ていない深い感情が眠っています…', preview: 'あなたが引いた3枚のカードは、あの人の心の奥にまだ言葉にされていない想いが残っている可能性を示しています。AIはそのメッセージを読み解きましたが、それはあなたの現状に…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。自分でも気づいていない何かが復縁を妨げている可能性があります…', preview: 'あなたが引いた3枚のカードは、復縁を妨げている見えない障壁がある可能性を示しています。AIはその正体を読み取りました。それは意外にも…' },
+  },
+  D: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。あなたの中に、まだ発揮されていない復縁への力が眠っています…', preview: 'あなたが引いた3枚のカードは、あなたの中にまだ活かされていない力と可能性が眠っていることを示しています。AIはそれを引き出す鍵を読み取りました。今あなたに最も必要なのは…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。本来の魅力がうまく伝わっていない可能性があります…', preview: 'あなたが引いた3枚のカードは、あなたの本来の魅力が相手にうまく伝わっていない可能性を示しています。AIはその原因を読み取りました。鍵を握っているのは…' },
+  },
+  E: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを読み解きました。ある人物や出来事が復縁に予想以上の影響を与えている可能性があります…', preview: 'あなたが引いた3枚のカードは、二人の復縁にある人物や出来事が想像以上に深く関わっている可能性を示しています。AIはそのつながりを読み取りましたが、注目すべきは…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。気づかないうちに自分を縛っているものが復縁を遠ざけている可能性があります…', preview: 'あなたが引いた3枚のカードは、あなたが無意識に自分を縛っているものがある可能性を示しています。AIはその正体と解放へのヒントを読み取りました。それによると…' },
+  },
+};
+function getCardGroup(cardName) {
+  for (const [group, cards] of Object.entries(CARD_GROUPS)) {
+    if (cards.includes(cardName)) return group;
+  }
+  return 'A';
+}
+// reunion は3枚引き：「復縁の可能性」ポジション（最後のカード）をメインに使用
+function getTeaserContent(selectedCards) {
+  const mainCard = selectedCards[selectedCards.length - 1];
+  const group = getCardGroup(mainCard.card.name);
+  const data = TEASER_TEXTS[group][mainCard.reversed ? 'r' : 'u'];
+  return { hook: data.hook, preview: data.preview };
+}
+
+function shuffleArr(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// カーソル
 const cur=document.getElementById('cur'),ring=document.getElementById('ring');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
 (function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
 document.addEventListener('mouseover',e=>{
-  if(e.target.closest('a,button')){
+  if(e.target.closest('a,button,.fan-card')){
     cur.style.transform='translate(-50%,-50%) scale(2.2)';
-    ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
+    ring.style.borderColor='var(--purple)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
   }else{
     cur.style.transform='translate(-50%,-50%) scale(1)';
-    ring.style.borderColor='var(--mouve)';ring.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.borderColor='var(--purple)';ring.style.transform='translate(-50%,-50%) scale(1)';
   }
 });
 
+// ハンバーガー
 const hamburger=document.getElementById('hamburger');
 const mobileMenu=document.getElementById('mobileMenu');
 hamburger.addEventListener('click',()=>{
@@ -465,8 +966,6 @@ function closeMenu(){
   mobileMenu.classList.remove('open');
   document.body.style.overflow='';
 }
-
-window.addEventListener('DOMContentLoaded', fetchReading);
 </script>
 </body>
 </html>
