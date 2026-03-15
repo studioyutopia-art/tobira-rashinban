@@ -439,7 +439,7 @@ function scatterCards() {
 
 // ── 束に集める ──
 function gatherCards() {
-  playSound('card_gather');
+  setTimeout(() => playSound('card_gather'), 150);
   const cards = scatterField.querySelectorAll('.scatter-card');
   const fieldW = scatterField.offsetWidth || 600;
   const fieldH = scatterField.offsetHeight || 340;
