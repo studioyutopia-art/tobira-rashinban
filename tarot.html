@@ -376,8 +376,8 @@ const symbols = ['✦','☽','⊙','☉','♃','♀','✧','◈','☿','♄'];
 
 // ── シャッフルボタン ──
 shuffleBtn.addEventListener('click', () => {
-  // 初回クリック時にサウンドをプリロード（Autoplay Policy対策）
-  if (Object.keys(_soundBuffers).length === 0) preloadSounds();
+  // クリック時にプリロード（既ロード済みはキャッシュから返るので重複なし）
+  preloadSounds();
   if (shufflePhase === 'idle') {
     shufflePhase = 'scattering';
     shuffleBtn.innerHTML = '<span>シャッフルを始める</span>';
