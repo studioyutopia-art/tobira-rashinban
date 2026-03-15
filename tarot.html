@@ -743,7 +743,7 @@ function showRevealAnimation(card, reversed, callback) {
     document.body.appendChild(flash);
     setTimeout(() => flash.remove(), 600);
   }, 600);
-  setTimeout(() => playSound('card_reveal', 1.0, 3500), 1200);
+  setTimeout(() => playSound('card_reveal', 0.7, 3500), 1200);
 
   setTimeout(() => {
     const colors = ['#C9A96E','#E8D4A8','#D4B896','#F0E4C4','#BFA97E','rgba(255,255,255,.9)'];
