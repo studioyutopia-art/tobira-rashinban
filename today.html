@@ -133,9 +133,12 @@
     <li><a href="cards.html">カード解説</a></li>
     <li><a href="product.html">本格AI鑑定</a></li>
   </ul>
-  <button class="hamburger" id="hamburger" aria-label="メニュー">
-    <span></span><span></span><span></span>
-  </button>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button id="muteBtn" onclick="toggleMute()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink-lt);padding:4px;line-height:1;opacity:.7;transition:opacity .3s" title="音声オン/オフ">🔊</button>
+    <button class="hamburger" id="hamburger" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
@@ -156,7 +159,7 @@
   <h1 class="input-title">おかえりなさい</h1>
   <p class="input-desc" id="welcomeDate" style="font-size:18px;letter-spacing:.2em;color:var(--ink-mid);font-family:'Cormorant Garamond',serif;font-style:italic"></p>
   <div class="input-form">
-    <button class="btn-start" onclick="showReading(localStorage.getItem('tobira_birthdate'))"><span>今日のカードを受け取る</span></button>
+    <button class="btn-start" onclick="preloadSounds();showReading(localStorage.getItem('tobira_birthdate'))"><span>今日のカードを受け取る</span></button>
     <button class="btn-reset" onclick="resetReading()">生年月日を変更する</button>
   </div>
 </div>
@@ -207,6 +210,81 @@
 </div>
 
 <script>
+// ── サウンドマネージャー ──
+const SOUNDS = {
+  card_reveal: { src: 'sounds/card_reveal.mp3', offset: 0, duration: 7.0 },
+};
+let _audioCtx = null;
+const _soundBuffers = {};
+let _muted = false;
+
+function _getAudioCtx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
+}
+
+async function _loadSound(key) {
+  if (_soundBuffers[key]) return _soundBuffers[key];
+  const ctx = _getAudioCtx();
+  try {
+    const res = await fetch(SOUNDS[key].src);
+    const arrayBuf = await res.arrayBuffer();
+    const audioBuf = await ctx.decodeAudioData(arrayBuf);
+    _soundBuffers[key] = audioBuf;
+    return audioBuf;
+  } catch(e) {
+    console.warn('Sound load failed:', key, e);
+    return null;
+  }
+}
+
+async function preloadSounds() {
+  for (const key of Object.keys(SOUNDS)) {
+    await _loadSound(key);
+  }
+}
+
+function playSound(key, volumeScale = 1.0, lowpass = null) {
+  if (_muted) return;
+  const s = SOUNDS[key];
+  if (!s) return;
+  const ctx = _getAudioCtx();
+  const doPlay = () => {
+    const buf = _soundBuffers[key];
+    if (!buf) {
+      _loadSound(key).then(b => { if (b) doPlay(); });
+      return;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.55 * volumeScale;
+    if (lowpass) {
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = lowpass;
+      filter.Q.value = 0.8;
+      src.connect(filter);
+      filter.connect(gain);
+    } else {
+      src.connect(gain);
+    }
+    gain.connect(ctx.destination);
+    src.start(0, s.offset || 0, s.duration || buf.duration);
+  };
+  if (ctx.state === 'suspended') {
+    ctx.resume().then(doPlay);
+  } else {
+    doPlay();
+  }
+}
+
+function toggleMute() {
+  _muted = !_muted;
+  const btn = document.getElementById('muteBtn');
+  if (btn) btn.textContent = _muted ? '🔇' : '🔊';
+}
+
 const CARDS = [
   {num:'0',name:'愚者',en:'The Fool',img:'images/tarot/00_Fool.jpg',
    keywords:['始まり','自由','冒険','純粋さ','可能性'],
@@ -379,6 +457,7 @@ function startReading() {
     alert('生年月日を入力してください');
     return;
   }
+  preloadSounds();
   localStorage.setItem('tobira_birthdate', input);
   showReading(input);
 }
@@ -433,10 +512,11 @@ function showReading(birthdate) {
   document.getElementById('resultMessage').textContent =
     reversed ? card.todayMessage.reversed : card.todayMessage.upright;
 
-  // 結果画面にスクロール
+  // 結果画面にスクロール＆card_reveal再生
   setTimeout(() => {
     document.getElementById('resultScreen').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
+  setTimeout(() => playSound('card_reveal', 0.6, 3500), 600);
 
   // Xシェア
   const shareText = `今日のタロットカードは「${card.name}」（${reversed ? '逆位置' : '正位置'}）でした✦\n${card.keywords.slice(0,3).join('・')}\n\n#扉と羅針盤 #タロット占い #今日の占い`;
