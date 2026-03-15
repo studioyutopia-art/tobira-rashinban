@@ -334,6 +334,7 @@ ${cardText}
     '恋の未来': `テーマは「恋の未来」です。
 引いたカード：
 ${cardText}
+※「恋の未来」「Love Future」などのテーマ名を【】で囲まないでください。必ず下記の5つのセクションタイトルのみを【】で囲んでください。
 「相手の心理」のセクションでは、相手が今感じている本音と、まだ表に出ていない感情を読み解いてください。
 「未来の流れ」では、この恋が今後どのように展開していくか、転機となるタイミングを具体的に伝えてください。`,
 
@@ -398,15 +399,22 @@ function cleanText(str) {
     .trim();
 }
 
+// 正規のセクションタイトル
+const VALID_TITLES = ['カードの意味', '現在の状況', '相手の心理', '今日のエネルギー', '未来の流れ', 'あなたへのアドバイス'];
+
 // セクションタイトルの正規化（余分な情報を除去）
 function normalizeTitle(title) {
-  // 「節制（正位置）｜あの人の気持ち --- 」→ 「カードの意味」など本来のタイトルだけ残す
-  // 「---」「｜」以降を除去
   return title
     .replace(/[｜|].*/g, '')
     .replace(/[-－─—]+.*/g, '')
     .replace(/（.*?）/g, '')
     .trim();
+}
+
+// 正規のセクションタイトルかどうか判定
+function isValidTitle(title) {
+  const normalized = normalizeTitle(title);
+  return VALID_TITLES.some(t => normalized.includes(t));
 }
 
 function showReading(text) {
@@ -431,8 +439,12 @@ function showReading(text) {
     }
   }
 
-  if (pairs.length > 0) {
-    pairs.forEach((pair, i) => {
+  // 正規タイトルのみ残す（テーマ名などを除外）
+  const validPairs = pairs.filter(p => isValidTitle(p.title));
+  const displayPairs = validPairs.length > 0 ? validPairs : pairs;
+
+  if (displayPairs.length > 0) {
+    displayPairs.forEach((pair, i) => {
       const div = document.createElement('div');
       div.className = 'reading-block';
       div.style.animationDelay = `${i * 0.3}s`;
