@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>特定商取引法に基づく表記 — 扉と羅針盤</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
+      --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
+      --ink-lt:#7A7068;--gold:#C9A96E;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+
+    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+    .nav-links{display:flex;gap:44px;list-style:none}
+    .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
+    .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
+    .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    .mobile-menu{position:fixed;top:0;left:0;right:0;background:rgba(245,241,235,.98);backdrop-filter:blur(12px);z-index:150;padding:90px 48px 48px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);border-bottom:1px solid rgba(182,169,154,.3)}
+    .mobile-menu.open{transform:translateY(0)}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:0}
+    .mobile-menu ul li{border-bottom:1px solid rgba(182,169,154,.2)}
+    .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
+    .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
+
+    /* ページヘッダー */
+    .page-header{padding:140px 80px 64px;text-align:center}
+    .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
+    .page-title{font-weight:200;font-size:clamp(24px,3vw,40px);line-height:1.6;letter-spacing:.16em;opacity:0;animation:fadeUp 1s ease .4s forwards}
+
+    /* テーブルエリア */
+    .tokusho-wrap{max-width:800px;margin:0 auto;padding:0 80px 120px;opacity:0;animation:fadeUp 1s ease .6s forwards}
+
+    .tokusho-table{width:100%;border-collapse:collapse}
+    .tokusho-table tr{border-bottom:1px solid rgba(182,169,154,.2)}
+    .tokusho-table tr:first-child{border-top:1px solid rgba(182,169,154,.2)}
+    .tokusho-table th{font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.25em;color:var(--ink-lt);padding:28px 24px 28px 0;vertical-align:top;white-space:nowrap;width:200px}
+    .tokusho-table td{font-size:13px;letter-spacing:.1em;color:var(--ink-mid);padding:28px 0;line-height:2.4;vertical-align:top}
+    .tokusho-table td a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.3);transition:border-color .3s}
+    .tokusho-table td a:hover{border-color:var(--gold)}
+
+    .note{max-width:800px;margin:0 auto;padding:0 80px 80px;opacity:0;animation:fadeUp 1s ease .8s forwards}
+    .note p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.15em;color:var(--dust);line-height:2.5}
+
+    /* フッター */
+    footer{border-top:1px solid rgba(182,169,154,.2);padding:48px 80px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+    .footer-logo{font-size:12px;letter-spacing:.25em;color:var(--ink-lt)}
+    .footer-links{display:flex;gap:32px}
+    .footer-links a{font-size:11px;letter-spacing:.2em;color:var(--dust);text-decoration:none;transition:color .3s}
+    .footer-links a:hover{color:var(--ink-lt)}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:768px){
+      .cursor,.cursor-ring{display:none}
+      body{cursor:auto}
+      a,button{cursor:pointer}
+      nav{padding:16px 20px}
+      .nav-links{display:none}
+      .nav-logo span{display:none}
+      .page-header{padding:100px 24px 48px}
+      .tokusho-wrap{padding:0 24px 80px}
+      .note{padding:0 24px 60px}
+      footer{padding:40px 24px;flex-direction:column;align-items:flex-start;gap:16px}
+      .tokusho-table th{font-size:11px;width:120px;padding-right:16px}
+      .tokusho-table td{font-size:12px}
+      .hamburger{display:flex}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+  <ul class="nav-links">
+    <li><a href="today.html">今日の1枚</a></li>
+    <li><a href="tarot.html">運命のカードを引く</a></li>
+    <li><a href="love.html">あの人の気持ち</a></li>
+    <li><a href="reunion.html">復縁できる？</a></li>
+    <li><a href="cards.html">カード解説</a></li>
+    <li><a href="product.html">本格AI鑑定</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html" onclick="closeMenu()">トップページ</a></li>
+    <li><a href="today.html" onclick="closeMenu()">今日の1枚</a></li>
+    <li><a href="tarot.html" onclick="closeMenu()">運命のカードを引く</a></li>
+    <li><a href="love.html" onclick="closeMenu()">あの人の気持ち</a></li>
+    <li><a href="reunion.html" onclick="closeMenu()">復縁できる？</a></li>
+    <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
+    <li><a href="product.html" onclick="closeMenu()">本格AI鑑定</a></li>
+  </ul>
+</div>
+
+<div class="page-header">
+  <span class="page-eyebrow">Legal</span>
+  <h1 class="page-title">特定商取引法に基づく表記</h1>
+</div>
+
+<div class="tokusho-wrap">
+  <table class="tokusho-table">
+    <tr>
+      <th>販売事業者</th>
+      <td>扉と羅針盤</td>
+    </tr>
+    <tr>
+      <th>運営責任者</th>
+      <td>扉と羅針盤 運営者</td>
+    </tr>
+    <tr>
+      <th>所在地</th>
+      <td>請求があった場合には遅滞なく開示いたします</td>
+    </tr>
+    <tr>
+      <th>電話番号</th>
+      <td>請求があった場合には遅滞なく開示いたします</td>
+    </tr>
+    <tr>
+      <th>お問い合わせ</th>
+      <td><a href="mailto:studioyutopia@gmail.com">studioyutopia@gmail.com</a></td>
+    </tr>
+    <tr>
+      <th>販売価格</th>
+      <td>
+        今日の1枚 AI深層鑑定：¥300<br>
+        運命のカード AI深層鑑定：¥500<br>
+        あの人の気持ち AI深層鑑定：¥400<br>
+        二人の相性 AI深層鑑定：¥600<br>
+        恋の未来 AI深層鑑定：¥800<br>
+        復縁占い AI深層鑑定：¥980<br>
+        ※表示価格はすべて税込みです
+      </td>
+    </tr>
+    <tr>
+      <th>支払方法</th>
+      <td>クレジットカード（Visa・Mastercard・American Express・JCB）<br>Apple Pay／Google Pay</td>
+    </tr>
+    <tr>
+      <th>支払時期</th>
+      <td>ご注文手続き完了時にお支払いが確定します</td>
+    </tr>
+    <tr>
+      <th>サービス提供時期</th>
+      <td>決済完了後、ただちに鑑定結果をご覧いただけます</td>
+    </tr>
+    <tr>
+      <th>返品・返金について</th>
+      <td>
+        本サービスはデジタルコンテンツの性質上、<br>
+        決済完了後の返品・返金はお受けできません。<br>
+        ただし、システムの不具合等により<br>
+        サービスをご利用いただけなかった場合は<br>
+        個別にご対応いたします。
+      </td>
+    </tr>
+    <tr>
+      <th>動作環境</th>
+      <td>
+        インターネット接続環境が必要です。<br>
+        推奨ブラウザ：Google Chrome / Safari 最新版
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="note">
+  <p>
+    ご不明な点がございましたら、お気軽にお問い合わせください。<br>
+    お問い合わせ先：<a href="mailto:studioyutopia@gmail.com" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.3)">studioyutopia@gmail.com</a>
+  </p>
+</div>
+
+<footer>
+  <span class="footer-logo">扉と羅針盤 — Tobira to Rashinban</span>
+  <div class="footer-links">
+    <a href="index.html">トップ</a>
+    <a href="product.html">本格AI鑑定</a>
+    <a href="tokusho.html">特定商取引法</a>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button')){
+    cur.style.transform='translate(-50%,-50%) scale(2.2)';
+    ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
+  }else{
+    cur.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.borderColor='var(--mouve)';ring.style.transform='translate(-50%,-50%) scale(1)';
+  }
+});
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobileMenu');
+hamburger.addEventListener('click',()=>{
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
+});
+function closeMenu(){
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow='';
+}
+</script>
+</body>
+</html>
