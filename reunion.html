@@ -174,6 +174,16 @@
     .fan-guide-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--gold);letter-spacing:.3em;display:inline-block;animation:guideFloat 1.5s ease-in-out infinite}
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
+    /* チラ見せUI */
+    .teaser-wrap{background:var(--cream);border:1px solid rgba(155,139,180,.3);padding:24px 28px;border-radius:4px;margin-bottom:2px}
+    .teaser-hook{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--purple);margin-bottom:12px;display:block;line-height:1.8}
+    .teaser-preview{border-left:2px solid rgba(155,139,180,.4);padding-left:16px;margin-bottom:16px}
+    .teaser-preview-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;letter-spacing:.35em;color:var(--purple);display:block;margin-bottom:8px}
+    .teaser-preview-text{font-size:12px;line-height:2.4;letter-spacing:.08em;color:var(--ink-mid);position:relative;overflow:hidden;max-height:72px}
+    .teaser-preview-text::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom,transparent,var(--cream))}
+    .teaser-btn{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--purple);border:none;padding:16px 32px;border-radius:999px;cursor:pointer;width:100%;transition:opacity .3s}
+    .teaser-btn:hover{opacity:.85}
+
     @media(max-width:768px){
       .cursor,.cursor-ring{display:none}
       body{cursor:auto}
@@ -282,6 +292,16 @@
   <div class="result-cards" id="resultCards"></div>
   <div class="result-divider"></div>
   <div class="result-messages" id="resultMessages"></div>
+
+  <!-- ▼ チラ見せUI -->
+  <div class="teaser-wrap" id="teaserWrap">
+    <span class="teaser-hook" id="teaserHook"></span>
+    <div class="teaser-preview">
+      <span class="teaser-preview-label">AI鑑定より（一部）</span>
+      <p class="teaser-preview-text" id="teaserPreview"></p>
+    </div>
+    <button class="teaser-btn" onclick="document.getElementById('btnAiReading').click()">続きをAI深層鑑定で見る（¥980）</button>
+  </div>
 
   <div class="possibility-meter">
     <span class="possibility-label">Reunion Possibility</span>
@@ -791,6 +811,11 @@ function showResult() {
   localStorage.setItem('tobira_reading_cards', cardNames);
   localStorage.setItem('tobira_reading_theme', '復縁占い');
 
+  // チラ見せテキスト設定
+  const teaserContent = getTeaserContent(selectedCards);
+  document.getElementById('teaserHook').textContent = teaserContent.hook;
+  document.getElementById('teaserPreview').textContent = teaserContent.preview;
+
   // ▼ Stripe決済リンク⑥（¥980）へ直接遷移
   const reunionBtn = document.getElementById('btnAiReading');
   reunionBtn.href = 'https://buy.stripe.com/test_5kQ28qfC82y65aKgFJ2VG08';
@@ -859,6 +884,50 @@ function showRevealAnimation(card, reversed, callback) {
       callback();
     }, 300);
   }, 1800);
+}
+
+// ── チラ見せデータ ──
+const CARD_GROUPS = {
+  A: ['恋人','星','太陽','世界','女帝','力'],
+  B: ['死神','塔','審判','運命の輪','愚者'],
+  C: ['女教皇','隠者','月','吊るされた男','節制'],
+  D: ['魔術師','戦車','皇帝','法王'],
+  E: ['悪魔','正義'],
+};
+const TEASER_TEXTS = {
+  A: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。復縁の可能性に、まだ気づいていない大きなサインが隠れています…', preview: 'あなたが引いた3枚のカードは、あの人の心にまだ消えていない感情が残っている可能性を示しています。AIはその本音と復縁への道筋を読み取りましたが、それが動き出すには、ある条件が…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。復縁への道に、まだ気づいていない感情のすれ違いが隠れています…', preview: 'あなたが引いた3枚のカードは、二人の間にまだ整理されていない感情が残っている可能性を示しています。AIはその原因と解決の糸口を読み取りました。実はそれは…' },
+  },
+  B: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。復縁への大きな転機が近づいている可能性があります…', preview: 'あなたが引いた3枚のカードは、二人の関係に近づいている転機のサインを示しています。AIはそのタイミングとあなたが今取るべき行動を読み取りました。それによると…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。今、重要な変化を見逃している可能性があります…', preview: 'あなたが引いた3枚のカードは、復縁の流れに重要な変化が起きている可能性を示しています。AIはその内容を読み取りました。このままでは…' },
+  },
+  C: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。あの人の内側に、まだ表に出ていない深い感情が眠っています…', preview: 'あなたが引いた3枚のカードは、あの人の心の奥にまだ言葉にされていない想いが残っている可能性を示しています。AIはそのメッセージを読み解きましたが、それはあなたの現状に…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。自分でも気づいていない何かが復縁を妨げている可能性があります…', preview: 'あなたが引いた3枚のカードは、復縁を妨げている見えない障壁がある可能性を示しています。AIはその正体を読み取りました。それは意外にも…' },
+  },
+  D: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。あなたの中に、まだ発揮されていない復縁への力が眠っています…', preview: 'あなたが引いた3枚のカードは、あなたの中にまだ活かされていない力と可能性が眠っていることを示しています。AIはそれを引き出す鍵を読み取りました。今あなたに最も必要なのは…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。本来の魅力がうまく伝わっていない可能性があります…', preview: 'あなたが引いた3枚のカードは、あなたの本来の魅力が相手にうまく伝わっていない可能性を示しています。AIはその原因を読み取りました。鍵を握っているのは…' },
+  },
+  E: {
+    u: { hook: 'AIがあなたの引いた3枚のカードを読み解きました。ある人物や出来事が復縁に予想以上の影響を与えている可能性があります…', preview: 'あなたが引いた3枚のカードは、二人の復縁にある人物や出来事が想像以上に深く関わっている可能性を示しています。AIはそのつながりを読み取りましたが、注目すべきは…' },
+    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。気づかないうちに自分を縛っているものが復縁を遠ざけている可能性があります…', preview: 'あなたが引いた3枚のカードは、あなたが無意識に自分を縛っているものがある可能性を示しています。AIはその正体と解放へのヒントを読み取りました。それによると…' },
+  },
+};
+function getCardGroup(cardName) {
+  for (const [group, cards] of Object.entries(CARD_GROUPS)) {
+    if (cards.includes(cardName)) return group;
+  }
+  return 'A';
+}
+// reunion は3枚引き：「復縁の可能性」ポジション（最後のカード）をメインに使用
+function getTeaserContent(selectedCards) {
+  const mainCard = selectedCards[selectedCards.length - 1];
+  const group = getCardGroup(mainCard.card.name);
+  const data = TEASER_TEXTS[group][mainCard.reversed ? 'r' : 'u'];
+  return { hook: data.hook, preview: data.preview };
 }
 
 function shuffleArr(arr) {
