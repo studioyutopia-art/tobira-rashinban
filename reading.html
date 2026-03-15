@@ -59,7 +59,7 @@
     .reading-block-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:16px}
     .reading-block-label::after{content:'';flex:1;height:1px;background:rgba(182,169,154,.3)}
     .reading-block-title{font-weight:200;font-size:18px;letter-spacing:.2em;margin-bottom:20px}
-    .reading-block-text{font-size:14px;line-height:3.2;letter-spacing:.08em;color:var(--ink-mid)}
+    .reading-block-text{font-size:14px;line-height:3.2;letter-spacing:.08em;color:var(--ink)}
 
     .result-actions{display:flex;justify-content:center;gap:16px;margin-top:80px;flex-wrap:wrap}
     .btn-action{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 48px;cursor:none;position:relative;overflow:hidden;transition:color .4s;text-decoration:none;border-radius:999px;display:inline-block}
@@ -387,6 +387,24 @@ async function fetchReading() {
   }
 }
 
+function cleanText(str) {
+  return str
+    .replace(/\*\*(.+?)\*\*/g, '$1')   // **太字** を除去
+    .replace(/\*(.+?)\*/g, '$1')        // *斜体* を除去
+    .replace(/#{1,6}\s/g, '')           // # 見出し記号を除去
+    .replace(/^\s*[-・]\s*/gm, '')      // 箇条書き記号を除去
+    .replace(/\n{3,}/g, '\n\n')         // 3行以上の空行を2行に統一
+    .trim();
+}
+
+function formatText(str) {
+  // 改行を<br>に変換し、空行は段落区切りとして処理
+  return str
+    .split('\n\n')
+    .map(para => `<span style="display:block;margin-bottom:1.2em">${para.replace(/\n/g, '<br>')}</span>`)
+    .join('');
+}
+
 function showReading(text) {
   document.getElementById('loadingWrap').style.display = 'none';
   const content = document.getElementById('readingContent');
@@ -395,7 +413,8 @@ function showReading(text) {
   const blocks = document.getElementById('readingBlocks');
   blocks.innerHTML = '';
 
-  const sections = text.split(/【(.+?)】/).filter(s => s.trim());
+  const cleaned = cleanText(text);
+  const sections = cleaned.split(/【(.+?)】/).filter(s => s.trim());
   const pairs = [];
   for (let i = 0; i < sections.length; i += 2) {
     if (sections[i + 1]) pairs.push({ title: sections[i], text: sections[i + 1].trim() });
@@ -409,14 +428,14 @@ function showReading(text) {
       div.innerHTML = `
         <p class="reading-block-label">Deep Reading</p>
         <h2 class="reading-block-title">【${pair.title}】</h2>
-        <p class="reading-block-text">${pair.text.replace(/\n/g, '<br>')}</p>
+        <p class="reading-block-text">${formatText(pair.text)}</p>
       `;
       blocks.appendChild(div);
     });
   } else {
     const div = document.createElement('div');
     div.className = 'reading-block';
-    div.innerHTML = `<p class="reading-block-text">${text.replace(/\n/g, '<br>')}</p>`;
+    div.innerHTML = `<p class="reading-block-text">${formatText(cleaned)}</p>`;
     blocks.appendChild(div);
   }
 }
@@ -450,5 +469,9 @@ function closeMenu(){
 
 window.addEventListener('DOMContentLoaded', fetchReading);
 </script>
+
+<footer style="border-top:1px solid rgba(182,169,154,.15);padding:32px 80px;text-align:center">
+  <a href="tokusho.html" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.25em;color:var(--dust);text-decoration:none;transition:color .3s" onmouseover="this.style.color='var(--ink-lt)'" onmouseout="this.style.color='var(--dust)'">特定商取引法に基づく表記</a>
+</footer>
 </body>
 </html>
