@@ -27,13 +27,11 @@
     .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
     .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
 
-    /* ページヘッダー */
     .page-header{padding:140px 80px 80px;text-align:center}
     .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
     .page-title{font-weight:200;font-size:clamp(32px,4vw,52px);line-height:1.6;letter-spacing:.16em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .4s forwards}
     .page-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.15em;color:var(--ink-lt);opacity:0;animation:fadeUp 1s ease .6s forwards;max-width:600px;margin:0 auto;line-height:2}
 
-    /* カード表示 */
     .cards-section{max-width:800px;margin:0 auto;padding:0 80px 64px;opacity:0;animation:fadeUp 1s ease .8s forwards}
     .cards-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--gold);text-align:center;margin-bottom:40px;display:block}
     .cards-wrap{display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
@@ -47,7 +45,6 @@
 
     .theme-badge{display:inline-block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.25em;color:var(--ink-lt);border:1px solid rgba(182,169,154,.4);padding:8px 24px;border-radius:999px;margin-bottom:48px}
 
-    /* AI鑑定結果 */
     .reading-section{max-width:800px;margin:0 auto;padding:0 80px 120px}
 
     .loading-wrap{text-align:center;padding:80px 0;opacity:0;animation:fadeUp 1s ease 1s forwards}
@@ -64,7 +61,6 @@
     .reading-block-title{font-weight:200;font-size:18px;letter-spacing:.2em;margin-bottom:20px}
     .reading-block-text{font-size:14px;line-height:3.2;letter-spacing:.08em;color:var(--ink-mid)}
 
-    /* アクション */
     .result-actions{display:flex;justify-content:center;gap:16px;margin-top:80px;flex-wrap:wrap}
     .btn-action{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:20px 48px;cursor:none;position:relative;overflow:hidden;transition:color .4s;text-decoration:none;border-radius:999px;display:inline-block}
     .btn-action::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
@@ -75,11 +71,9 @@
     .btn-action.ghost::before{background:var(--warm)}
     .btn-action.ghost:hover{color:var(--ink)}
 
-    /* エラー */
     .error-wrap{text-align:center;padding:80px 24px}
     .error-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.2em;color:var(--dust);line-height:2.5}
 
-    /* ハンバーガー */
     .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
     .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
     .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
@@ -119,12 +113,12 @@
 <nav>
   <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
   <ul class="nav-links">
-    <li><a href="today.html">今日の占い</a></li>
-    <li><a href="love.html">恋愛占い</a></li>
-    <li><a href="reunion.html">復縁占い</a></li>
-    <li><a href="tarot.html">カードを引く</a></li>
+    <li><a href="today.html">今日の1枚</a></li>
+    <li><a href="tarot.html">運命のカードを引く</a></li>
+    <li><a href="love.html">あの人の気持ち</a></li>
+    <li><a href="reunion.html">復縁できる？</a></li>
     <li><a href="cards.html">カード解説</a></li>
-    <li><a href="product.html">鑑定メニュー</a></li>
+    <li><a href="product.html">本格AI鑑定</a></li>
   </ul>
   <button class="hamburger" id="hamburger" aria-label="メニュー">
     <span></span><span></span><span></span>
@@ -134,12 +128,12 @@
 <div class="mobile-menu" id="mobileMenu">
   <ul>
     <li><a href="index.html" onclick="closeMenu()">トップページ</a></li>
-    <li><a href="today.html" onclick="closeMenu()">今日の占い</a></li>
-    <li><a href="love.html" onclick="closeMenu()">恋愛占い</a></li>
-    <li><a href="reunion.html" onclick="closeMenu()">復縁占い</a></li>
-    <li><a href="tarot.html" onclick="closeMenu()">カードを引く</a></li>
+    <li><a href="today.html" onclick="closeMenu()">今日の1枚</a></li>
+    <li><a href="tarot.html" onclick="closeMenu()">運命のカードを引く</a></li>
+    <li><a href="love.html" onclick="closeMenu()">あの人の気持ち</a></li>
+    <li><a href="reunion.html" onclick="closeMenu()">復縁できる？</a></li>
     <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
-    <li><a href="product.html" onclick="closeMenu()">鑑定メニュー</a></li>
+    <li><a href="product.html" onclick="closeMenu()">本格AI鑑定</a></li>
   </ul>
 </div>
 
@@ -149,7 +143,6 @@
   <p class="page-desc" id="pageDesc">カードの奥に秘められたメッセージを、AIが深く読み解きます</p>
 </div>
 
-<!-- 引いたカード表示 -->
 <div class="cards-section" id="cardsSection">
   <span class="cards-label">Your Cards</span>
   <div style="text-align:center;margin-bottom:32px">
@@ -158,7 +151,6 @@
   <div class="cards-wrap" id="cardsWrap"></div>
 </div>
 
-<!-- AI鑑定結果 -->
 <div class="reading-section">
   <div class="loading-wrap" id="loadingWrap">
     <span class="loading-sym">✦</span>
@@ -214,22 +206,19 @@ const POSITION_LABELS = {
   '二人の相性': ['あなた', 'あの人'],
   '恋の未来': ['現在の状況', 'この恋の課題', '恋の行方'],
   '復縁占い': ['別れた理由', '今の相手の気持ち', '復縁の可能性'],
+  '今日の1枚': ['今日のカード'],
+  'カードを引く': ['あなたのカード'],
 };
 
-// URLパラメータを取得
 const params = new URLSearchParams(window.location.search);
 const cardsParam = params.get('cards') || localStorage.getItem('tobira_reading_cards') || '';
 const theme = params.get('theme') || localStorage.getItem('tobira_reading_theme') || '総合鑑定';
 
-// カード情報をパース
-// 例: "恋人（正位置）・女帝（逆位置）"
 function parseCards(cardsStr) {
   if (!cardsStr) return [];
   return cardsStr.split('・').map(s => {
     const match = s.match(/^(.+?)（(正位置|逆位置)）$/);
-    if (match) {
-      return { name: match[1], reversed: match[2] === '逆位置' };
-    }
+    if (match) return { name: match[1], reversed: match[2] === '逆位置' };
     return { name: s, reversed: false };
   });
 }
@@ -237,18 +226,17 @@ function parseCards(cardsStr) {
 const cards = parseCards(cardsParam);
 const positions = POSITION_LABELS[theme] || cards.map((_, i) => `カード${i + 1}`);
 
-// テーマバッジ
 document.getElementById('themeBadge').textContent = theme;
 
-// 戻るボタンのリンク設定
-const backUrl = theme === '復縁占い' ? 'reunion.html' : 'love.html';
+const backUrl = theme === '復縁占い' ? 'reunion.html'
+              : theme === '今日の1枚' ? 'today.html'
+              : theme === 'カードを引く' ? 'tarot.html'
+              : 'love.html';
 document.getElementById('btnBack').href = backUrl;
 document.getElementById('btnBackError').href = backUrl;
 
-// カード表示
 const cardsWrap = document.getElementById('cardsWrap');
 if (cards.length === 0) {
-  // カード情報がない場合
   cardsWrap.innerHTML = '<p style="text-align:center;color:var(--dust);font-family:\'Cormorant Garamond\',serif;font-style:italic;letter-spacing:.2em">カード情報が見つかりませんでした</p>';
 } else {
   cards.forEach((card, i) => {
@@ -268,7 +256,6 @@ if (cards.length === 0) {
   });
 }
 
-// プロンプト生成
 function buildPrompt(cards, theme) {
   const cardText = cards.map((c, i) => {
     const pos = positions[i] || `カード${i + 1}`;
@@ -281,59 +268,93 @@ function buildPrompt(cards, theme) {
 ${cardText}
 テーマは「あの人の気持ち」です。
 タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
+必ず各セクションを丁寧に、具体的に記述してください。
 
 【相手の本音】
-（相手が心の奥で感じていること・言葉にできない気持ちを300字程度で）
+相手が心の奥で感じていること・言葉にできない気持ち、そしてあなたへの想いに隠された深層心理を300字程度で。表面には見えていない感情にも必ず触れてください。
 
 【恋の進展】
-（この恋がこれからどう動いていくかを300字程度で）
+この恋がこれからどう動いていくか、転機となるタイミングや二人の関係に影響を与える出来事の可能性を300字程度で。
 
 【あなたが取るべき行動】
-（具体的なアドバイスと心構えを300字程度で）`,
+具体的なアドバイスと心構えを300字程度で。あなた自身の中に眠る力や可能性にも触れてください。`,
 
     '二人の相性': `ユーザーは恋愛占いをしています。
 引いたカードは以下の通りです。
 ${cardText}
 テーマは「二人の相性」です。
 タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
+必ず各セクションを丁寧に、具体的に記述してください。
 
 【相手の本音】
-（相手があなたに対して感じている本当の気持ちを300字程度で）
+相手があなたに対して感じている本当の気持ち、まだ言葉にされていない深層の感情を300字程度で。
 
 【二人の相性の深層】
-（二人の間にある見えない引力と課題を300字程度で）
+二人の間にある見えない引力と課題、そしてこの出会いが持つ意味を300字程度で。転機となる可能性にも触れてください。
 
 【あなたが取るべき行動】
-（この相性を活かすための具体的なアドバイスを300字程度で）`,
+この相性を活かすための具体的なアドバイスを300字程度で。あなた自身が持つ力をどう活かすかにも触れてください。`,
 
     '恋の未来': `ユーザーは恋愛占いをしています。
 引いたカードは以下の通りです。
 ${cardText}
 テーマは「恋の未来」です。
 タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
+必ず各セクションを丁寧に、具体的に記述してください。
 
 【相手の本音】
-（相手が今あなたに対して感じている本音を300字程度で）
+相手が今あなたに対して感じている本音、表には出ていない深層の感情を300字程度で。
 
 【恋の進展予測】
-（この恋が今後どのように展開していくかを300字程度で）
+この恋が今後どのように展開していくか、近づいている転機やターニングポイントを300字程度で具体的に。
 
 【あなたが取るべき行動】
-（恋を成就させるための具体的なアドバイスを300字程度で）`,
+恋を成就させるための具体的なアドバイスを300字程度で。あなた自身の中に眠る可能性にも必ず触れてください。`,
 
     '復縁占い': `ユーザーは復縁占いをしています。
 引いたカードは以下の通りです。
 ${cardText}
 タロット占い師として、以下の構成で温かく深い復縁鑑定メッセージを日本語で書いてください。
+必ず各セクションを丁寧に、具体的に記述してください。
 
 【相手の本音】
-（別れた後、相手が今あなたに対して感じている本当の気持ちを300字程度で）
+別れた後、相手が今あなたに対して感じている本当の気持ち、心の奥に残っている感情を300字程度で。まだ表に出ていない想いにも必ず触れてください。
 
 【復縁の可能性と道筋】
-（復縁の現実的な可能性と、そのために必要な流れを300字程度で）
+復縁の現実的な可能性と、そのために必要な流れを300字程度で。転機となるタイミングや、関係が動き出すきっかけにも触れてください。
 
 【あなたが取るべき行動】
-（復縁を引き寄せるための具体的なアドバイスと心構えを300字程度で）`,
+復縁を引き寄せるための具体的なアドバイスと心構えを300字程度で。あなた自身の力や魅力をどう活かすかにも触れてください。`,
+
+    '今日の1枚': `ユーザーは今日の運勢占いをしています。
+引いたカードは以下の通りです。
+${cardText}
+タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
+必ず各セクションを丁寧に、具体的に記述してください。
+
+【カードが示す今日のエネルギー】
+このカードが今日のあなたに伝えようとしているメッセージ、まだ気づいていない深層のサインを300字程度で。表面には見えていない意味にも必ず触れてください。
+
+【今日訪れる可能性のある転機】
+今日という日に潜む転機やターニングポイント、見逃してはいけない出来事や出会いの可能性を300字程度で。
+
+【あなたが取るべき行動】
+今日一日を最善にするための具体的なアドバイスを300字程度で。あなた自身の中に眠る力や可能性にも必ず触れてください。`,
+
+    'カードを引く': `ユーザーはタロット占いをしています。
+引いたカードは以下の通りです。
+${cardText}
+タロット占い師として、以下の構成で温かく深い鑑定メッセージを日本語で書いてください。
+必ず各セクションを丁寧に、具体的に記述してください。
+
+【カードが示す深層のメッセージ】
+このカードがあなたに伝えようとしている深い意味、まだ表に出ていない重要なサインを300字程度で。カードの象徴的な意味にも触れてください。
+
+【あなたの状況への洞察】
+今のあなたの状況にこのカードがどう関わっているか、近づいている転機や変化の可能性を300字程度で。
+
+【あなたが取るべき行動】
+具体的なアドバイスと心構えを300字程度で。あなた自身の中に眠る力・まだ発揮されていない可能性にも必ず触れてください。`,
   };
 
   return themePrompts[theme] || `タロット占い師として、以下のカードの深層鑑定を日本語で行ってください。
@@ -345,16 +366,15 @@ ${cardText}
 以下の構成で温かく深いメッセージを書いてください。
 
 【カードからのメッセージ】
-（カードが示す深い意味を300字程度で）
+このカードが示す深い意味、まだ表に出ていない重要なサインを300字程度で。
 
 【今のあなたへ】
-（現在の状況への洞察を300字程度で）
+現在の状況への洞察と、近づいている転機の可能性を300字程度で。
 
 【これからの道しるべ】
-（具体的なアドバイスを300字程度で）`;
+具体的なアドバイスと、あなた自身の中に眠る力・可能性について300字程度で。`;
 }
 
-// AI鑑定を取得
 async function fetchReading() {
   if (cards.length === 0) {
     document.getElementById('loadingWrap').style.display = 'none';
@@ -377,8 +397,7 @@ async function fetchReading() {
     const data = await response.json();
     if (data.error) throw new Error(data.error);
 
-    const text = data.reading;
-    showReading(text);
+    showReading(data.reading);
 
   } catch (error) {
     document.getElementById('loadingWrap').style.display = 'none';
@@ -394,13 +413,10 @@ function showReading(text) {
   const blocks = document.getElementById('readingBlocks');
   blocks.innerHTML = '';
 
-  // セクションに分割して表示
   const sections = text.split(/【(.+?)】/).filter(s => s.trim());
   const pairs = [];
   for (let i = 0; i < sections.length; i += 2) {
-    if (sections[i + 1]) {
-      pairs.push({ title: sections[i], text: sections[i + 1].trim() });
-    }
+    if (sections[i + 1]) pairs.push({ title: sections[i], text: sections[i + 1].trim() });
   }
 
   if (pairs.length > 0) {
@@ -423,7 +439,6 @@ function showReading(text) {
   }
 }
 
-// カーソル
 const cur=document.getElementById('cur'),ring=document.getElementById('ring');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
@@ -438,7 +453,6 @@ document.addEventListener('mouseover',e=>{
   }
 });
 
-// ハンバーガー
 const hamburger=document.getElementById('hamburger');
 const mobileMenu=document.getElementById('mobileMenu');
 hamburger.addEventListener('click',()=>{
@@ -452,7 +466,6 @@ function closeMenu(){
   document.body.style.overflow='';
 }
 
-// ページ読み込み時にAI鑑定開始
 window.addEventListener('DOMContentLoaded', fetchReading);
 </script>
 </body>
