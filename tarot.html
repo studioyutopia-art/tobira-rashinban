@@ -271,7 +271,8 @@ const SOUNDS = {
   card_spread: { src: 'sounds/card_spread.mp3', offset: 0, duration: 0.696 },
   card_gather: { src: 'sounds/card_gather.mp3', offset: 0, duration: 0.496 },
   card_fan:    { src: 'sounds/card_fan.mp3',    offset: 0, duration: 1.097 },
-  // 今後追加予定: card_pick, card_flip, card_reveal
+  card_pick:   { src: 'sounds/card_pick.mp3',   offset: 0, duration: 0.575 },
+  // 今後追加予定: card_flip, card_reveal
 };
 let _audioCtx = null;
 const _soundBuffers = {};
@@ -560,6 +561,7 @@ function onFanCardClick(card, index) {
     const fanGuide = document.getElementById('fanGuide');
     if (fanGuide) fanGuide.remove();
     card.style.transform = card.style.transform + ' translateY(-20px)';
+    playSound('card_pick', 0.35);
     card.style.borderColor = 'rgba(201,169,110,.6)';
     card.style.boxShadow = '0 30px 60px rgba(42,38,34,.4)';
     card.style.zIndex = 100;
