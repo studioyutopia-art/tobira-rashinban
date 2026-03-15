@@ -273,7 +273,7 @@ const SOUNDS = {
   card_fan:    { src: 'sounds/card_fan.mp3',    offset: 0, duration: 1.097 },
   card_pick:   { src: 'sounds/card_pick.mp3',   offset: 0, duration: 0.575 },
   card_flip:   { src: 'sounds/card_flip.mp3',   offset: 0, duration: 0.496 },
-  card_reveal: { src: 'sounds/card_reveal.mp3', offset: 0, duration: 2.5 },
+  card_reveal: { src: 'sounds/card_reveal.mp3', offset: 0, duration: 3.5 },
 };
 let _audioCtx = null;
 const _soundBuffers = {};
@@ -305,7 +305,7 @@ async function preloadSounds() {
   }
 }
 
-function playSound(key, volumeScale = 1.0) {
+function playSound(key, volumeScale = 1.0, lowpass = null) {
   if (_muted) return;
   const s = SOUNDS[key];
   if (!s) return;
@@ -320,7 +320,16 @@ function playSound(key, volumeScale = 1.0) {
     src.buffer = buf;
     const gain = ctx.createGain();
     gain.gain.value = 0.55 * volumeScale;
-    src.connect(gain);
+    if (lowpass) {
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = lowpass;
+      filter.Q.value = 0.8;
+      src.connect(filter);
+      filter.connect(gain);
+    } else {
+      src.connect(gain);
+    }
     gain.connect(ctx.destination);
     src.start(0, s.offset || 0, s.duration || buf.duration);
   };
@@ -734,7 +743,7 @@ function showRevealAnimation(card, reversed, callback) {
     document.body.appendChild(flash);
     setTimeout(() => flash.remove(), 600);
   }, 600);
-  setTimeout(() => playSound('card_reveal'), 1200);
+  setTimeout(() => playSound('card_reveal', 1.0, 2000), 1200);
 
   setTimeout(() => {
     const colors = ['#C9A96E','#E8D4A8','#D4B896','#F0E4C4','#BFA97E','rgba(255,255,255,.9)'];
