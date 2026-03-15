@@ -273,7 +273,7 @@ const SOUNDS = {
   card_fan:    { src: 'sounds/card_fan.mp3',    offset: 0, duration: 1.097 },
   card_pick:   { src: 'sounds/card_pick.mp3',   offset: 0, duration: 0.575 },
   card_flip:   { src: 'sounds/card_flip.mp3',   offset: 0, duration: 0.496 },
-  card_reveal: { src: 'sounds/card_reveal.mp3', offset: 0, duration: 3.5 },
+  card_reveal: { src: 'sounds/card_reveal.mp3', offset: 0, duration: 7.0 },
 };
 let _audioCtx = null;
 const _soundBuffers = {};
@@ -743,7 +743,7 @@ function showRevealAnimation(card, reversed, callback) {
     document.body.appendChild(flash);
     setTimeout(() => flash.remove(), 600);
   }, 600);
-  setTimeout(() => playSound('card_reveal', 1.0, 2000), 1200);
+  setTimeout(() => playSound('card_reveal', 1.0, 1900), 1200);
 
   setTimeout(() => {
     const colors = ['#C9A96E','#E8D4A8','#D4B896','#F0E4C4','#BFA97E','rgba(255,255,255,.9)'];
