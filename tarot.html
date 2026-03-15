@@ -273,7 +273,7 @@ const SOUNDS = {
   card_fan:    { src: 'sounds/card_fan.mp3',    offset: 0, duration: 1.097 },
   card_pick:   { src: 'sounds/card_pick.mp3',   offset: 0, duration: 0.575 },
   card_flip:   { src: 'sounds/card_flip.mp3',   offset: 0, duration: 0.496 },
-  // 今後追加予定: card_reveal
+  card_reveal: { src: 'sounds/card_reveal.mp3', offset: 0, duration: 1.5 },
 };
 let _audioCtx = null;
 const _soundBuffers = {};
@@ -732,6 +732,7 @@ function showRevealAnimation(card, reversed, callback) {
     const flash = document.createElement('div');
     flash.className = 'reveal-flash';
     document.body.appendChild(flash);
+    playSound('card_reveal');
     setTimeout(() => flash.remove(), 600);
   }, 600);
 
