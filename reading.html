@@ -293,6 +293,15 @@ function buildPrompt(cards, theme) {
 セクションのタイトルは必ず【】で囲み、タイトル以外の情報（カード名・テーマ名など）は【】の中に含めないでください。
 正しい例：【カードの意味】
 誤った例：【節制（正位置）｜あの人の気持ち】
+必ず【セクションタイトル】を先に書き、その直後に本文を続けてください。本文の後にタイトルを書かないでください。
+出力形式：
+【カードの意味】
+（ここに本文）
+
+【現在の状況】
+（ここに本文）
+
+というように、タイトル→本文の順を厳守してください。
 
 【カードの意味】約150文字
 このカードが持つ古典的な象徴と、今のあなたへの根本的なメッセージを伝えてください。
@@ -400,7 +409,7 @@ function cleanText(str) {
 }
 
 // 正規のセクションタイトル
-const VALID_TITLES = ['カードの意味', '現在の状況', '相手の心理', '今日のエネルギー', '未来の流れ', 'あなたへのアドバイス', 'カードが示す', '今日の', 'アドバイス', '状況', '心理', '意味', '流れ', 'エネルギー', '洞察', 'メッセージ', '転機', '道しるべ'];
+const SKIP_TITLES = ['今日の1枚', 'カードを引く', 'あの人の気持ち', '二人の相性', '恋の未来', '復縁占い', 'Love', 'Tarot', 'Reading', '鑑定'];
 
 // セクションタイトルの正規化（余分な情報を除去）
 function normalizeTitle(title) {
@@ -411,10 +420,10 @@ function normalizeTitle(title) {
     .trim();
 }
 
-// 正規のセクションタイトルかどうか判定
-function isValidTitle(title) {
+// スキップすべきタイトルかどうか判定（テーマ名・英語タイトルなど）
+function isSkipTitle(title) {
   const normalized = normalizeTitle(title);
-  return VALID_TITLES.some(t => normalized.includes(t));
+  return SKIP_TITLES.some(t => normalized.includes(t));
 }
 
 function showReading(text) {
