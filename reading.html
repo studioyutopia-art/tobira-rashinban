@@ -400,7 +400,7 @@ function cleanText(str) {
 }
 
 // 正規のセクションタイトル
-const VALID_TITLES = ['カードの意味', '現在の状況', '相手の心理', '今日のエネルギー', '未来の流れ', 'あなたへのアドバイス'];
+const VALID_TITLES = ['カードの意味', '現在の状況', '相手の心理', '今日のエネルギー', '未来の流れ', 'あなたへのアドバイス', 'カードが示す', '今日の', 'アドバイス', '状況', '心理', '意味', '流れ', 'エネルギー', '洞察', 'メッセージ', '転機', '道しるべ'];
 
 // セクションタイトルの正規化（余分な情報を除去）
 function normalizeTitle(title) {
@@ -439,12 +439,8 @@ function showReading(text) {
     }
   }
 
-  // 正規タイトルのみ残す（テーマ名などを除外）
-  const validPairs = pairs.filter(p => isValidTitle(p.title));
-  const displayPairs = validPairs.length > 0 ? validPairs : pairs;
-
-  if (displayPairs.length > 0) {
-    displayPairs.forEach((pair, i) => {
+  if (pairs.length > 0) {
+    pairs.forEach((pair, i) => {
       const div = document.createElement('div');
       div.className = 'reading-block';
       div.style.animationDelay = `${i * 0.3}s`;
