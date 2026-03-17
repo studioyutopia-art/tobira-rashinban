@@ -837,12 +837,12 @@ function showResult() {
 
   // ▼ テーマに応じてStripe決済リンク（③④⑤）を動的に設定
   const stripeLinks = {
-    feeling:       'https://buy.stripe.com/test_aFa28qfC8goWbz8gFJ2VG05', // ③ ¥400
+    feeling:       'https://buy.stripe.com/test_28E7sKdu06Om7iSahl2VG09', // ¥500
     compatibility: 'https://buy.stripe.com/test_fZu28q9dKdcK6eOblp2VG06', // ④ ¥600
     future:        'https://buy.stripe.com/test_00w28q9dKfkScDcgFJ2VG07', // ⑤ ¥800
   };
   const stripeLabels = {
-    feeling:       'AI深層鑑定を受ける（¥400）',
+    feeling:       'AI深層鑑定を受ける（¥500）',
     compatibility: 'AI深層鑑定を受ける（¥600）',
     future:        'AI深層鑑定を受ける（¥800）',
   };
@@ -855,7 +855,7 @@ function showResult() {
   document.getElementById('teaserHook').textContent = teaserContent.hook;
   document.getElementById('teaserPreview').textContent = teaserContent.preview;
   // teaserBtnのラベルを価格付きに
-  const teaserBtnLabels = { feeling:'続きをAI深層鑑定で見る（¥400）', compatibility:'続きをAI深層鑑定で見る（¥600）', future:'続きをAI深層鑑定で見る（¥800）' };
+  const teaserBtnLabels = { feeling:'続きをAI深層鑑定で見る（¥500）', compatibility:'続きをAI深層鑑定で見る（¥600）', future:'続きをAI深層鑑定で見る（¥800）' };
   document.getElementById('teaserBtn').textContent = teaserBtnLabels[currentTheme] || '続きをAI深層鑑定で見る';
 
   resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1022,5 +1022,9 @@ function closeMenu(){
   document.body.style.overflow='';
 }
 </script>
+
+<footer style="border-top:1px solid rgba(182,169,154,.15);padding:32px 80px;text-align:center">
+  <a href="tokusho.html" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.25em;color:var(--dust);text-decoration:none;transition:color .3s" onmouseover="this.style.color='var(--ink-lt)'" onmouseout="this.style.color='var(--dust)'">特定商取引法に基づく表記</a>
+</footer>
 </body>
 </html>
