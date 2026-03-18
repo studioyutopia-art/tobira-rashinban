@@ -466,6 +466,11 @@ ${cardText}
 }
 
 function startLoadingAnimation() {
+  // ローディング表示まで自動スクロール
+  setTimeout(() => {
+    document.getElementById('loadingWrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 600);
+
   const steps = ['step1','step2','step3','step4'];
   const messages = [
     'カードと向き合っています…',
