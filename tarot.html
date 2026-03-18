@@ -36,7 +36,7 @@
     .instruction p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.2em;color:var(--dust)}
 
     /* シャッフルステージ */
-    .shuffle-stage{display:flex;flex-direction:column;align-items:center;gap:32px;padding:20px 80px 80px;margin:0 auto;min-height:520px;position:relative;transition:opacity .4s ease}
+    .shuffle-stage{display:flex;flex-direction:column;align-items:center;gap:8px;padding:90px 80px 80px;margin:0 auto;min-height:520px;position:relative;transition:opacity .4s ease}
     .shuffle-message{text-align:center;z-index:10}
     .shuffle-step-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:16px;letter-spacing:.2em;color:var(--ink);margin-bottom:10px;transition:opacity .5s ease}
     .shuffle-sub-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust);transition:opacity .5s ease}
@@ -52,7 +52,7 @@
     @keyframes floatCardOdd{0%,100%{margin-top:0px}50%{margin-top:-6px}}
     @keyframes floatCardThird{0%,100%{margin-top:0px}50%{margin-top:-10px}}
 
-    .fan-field{position:relative;width:100%;max-width:700px;height:260px;display:flex;align-items:flex-end;justify-content:center}
+    .fan-field{position:relative;width:100%;max-width:700px;height:240px;display:flex;align-items:flex-end;justify-content:center}
     .fan-card{position:absolute;width:90px;height:158px;border-radius:5px;background:linear-gradient(145deg,#2A2622,#3D3530);border:1px solid rgba(201,169,110,.28);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(42,38,34,.3);cursor:none;transform-origin:center bottom;transition:transform .3s ease,box-shadow .3s ease;overflow:hidden}
     .fan-card::before{content:'';position:absolute;inset:6px;border:1px solid rgba(201,169,110,.18);border-radius:3px}
     .fan-card-sym{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(201,169,110,.5);position:relative;z-index:1}
@@ -129,7 +129,7 @@
     .particle{position:fixed;pointer-events:none;z-index:901;animation:particleFall 2s ease-in forwards}
     .particle-inner{width:100%;height:100%;animation:particleGlitter .4s ease-in-out infinite}
     @keyframes guideFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
-    .fan-guide{text-align:center;padding:4px 0;position:relative;z-index:10;margin-top:-20px}   
+    .fan-guide{text-align:center;padding:4px 0;position:relative;z-index:10;margin-top:-8px}   
     .fan-guide-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--gold);letter-spacing:.3em;display:inline-block;animation:guideFloat 1.5s ease-in-out infinite}
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
@@ -168,7 +168,9 @@
       .page-title{font-size:28px}
       .page-desc{font-size:13px}
       .instruction{margin-bottom:32px;padding:0 24px}
-      .shuffle-stage{padding:20px 16px 60px;min-height:440px}
+      .shuffle-stage{padding:70px 16px 60px;min-height:440px}
+      .fan-field{height:180px}
+      .shuffle-controls{margin-top:12px}
       .scatter-field{height:260px}
       .scatter-card{width:60px;height:105px}
       .fan-field{height:240px}
