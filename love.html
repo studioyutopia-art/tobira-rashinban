@@ -745,6 +745,7 @@ function confirmCard(index) {
     shuffleBtn.innerHTML = '<span>直感で選んでください</span>';
     shuffleBtn.disabled = true;
     shufflePhase = 'fanning';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const guideEl2 = document.createElement('div');
     guideEl2.className = 'fan-guide';
     guideEl2.id = 'fanGuide';
