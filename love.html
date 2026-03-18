@@ -66,7 +66,7 @@
     .selected-theme-name{font-weight:200;font-size:20px;letter-spacing:.2em}
 
     .shuffle-message{text-align:center;z-index:10}
-    .shuffle-step-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:16px;letter-spacing:.2em;color:var(--ink);margin-bottom:10px;transition:opacity .5s ease}
+    .shuffle-step-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:16px;letter-spacing:.2em;color:var(--ink);margin-bottom:10px;transition:opacity .5s ease;scroll-margin-top:80px}
     .shuffle-sub-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust);transition:opacity .5s ease}
 
     .scatter-field{position:relative;width:100%;max-width:700px;height:340px}
@@ -745,7 +745,7 @@ function confirmCard(index) {
     shuffleBtn.innerHTML = '<span>直感で選んでください</span>';
     shuffleBtn.disabled = true;
     shufflePhase = 'fanning';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('shuffleStepText').scrollIntoView({ behavior: 'smooth', block: 'start' });
     const guideEl2 = document.createElement('div');
     guideEl2.className = 'fan-guide';
     guideEl2.id = 'fanGuide';
