@@ -47,9 +47,18 @@
 
     .reading-section{max-width:800px;margin:0 auto;padding:0 80px 120px}
 
-    .loading-wrap{text-align:center;padding:80px 0;opacity:0;animation:fadeUp 1s ease 1s forwards}
-    .loading-sym{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);animation:pulse 2s ease-in-out infinite;display:block;margin-bottom:24px}
-    .loading-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.3em;color:var(--dust)}
+    .loading-wrap{text-align:center;padding:80px 0;opacity:0;animation:fadeUp 1s ease .5s forwards}
+    .loading-sym{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);animation:pulse 2s ease-in-out infinite;display:block;margin-bottom:32px}
+    .loading-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.3em;color:var(--dust);margin-bottom:40px;min-height:24px;transition:opacity .5s ease}
+    .loading-steps{display:flex;flex-direction:column;gap:12px;max-width:320px;margin:0 auto}
+    .loading-step{display:flex;align-items:center;gap:12px;opacity:.25;transition:opacity .6s ease}
+    .loading-step.active{opacity:1}
+    .loading-step.done{opacity:.5}
+    .loading-step-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;transition:background .3s}
+    .loading-step.done .loading-step-dot{background:var(--dust)}
+    .loading-step-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.2em;color:var(--ink-mid);text-align:left}
+    .loading-progress{width:200px;height:1px;background:rgba(182,169,154,.2);margin:32px auto 0;position:relative;overflow:hidden}
+    .loading-progress-bar{position:absolute;top:0;left:0;height:100%;background:linear-gradient(to right,var(--gold),var(--mouve));width:0%;transition:width .8s ease}
     @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
 
     .reading-content{display:none}
@@ -154,7 +163,28 @@
 <div class="reading-section">
   <div class="loading-wrap" id="loadingWrap">
     <span class="loading-sym">✦</span>
-    <p class="loading-text">カードのメッセージを深く読み解いています</p>
+    <p class="loading-text" id="loadingText">カードと向き合っています…</p>
+    <div class="loading-steps">
+      <div class="loading-step" id="step1">
+        <div class="loading-step-dot"></div>
+        <span class="loading-step-text">カードの象徴を解析しています</span>
+      </div>
+      <div class="loading-step" id="step2">
+        <div class="loading-step-dot"></div>
+        <span class="loading-step-text">あなたの状況を読み解いています</span>
+      </div>
+      <div class="loading-step" id="step3">
+        <div class="loading-step-dot"></div>
+        <span class="loading-step-text">深層のメッセージを受け取っています</span>
+      </div>
+      <div class="loading-step" id="step4">
+        <div class="loading-step-dot"></div>
+        <span class="loading-step-text">鑑定文を生成しています</span>
+      </div>
+    </div>
+    <div class="loading-progress">
+      <div class="loading-progress-bar" id="loadingBar"></div>
+    </div>
   </div>
   <div class="reading-content" id="readingContent">
     <div class="reading-divider"></div>
@@ -435,7 +465,49 @@ ${cardText}
   return `${CHARACTER}\n\n${ctx}\n\n${COMMON_RULES}`;
 }
 
+function startLoadingAnimation() {
+  const steps = ['step1','step2','step3','step4'];
+  const messages = [
+    'カードと向き合っています…',
+    'カードの象徴を解析しています…',
+    '深層のメッセージを受け取っています…',
+    '鑑定文を生成しています…',
+  ];
+  const bar = document.getElementById('loadingBar');
+  const loadingText = document.getElementById('loadingText');
+  let current = 0;
+
+  // 最初のステップをすぐにアクティブに
+  document.getElementById(steps[0]).classList.add('active');
+  bar.style.width = '10%';
+
+  const interval = setInterval(() => {
+    if (current < steps.length) {
+      // 現在のステップをdoneに
+      if (current > 0) {
+        document.getElementById(steps[current - 1]).classList.remove('active');
+        document.getElementById(steps[current - 1]).classList.add('done');
+      }
+      // 次のステップをアクティブに
+      document.getElementById(steps[current]).classList.add('active');
+      loadingText.style.opacity = '0';
+      setTimeout(() => {
+        loadingText.textContent = messages[current];
+        loadingText.style.opacity = '1';
+      }, 300);
+      bar.style.width = `${(current + 1) * 22}%`;
+      current++;
+    } else {
+      clearInterval(interval);
+      bar.style.width = '90%';
+    }
+  }, 1800);
+
+  return interval;
+}
+
 async function fetchReading() {
+  const loadingInterval = startLoadingAnimation();
   if (cards.length === 0) {
     document.getElementById('loadingWrap').style.display = 'none';
     document.getElementById('errorWrap').style.display = 'block';
@@ -457,9 +529,12 @@ async function fetchReading() {
     const data = await response.json();
     if (data.error) throw new Error(data.error);
 
-    showReading(data.reading);
+    clearInterval(loadingInterval);
+    document.getElementById('loadingBar').style.width = '100%';
+    setTimeout(() => showReading(data.reading), 400);
 
   } catch (error) {
+    clearInterval(loadingInterval);
     document.getElementById('loadingWrap').style.display = 'none';
     document.getElementById('errorWrap').style.display = 'block';
   }
