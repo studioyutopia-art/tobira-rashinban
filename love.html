@@ -58,7 +58,7 @@
     .theme-btn:hover .theme-cards,.theme-btn.active .theme-cards{color:var(--cream);border-color:rgba(196,144,154,.4);background:rgba(196,144,154,.15)}
 
     /* シャッフルステージ */
-    .shuffle-stage{display:none;flex-direction:column;align-items:center;gap:16px;padding:90px 80px 80px;margin:0 auto;min-height:520px;position:relative;max-width:900px}
+    .shuffle-stage{display:none;flex-direction:column;align-items:center;gap:8px;padding:90px 80px 80px;margin:0 auto;min-height:520px;position:relative;max-width:900px}
     .shuffle-stage.visible{display:flex}
 
     .selected-theme{text-align:center;margin-bottom:8px}
@@ -621,6 +621,7 @@ shuffleBtn.addEventListener('click', () => {
     shuffleBtn.disabled = true;
     document.getElementById('shuffleStepText').textContent = 'カードを扇状に広げました';
     document.getElementById('shuffleSubText').textContent = '心が反応したカードを選んでください';
+    document.getElementById('shuffleStepText').scrollIntoView({ behavior: 'smooth', block: 'start' });
     fanCards();
   }
 });
@@ -676,7 +677,7 @@ function fanCards() {
     const guideEl = document.createElement('div');
     guideEl.className = 'fan-guide';
     guideEl.id = 'fanGuide';
-    guideEl.innerHTML = '<span class="fan-guide-text">↓ カードに触れてください ↓</span>';
+    guideEl.innerHTML = '<span class="fan-guide-text">↓ 直感でカードを選んでください ↓</span>';
     document.getElementById('shuffleStage').insertBefore(guideEl, fanField);
     const isMobile = window.innerWidth <= 768;
     const total = 22;
@@ -749,7 +750,7 @@ function confirmCard(index) {
     const guideEl2 = document.createElement('div');
     guideEl2.className = 'fan-guide';
     guideEl2.id = 'fanGuide';
-    guideEl2.innerHTML = '<span class="fan-guide-text">↓ カードに触れてください ↓</span>';
+    guideEl2.innerHTML = '<span class="fan-guide-text">↓ 直感でカードを選んでください ↓</span>';
     document.getElementById('shuffleStage').insertBefore(guideEl2, document.getElementById('fanField'));
     document.querySelectorAll('.fan-card.pre-selected').forEach(c => {
       c.classList.remove('pre-selected');
