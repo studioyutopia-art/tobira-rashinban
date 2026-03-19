@@ -84,6 +84,15 @@
 
     .result-area{max-width:800px;margin:0 auto;padding:0 80px 120px;display:none}
     .result-area.visible{display:block}
+    /* 結果エリア ダークモード */
+    .result-area.visible .result-theme-name{color:var(--cream)}
+    .result-area.visible .result-card-name{color:var(--dust)}
+    .result-area.visible .result-card-orientation{color:var(--dust)}
+    .result-area.visible .result-message-title{color:var(--cream)}
+    .result-area.visible .result-message-text{color:rgba(245,241,235,.7)}
+    .result-area.visible .result-divider{background:rgba(196,144,154,.3)}
+    .result-area.visible .btn-action{color:var(--dust);border-color:rgba(182,169,154,.3)}
+    .result-area.visible .btn-action:hover{color:var(--cream)}
 
     .result-header{text-align:center;margin-bottom:56px}
     .result-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--purple);display:block;margin-bottom:16px}
@@ -557,6 +566,7 @@ function resetReading() {
   document.getElementById('shuffleStage').classList.remove('visible');
   document.getElementById('resultArea').classList.remove('visible');
   document.getElementById('resultArea').style.display = 'none';
+  document.body.style.background = 'var(--cream)';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -744,6 +754,8 @@ function showResult() {
   const resultArea = document.getElementById('resultArea');
   resultArea.style.display = 'block';
   resultArea.classList.add('visible');
+  document.body.style.background = 'var(--ink)';
+  document.body.style.transition = 'background 0.8s ease';
 
   const resultCards = document.getElementById('resultCards');
   resultCards.innerHTML = '';
