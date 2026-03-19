@@ -209,6 +209,18 @@
       .ai-cta-features{gap:12px}
       .hamburger{display:flex}
     }
+    /* 結果エリア ダークモード */
+    .result-area.visible .result-theme-name{color:var(--cream)}
+    .result-area.visible .result-card-name{color:var(--dust)}
+    .result-area.visible .result-message-title{color:var(--cream)}
+    .result-area.visible .result-message-text{color:rgba(245,241,235,.7)}
+    .result-area.visible .result-divider{background:rgba(196,144,154,.3)}
+    .result-area.visible .btn-action{color:var(--dust);border-color:rgba(182,169,154,.3)}
+    .result-area.visible .btn-action:hover{color:var(--cream)}
+    .result-area.visible .focus-select{background:rgba(255,255,255,.05);border-color:rgba(182,169,154,.2)}
+    .result-area.visible .focus-option-text{color:rgba(245,241,235,.7)}
+    .result-area.visible .focus-option input[type="radio"]:checked + .focus-option-text{color:var(--cream)}
+
     /* フォーカス選択UI */
     .focus-select{background:rgba(42,38,34,.04);border:1px solid rgba(182,169,154,.25);border-radius:6px;padding:24px 28px;margin-bottom:24px}
     .focus-select-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.3em;color:var(--gold);display:block;margin-bottom:16px;text-align:center}
@@ -593,6 +605,7 @@ function backToTheme() {
   document.getElementById('themeSection').style.display = 'block';
   document.getElementById('shuffleStage').classList.remove('visible');
   document.getElementById('resultArea').classList.remove('visible');
+  document.body.style.background = 'var(--cream)';
   resetShuffleState();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -805,6 +818,8 @@ function showResult() {
   const theme = THEMES[currentTheme];
   const resultArea = document.getElementById('resultArea');
   resultArea.classList.add('visible');
+  document.body.style.background = 'var(--ink)';
+  document.body.style.transition = 'background 0.8s ease';
 
   document.getElementById('resultThemeLabel').textContent = theme.label;
   document.getElementById('resultThemeName').textContent = theme.name;
