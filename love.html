@@ -231,6 +231,7 @@
     .focus-option input[type="radio"]{accent-color:var(--rose);width:16px;height:16px;flex-shrink:0;cursor:pointer}
     .focus-option-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:13px;letter-spacing:.15em;color:var(--ink-mid);line-height:1.6}
     .focus-option input[type="radio"]:checked + .focus-option-text{color:var(--ink)}
+    .focus-select-note{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.2em;color:var(--gold);text-align:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(182,169,154,.2);line-height:1.8}
 
   </style>
 </head>
@@ -337,6 +338,7 @@
   <div class="focus-select" id="focusSelectBlock" style="display:none">
     <span class="focus-select-label" id="focusSelectLabel"></span>
     <div class="focus-options" id="focusOptions"></div>
+    <p class="focus-select-note" id="focusSelectNote"></p>
   </div>
 
   <!-- ▼ チラ見せUI -->
@@ -890,28 +892,51 @@ function showResult() {
   const teaserContent = getTeaserContent(selectedCards, currentTheme);
   document.getElementById('teaserHook').textContent = teaserContent.hook;
   document.getElementById('teaserPreview').textContent = teaserContent.preview;
-  // teaserBtnのラベルを価格付きに
-  const teaserBtnLabels = { feeling:'続きをAI深層鑑定で見る（¥500）', compatibility:'続きをAI深層鑑定で見る（¥600）', future:'続きをAI深層鑑定で見る（¥800）' };
-  document.getElementById('teaserBtn').textContent = teaserBtnLabels[currentTheme] || '続きをAI深層鑑定で見る';
+  // teaserBtnのラベルはフォーカス選択UIで動的に設定
 
   // ▼ フォーカス選択UIをテーマに応じて表示
   const focusConfig = {
     feeling: {
       label: 'どこまで知りたいですか？',
       options: ['表に出ている気持ち', '本音（深層心理）', '今後どう動くか'],
-      defaultIndex: 1
+      defaultIndex: 1,
+      btnLabels: [
+        'あの人の気持ちを表層から鑑定する（¥500）',
+        'あの人の本音をAIで深層鑑定する（¥500）',
+        'この恋の今後の展開をAIで鑑定する（¥500）',
+      ]
     },
     compatibility: {
       label: 'どの視点で知りたいですか？',
       options: ['相性の良い部分', 'すれ違う原因', '二人がうまくいくために必要なこと'],
-      defaultIndex: 0
+      defaultIndex: 0,
+      btnLabels: [
+        '二人の相性の強みをAIで深層鑑定する（¥600）',
+        'すれ違いの原因をAIで深層鑑定する（¥600）',
+        'うまくいく方法をAIで深層鑑定する（¥600）',
+      ]
     },
     future: {
       label: 'どの未来を詳しく知りたいですか？',
       options: ['自然に進んだ場合の未来', '行動した場合の未来', '注意すべき未来'],
-      defaultIndex: 1
+      defaultIndex: 1,
+      btnLabels: [
+        'このまま進んだ未来をAIで深層鑑定する（¥800）',
+        '行動した場合の未来をAIで深層鑑定する（¥800）',
+        '注意すべき未来をAIで深層鑑定する（¥800）',
+      ]
     }
   };
+
+  function updateFocusButtons(fc, index) {
+    const opt = fc.options[index];
+    const btnLabel = fc.btnLabels[index];
+    localStorage.setItem('tobira_reading_focus', opt);
+    document.getElementById('teaserBtn').textContent = btnLabel;
+    document.getElementById('btnAiReading').querySelector('span').textContent = btnLabel;
+    document.getElementById('focusSelectNote').textContent = `✦ 選んだ項目を重点的に深掘りして鑑定します`;
+  }
+
   const fc = focusConfig[currentTheme];
   if (fc) {
     document.getElementById('focusSelectLabel').textContent = fc.label;
@@ -922,12 +947,12 @@ function showResult() {
       label.className = 'focus-option';
       label.innerHTML = `<input type="radio" name="focusOption" value="${opt}"${i === fc.defaultIndex ? ' checked' : ''}><span class="focus-option-text">${opt}</span>`;
       label.querySelector('input').addEventListener('change', () => {
-        localStorage.setItem('tobira_reading_focus', opt);
+        updateFocusButtons(fc, i);
       });
       optionsEl.appendChild(label);
     });
-    // デフォルト値をlocalStorageに保存
-    localStorage.setItem('tobira_reading_focus', fc.options[fc.defaultIndex]);
+    // デフォルト値を反映
+    updateFocusButtons(fc, fc.defaultIndex);
     document.getElementById('focusSelectBlock').style.display = 'block';
   } else {
     document.getElementById('focusSelectBlock').style.display = 'none';
