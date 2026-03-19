@@ -210,6 +210,7 @@
       .hamburger{display:flex}
     }
     /* 結果エリア ダークモード */
+    .result-area.visible .result-message-block{background:rgba(255,255,255,.06)}
     .result-area.visible .result-theme-name{color:var(--cream)}
     .result-area.visible .result-card-name{color:var(--dust)}
     .result-area.visible .result-message-title{color:var(--cream)}
@@ -996,7 +997,7 @@ function showRevealAnimation(card, reversed, callback) {
       overlay.remove();
       callback();
     }, 300);
-  }, 3200);
+  }, 1800);
 }
 
 // ── チラ見せデータ ──

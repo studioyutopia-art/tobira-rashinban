@@ -85,6 +85,8 @@
     .result-area{max-width:800px;margin:0 auto;padding:0 80px 120px;display:none}
     .result-area.visible{display:block}
     /* 結果エリア ダークモード */
+    .result-area.visible .result-message-block{background:rgba(255,255,255,.06)}
+    .result-area.visible .result-message-block:nth-child(2){background:rgba(255,255,255,.1)}
     .result-area.visible .result-theme-name{color:var(--cream)}
     .result-area.visible .result-card-name{color:var(--dust)}
     .result-area.visible .result-card-orientation{color:var(--dust)}
@@ -898,7 +900,7 @@ function showRevealAnimation(card, reversed, callback) {
       overlay.remove();
       callback();
     }, 300);
-  }, 3200);
+  }, 1800);
 }
 
 // ── チラ見せデータ ──
