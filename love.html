@@ -209,6 +209,16 @@
       .ai-cta-features{gap:12px}
       .hamburger{display:flex}
     }
+    /* フォーカス選択UI */
+    .focus-select{background:rgba(42,38,34,.04);border:1px solid rgba(182,169,154,.25);border-radius:6px;padding:24px 28px;margin-bottom:24px}
+    .focus-select-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.3em;color:var(--gold);display:block;margin-bottom:16px;text-align:center}
+    .focus-options{display:flex;flex-direction:column;gap:10px}
+    .focus-option{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:4px;cursor:pointer;transition:background .2s}
+    .focus-option:hover{background:rgba(182,169,154,.12)}
+    .focus-option input[type="radio"]{accent-color:var(--rose);width:16px;height:16px;flex-shrink:0;cursor:pointer}
+    .focus-option-text{font-family:'Noto Serif JP',serif;font-weight:200;font-size:13px;letter-spacing:.15em;color:var(--ink-mid);line-height:1.6}
+    .focus-option input[type="radio"]:checked + .focus-option-text{color:var(--ink)}
+
   </style>
 </head>
 <body>
@@ -309,6 +319,12 @@
   <div class="result-cards" id="resultCards"></div>
   <div class="result-divider"></div>
   <div class="result-messages" id="resultMessages"></div>
+
+  <!-- ▼ フォーカス選択UI（テーマに応じてJSで表示切替） -->
+  <div class="focus-select" id="focusSelectBlock" style="display:none">
+    <span class="focus-select-label" id="focusSelectLabel"></span>
+    <div class="focus-options" id="focusOptions"></div>
+  </div>
 
   <!-- ▼ チラ見せUI -->
   <div class="teaser-wrap" id="teaserWrap">
@@ -861,6 +877,46 @@ function showResult() {
   // teaserBtnのラベルを価格付きに
   const teaserBtnLabels = { feeling:'続きをAI深層鑑定で見る（¥500）', compatibility:'続きをAI深層鑑定で見る（¥600）', future:'続きをAI深層鑑定で見る（¥800）' };
   document.getElementById('teaserBtn').textContent = teaserBtnLabels[currentTheme] || '続きをAI深層鑑定で見る';
+
+  // ▼ フォーカス選択UIをテーマに応じて表示
+  const focusConfig = {
+    feeling: {
+      label: 'どこまで知りたいですか？',
+      options: ['表に出ている気持ち', '本音（深層心理）', '今後どう動くか'],
+      defaultIndex: 1
+    },
+    compatibility: {
+      label: 'どの視点で知りたいですか？',
+      options: ['相性の良い部分', 'すれ違う原因', '二人がうまくいくために必要なこと'],
+      defaultIndex: 0
+    },
+    future: {
+      label: 'どの未来を詳しく知りたいですか？',
+      options: ['自然に進んだ場合の未来', '行動した場合の未来', '注意すべき未来'],
+      defaultIndex: 1
+    }
+  };
+  const fc = focusConfig[currentTheme];
+  if (fc) {
+    document.getElementById('focusSelectLabel').textContent = fc.label;
+    const optionsEl = document.getElementById('focusOptions');
+    optionsEl.innerHTML = '';
+    fc.options.forEach((opt, i) => {
+      const label = document.createElement('label');
+      label.className = 'focus-option';
+      label.innerHTML = `<input type="radio" name="focusOption" value="${opt}"${i === fc.defaultIndex ? ' checked' : ''}><span class="focus-option-text">${opt}</span>`;
+      label.querySelector('input').addEventListener('change', () => {
+        localStorage.setItem('tobira_reading_focus', opt);
+      });
+      optionsEl.appendChild(label);
+    });
+    // デフォルト値をlocalStorageに保存
+    localStorage.setItem('tobira_reading_focus', fc.options[fc.defaultIndex]);
+    document.getElementById('focusSelectBlock').style.display = 'block';
+  } else {
+    document.getElementById('focusSelectBlock').style.display = 'none';
+    localStorage.removeItem('tobira_reading_focus');
+  }
 
   resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
