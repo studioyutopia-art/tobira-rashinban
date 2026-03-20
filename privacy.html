@@ -149,7 +149,7 @@
     <p>当サービスでは以下の外部サービスを利用しています。</p>
     <ul>
       <li>PAY.JP（決済処理）：<a href="https://pay.jp" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.3)">https://pay.jp</a></li>
-      <li>Anthropic Claude API（AI鑑定文の生成）：入力されたカード情報をもとにAIが鑑定文を生成します。個人を特定できる情報は送信されません。</li>
+      <li>AI鑑定文の生成のため、入力されたカード情報を外部のAIサービスに送信する場合があります。個人を特定できる情報は送信されません。</li>
       <li>Google Fonts（フォントの読み込み）</li>
     </ul>
   </div>
@@ -178,7 +178,7 @@
     <h2>10. お問い合わせ</h2>
     <p>個人情報の取り扱いに関するお問い合わせは、以下までご連絡ください。</p>
     <p>扉と羅針盤<br>
-    メールアドレス：<a href="mailto:studioyutopia@gmail.com" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.3)">studioyutopia@gmail.com</a></p>
+    メールアドレス：<a href="/cdn-cgi/l/email-protection#e2919697868b8d9b97968d928b83a2858f838b8ecc818d8f" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.3)"><span class="__cf_email__" data-cfemail="8cfff8f9e8e5e3f5f9f8e3fce5edccebe1ede5e0a2efe3e1">[email&#160;protected]</span></a></p>
   </div>
 </div>
 
@@ -191,7 +191,7 @@
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const cur=document.getElementById('cur'),ring=document.getElementById('ring');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
@@ -209,14 +209,4 @@ const hamburger=document.getElementById('hamburger');
 const mobileMenu=document.getElementById('mobileMenu');
 hamburger.addEventListener('click',()=>{
   hamburger.classList.toggle('open');
-  mobileMenu.classList.toggle('open');
-  document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
-});
-function closeMenu(){
-  hamburger.classList.remove('open');
-  mobileMenu.classList.remove('open');
-  document.body.style.overflow='';
-}
-</script>
-</body>
-</html>
+  mobileMenu.classList.toggle('open'
