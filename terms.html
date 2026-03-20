@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>利用規約 — 扉と羅針盤</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#F5F1EB;--warm:#EDE7DC;--mouve:#C4B0C0;
+      --dust:#B6A99A;--ink:#2A2622;--ink-mid:#4A443E;
+      --ink-lt:#7A7068;--gold:#C9A96E;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--ink);font-family:'Noto Serif JP',serif;font-weight:200;overflow-x:hidden;cursor:none;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+    .cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease}
+    .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid var(--mouve);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:border-color .3s,transform .3s}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:26px 56px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(245,241,235,0.95),transparent)}
+    .nav-logo{font-size:13px;letter-spacing:.25em;color:var(--ink-mid);text-decoration:none}
+    .nav-logo span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.15em;color:var(--ink-lt);margin-left:14px}
+    .nav-links{display:flex;gap:44px;list-style:none}
+    .nav-links a{font-size:11px;letter-spacing:.3em;color:var(--ink-lt);text-decoration:none;position:relative;transition:color .3s}
+    .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
+    .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;z-index:200;padding:4px}
+    .hamburger span{display:block;width:22px;height:1px;background:var(--ink-mid);transition:transform .3s ease,opacity .3s ease;transform-origin:center}
+    .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    .mobile-menu{position:fixed;top:0;left:0;right:0;background:rgba(245,241,235,.98);backdrop-filter:blur(12px);z-index:150;padding:90px 48px 48px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);border-bottom:1px solid rgba(182,169,154,.3)}
+    .mobile-menu.open{transform:translateY(0)}
+    .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:0}
+    .mobile-menu ul li{border-bottom:1px solid rgba(182,169,154,.2)}
+    .mobile-menu ul li a{display:block;font-family:'Noto Serif JP',serif;font-weight:200;font-size:15px;letter-spacing:.3em;color:var(--ink-mid);text-decoration:none;padding:20px 0;transition:color .3s,padding-left .3s}
+    .mobile-menu ul li a:hover{color:var(--ink);padding-left:8px}
+    .page-header{padding:140px 80px 64px;text-align:center}
+    .page-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.45em;color:var(--gold);margin-bottom:24px;display:block;opacity:0;animation:fadeUp 1s ease .2s forwards}
+    .page-title{font-weight:200;font-size:clamp(24px,3vw,40px);line-height:1.6;letter-spacing:.16em;opacity:0;animation:fadeUp 1s ease .4s forwards}
+    .terms-wrap{max-width:800px;margin:0 auto;padding:0 80px 120px;opacity:0;animation:fadeUp 1s ease .6s forwards}
+    .terms-section{margin-bottom:56px}
+    .terms-section h2{font-weight:200;font-size:16px;letter-spacing:.25em;color:var(--ink);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(182,169,154,.2)}
+    .terms-section p{font-size:13px;letter-spacing:.08em;color:var(--ink-mid);line-height:2.6;margin-bottom:16px}
+    .terms-section ul{padding-left:20px;margin-bottom:16px}
+    .terms-section ul li{font-size:13px;letter-spacing:.08em;color:var(--ink-mid);line-height:2.6}
+    .terms-date{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.2em;color:var(--dust);margin-bottom:48px}
+    footer{border-top:1px solid rgba(182,169,154,.2);padding:48px 80px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+    .footer-logo{font-size:12px;letter-spacing:.25em;color:var(--ink-lt)}
+    .footer-links{display:flex;gap:32px}
+    .footer-links a{font-size:11px;letter-spacing:.2em;color:var(--dust);text-decoration:none;transition:color .3s}
+    .footer-links a:hover{color:var(--ink-lt)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:768px){
+      .cursor,.cursor-ring{display:none}
+      body{cursor:auto}
+      a,button{cursor:pointer}
+      nav{padding:16px 20px}
+      .nav-links{display:none}
+      .nav-logo span{display:none}
+      .page-header{padding:100px 24px 48px}
+      .terms-wrap{padding:0 24px 80px}
+      footer{padding:40px 24px;flex-direction:column;align-items:flex-start;gap:16px}
+      .hamburger{display:flex}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">扉と羅針盤<span>Tobira to Rashinban</span></a>
+  <ul class="nav-links">
+    <li><a href="today.html">今日の1枚</a></li>
+    <li><a href="tarot.html">運命のカードを引く</a></li>
+    <li><a href="love.html">あの人の気持ち</a></li>
+    <li><a href="reunion.html">復縁できる？</a></li>
+    <li><a href="cards.html">カード解説</a></li>
+    <li><a href="product.html">本格AI鑑定</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="index.html" onclick="closeMenu()">トップページ</a></li>
+    <li><a href="today.html" onclick="closeMenu()">今日の1枚</a></li>
+    <li><a href="tarot.html" onclick="closeMenu()">運命のカードを引く</a></li>
+    <li><a href="love.html" onclick="closeMenu()">あの人の気持ち</a></li>
+    <li><a href="reunion.html" onclick="closeMenu()">復縁できる？</a></li>
+    <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
+    <li><a href="product.html" onclick="closeMenu()">本格AI鑑定</a></li>
+  </ul>
+</div>
+
+<div class="page-header">
+  <span class="page-eyebrow">Legal</span>
+  <h1 class="page-title">利用規約</h1>
+</div>
+
+<div class="terms-wrap">
+  <p class="terms-date">制定日：2025年6月15日</p>
+
+  <div class="terms-section">
+    <h2>第1条（適用）</h2>
+    <p>本利用規約（以下「本規約」）は、扉と羅針盤（以下「当サービス」）が提供するサービスの利用条件を定めるものです。ユーザーの皆さまには、本規約に従って当サービスをご利用いただきます。</p>
+  </div>
+
+  <div class="terms-section">
+    <h2>第2条（サービスの内容）</h2>
+    <p>当サービスは、タロットカードを用いたデジタルコンテンツ型のエンターテインメントサービスです。ユーザーが選択したカードの組み合わせに基づき、AIが自動生成したテキストコンテンツを提供します。</p>
+    <p>本サービスの提供内容はエンターテインメントおよび内省を目的としたものであり、結果の正確性や特定の未来を保証するものではありません。</p>
+  </div>
+
+  <div class="terms-section">
+    <h2>第3条（禁止事項）</h2>
+    <p>ユーザーは、当サービスの利用にあたり、以下の行為を行ってはなりません。</p>
+    <ul>
+      <li>法令または公序良俗に違反する行為</li>
+      <li>当サービスの運営を妨害する行為</li>
+      <li>当サービスのコンテンツを無断で複製・転載・販売する行為</li>
+      <li>不正な方法による決済行為</li>
+      <li>その他、当サービスが不適切と判断する行為</li>
+    </ul>
+  </div>
+
+  <div class="terms-section">
+    <h2>第4条（決済・返金）</h2>
+    <p>有料サービスの決済はPAY.JPを通じて行われます。決済完了後はデジタルコンテンツの性質上、原則として返品・返金はお受けできません。ただし、システムの不具合等によりサービスをご利用いただけなかった場合は個別にご対応いたします。</p>
+  </div>
+
+  <div class="terms-section">
+    <h2>第5条（免責事項）</h2>
+    <p>当サービスは、以下の事項について一切の責任を負いません。</p>
+    <ul>
+      <li>本サービスのコンテンツに基づいてユーザーが行った判断・行動の結果</li>
+      <li>システム障害・メンテナンス等によるサービスの停止・中断</li>
+      <li>ユーザーの環境に起因するサービスの利用障害</li>
+      <li>第三者によるユーザーへの損害</li>
+    </ul>
+  </div>
+
+  <div class="terms-section">
+    <h2>第6条（知的財産権）</h2>
+    <p>当サービスに関する著作権その他の知的財産権は、当サービスの運営者または正当な権利者に帰属します。ユーザーは、当サービスのコンテンツを個人的な利用の範囲を超えて使用することはできません。</p>
+  </div>
+
+  <div class="terms-section">
+    <h2>第7条（サービスの変更・終了）</h2>
+    <p>当サービスは、ユーザーへの事前通知なく、サービスの内容を変更または終了することがあります。これによってユーザーに生じた損害について、当サービスは責任を負いません。</p>
+  </div>
+
+  <div class="terms-section">
+    <h2>第8条（規約の変更）</h2>
+    <p>当サービスは、必要に応じて本規約を変更することがあります。変更後の規約は、本ページに掲載した時点から効力を生じるものとします。</p>
+  </div>
+
+  <div class="terms-section">
+    <h2>第9条（準拠法・管轄裁判所）</h2>
+    <p>本規約の解釈にあたっては、日本法を準拠法とします。当サービスに関して紛争が生じた場合には、当サービスの運営者の所在地を管轄する裁判所を専属的合意管轄とします。</p>
+  </div>
+
+  <div class="terms-section">
+    <h2>お問い合わせ</h2>
+    <p>本規約に関するお問い合わせは、以下までご連絡ください。</p>
+    <p>扉と羅針盤<br>
+    メールアドレス：<a href="mailto:studioyutopia@gmail.com" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.3)">studioyutopia@gmail.com</a></p>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-logo">扉と羅針盤 — Tobira to Rashinban</span>
+  <div class="footer-links">
+    <a href="index.html">トップ</a>
+    <a href="tokusho.html">特定商取引法</a>
+    <a href="privacy.html">プライバシーポリシー</a>
+    <a href="terms.html">利用規約</a>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button')){
+    cur.style.transform='translate(-50%,-50%) scale(2.2)';
+    ring.style.borderColor='var(--gold)';ring.style.transform='translate(-50%,-50%) scale(1.4)';
+  }else{
+    cur.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.borderColor='var(--mouve)';ring.style.transform='translate(-50%,-50%) scale(1)';
+  }
+});
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobileMenu');
+hamburger.addEventListener('click',()=>{
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
+});
+function closeMenu(){
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow='';
+}
+</script>
+</body>
+</html>
