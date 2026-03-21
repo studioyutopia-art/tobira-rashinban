@@ -121,18 +121,18 @@
     .result-message-title{font-weight:200;font-size:17px;letter-spacing:.2em;margin-bottom:16px}
     .result-message-text{font-size:13px;line-height:3;letter-spacing:.08em;color:var(--ink-mid)}
 
-    /* AI深層鑑定CTA */
+    /* 深層鑑定CTA */
     .ai-cta{background:var(--ink);padding:56px 48px;text-align:center;margin-bottom:48px}
-    .ai-cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--rose);margin-bottom:20px;display:block}
-    .ai-cta-title{font-weight:200;font-size:22px;letter-spacing:.2em;color:var(--cream);margin-bottom:12px;line-height:1.8}
-    .ai-cta-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--mouve);margin-bottom:36px;line-height:2}
-    .ai-cta-features{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:36px}
-    .ai-cta-feature{font-size:11px;letter-spacing:.15em;color:rgba(245,241,235,.6);padding:6px 16px;border:1px solid rgba(196,144,154,.3);border-radius:2px}
-    .btn-ai{font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.4em;color:var(--ink);background:var(--rose);border:none;padding:22px 64px;cursor:none;position:relative;overflow:hidden;transition:color .4s;border-radius:999px;display:inline-block;text-decoration:none}
-    .btn-ai::before{content:'';position:absolute;inset:0;background:var(--cream);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
-    .btn-ai:hover::before{transform:translateX(0)}
-    .btn-ai:hover{color:var(--ink)}
-    .btn-ai span{position:relative;z-index:1}
+    .cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--rose);margin-bottom:20px;display:block}
+    .cta-title{font-weight:200;font-size:22px;letter-spacing:.2em;color:var(--cream);margin-bottom:12px;line-height:1.8}
+    .cta-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--mouve);margin-bottom:36px;line-height:2}
+    .cta-features{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:36px}
+    .cta-feature{font-size:11px;letter-spacing:.15em;color:rgba(245,241,235,.6);padding:6px 16px;border:1px solid rgba(196,144,154,.3);border-radius:2px}
+    .btn-reading{font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.4em;color:var(--ink);background:var(--rose);border:none;padding:22px 64px;cursor:none;position:relative;overflow:hidden;transition:color .4s;border-radius:999px;display:inline-block;text-decoration:none}
+    .btn-reading::before{content:'';position:absolute;inset:0;background:var(--cream);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
+    .btn-reading:hover::before{transform:translateX(0)}
+    .btn-reading:hover{color:var(--ink)}
+    .btn-reading span{position:relative;z-index:1}
 
     .result-actions{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
     .btn-action{font-family:'Noto Serif JP',serif;font-weight:200;font-size:11px;letter-spacing:.4em;color:var(--ink-lt);background:none;border:1px solid rgba(182,169,154,.4);padding:18px 40px;cursor:none;position:relative;overflow:hidden;transition:all .4s;text-decoration:none;border-radius:999px;display:inline-block}
@@ -205,8 +205,8 @@
       .fan-card{width:38px;height:66px}
       .result-area{padding:0 24px 80px}
       .result-card-img-wrap{width:100px;height:175px}
-      .ai-cta{padding:40px 24px}
-      .ai-cta-features{gap:12px}
+      .cta{padding:40px 24px}
+      .cta-features{gap:12px}
       .hamburger{display:flex}
     }
     /* 結果エリア ダークモード */
@@ -248,7 +248,7 @@
     <li><a href="love.html" style="color:var(--ink)">あの人の気持ち</a></li>
     <li><a href="reunion.html">復縁できる？</a></li>
     <li><a href="cards.html">カード解説</a></li>
-    <li><a href="product.html">本格AI鑑定</a></li>
+    <li><a href="product.html">本格深層鑑定</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="muteBtn" onclick="toggleMute()" style="background:none;border:none;cursor:pointer;padding:4px;line-height:1;opacity:.8;transition:opacity .3s" title="音声オン/オフ">
@@ -268,7 +268,7 @@
     <li><a href="love.html" onclick="closeMenu()">あの人の気持ち</a></li>
     <li><a href="reunion.html" onclick="closeMenu()">復縁できる？</a></li>
     <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
-    <li><a href="product.html" onclick="closeMenu()">本格AI鑑定</a></li>
+    <li><a href="product.html" onclick="closeMenu()">本格深層鑑定</a></li>
   </ul>
 </div>
 
@@ -347,23 +347,23 @@
   <div class="teaser-wrap" id="teaserWrap">
     <span class="teaser-hook" id="teaserHook"></span>
     <div class="teaser-preview">
-      <span class="teaser-preview-label">AI鑑定より（一部）</span>
+      <span class="teaser-preview-label">鑑定より（一部）</span>
       <p class="teaser-preview-text" id="teaserPreview"></p>
     </div>
-    <button class="teaser-btn" id="teaserBtn" onclick="document.getElementById('btnAiReading').click()">続きをAI深層鑑定で見る</button>
+    <button class="teaser-btn" id="teaserBtn" onclick="document.getElementById('btnReading').click()">続きを深層鑑定で見る</button>
   </div>
 
-  <!-- ▼ AI深層鑑定CTA：テーマに応じてStripe決済リンクをJSで動的に設定 -->
-  <div class="ai-cta" style="display:none" id="aiCtaBlock">
-    <span class="ai-cta-eyebrow">AI Deep Reading</span>
-    <h2 class="ai-cta-title">このカードをさらに深く読み解きませんか</h2>
-    <p class="ai-cta-desc">同じカードを使って、AIがより詳しい鑑定を行います</p>
-    <div class="ai-cta-features">
-      <span class="ai-cta-feature">相手の本音</span>
-      <span class="ai-cta-feature">恋の進展予測</span>
-      <span class="ai-cta-feature">あなたが取るべき行動</span>
+  <!-- ▼ 深層鑑定CTA：テーマに応じてPAY.JP決済リンクをJSで動的に設定 -->
+  <div class="cta" style="display:none" id="ctaBlock">
+    <span class="cta-eyebrow">Deep Reading</span>
+    <h2 class="cta-title">このカードをさらに深く読み解きませんか</h2>
+    <p class="cta-desc">同じカードを使って、より詳しい鑑定を行います</p>
+    <div class="cta-features">
+      <span class="cta-feature">相手の本音</span>
+      <span class="cta-feature">恋の進展予測</span>
+      <span class="cta-feature">あなたが取るべき行動</span>
     </div>
-    <a href="#" class="btn-ai" id="btnAiReading"><span>AI深層鑑定を受ける</span></a>
+    <a href="#" class="btn-reading" id="btnReading"><span>深層鑑定を受ける</span></a>
   </div>
   </div>
 
@@ -1130,7 +1130,6 @@ function closeMenu(){
 </script>
 
 <footer style="border-top:1px solid rgba(182,169,154,.15);padding:32px 80px;text-align:center">
-  <a href="tokusho.html" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.25em;color:var(--dust);text-decoration:none;transition:color .3s" onmouseover="this.style.color='var(--ink-lt)'" onmouseout="this.style.color='var(--dust)'">特定商取引法に基づく表記</a>
 </footer>
 </body>
 </html>
