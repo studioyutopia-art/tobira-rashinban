@@ -122,7 +122,7 @@
     .result-message-text{font-size:13px;line-height:3;letter-spacing:.08em;color:var(--ink-mid)}
 
     /* 深層鑑定CTA */
-    .ai-cta{background:var(--ink);padding:56px 48px;text-align:center;margin-bottom:48px}
+    .cta{background:var(--ink);padding:56px 48px;text-align:center;margin-bottom:48px}
     .cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--rose);margin-bottom:20px;display:block}
     .cta-title{font-weight:200;font-size:22px;letter-spacing:.2em;color:var(--cream);margin-bottom:12px;line-height:1.8}
     .cta-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--mouve);margin-bottom:36px;line-height:2}
@@ -882,20 +882,20 @@ function showResult() {
   localStorage.setItem('tobira_reading_cards', cardNames);
   localStorage.setItem('tobira_reading_theme', theme.name);
 
-  // ▼ テーマに応じてStripe決済リンク（③④⑤）を動的に設定
+  // ▼ テーマに応じてPAY.JP決済リンク（③④⑤）を動的に設定
   const stripeLinks = {
-    feeling:       'https://buy.stripe.com/test_28E7sKdu06Om7iSahl2VG09', // ¥500
-    compatibility: 'https://buy.stripe.com/test_fZu28q9dKdcK6eOblp2VG06', // ④ ¥600
-    future:        'https://buy.stripe.com/test_00w28q9dKfkScDcgFJ2VG07', // ⑤ ¥800
+    feeling:       '#',
+    compatibility: '#',
+    future:        '#',
   };
   const stripeLabels = {
-    feeling:       'AI深層鑑定を受ける（¥500）',
-    compatibility: 'AI深層鑑定を受ける（¥600）',
-    future:        'AI深層鑑定を受ける（¥800）',
+    feeling:       '深層鑑定を受ける（¥500）',
+    compatibility: '深層鑑定を受ける（¥600）',
+    future:        '深層鑑定を受ける（¥800）',
   };
-  const btn = document.getElementById('btnAiReading');
+  const btn = document.getElementById('btnReading');
   btn.href = stripeLinks[currentTheme] || '#';
-  btn.querySelector('span').textContent = stripeLabels[currentTheme] || 'AI深層鑑定を受ける';
+  btn.querySelector('span').textContent = stripeLabels[currentTheme] || '深層鑑定を受ける';
 
   // チラ見せテキスト設定
   const teaserContent = getTeaserContent(selectedCards, currentTheme);
@@ -911,8 +911,8 @@ function showResult() {
       defaultIndex: 1,
       btnLabels: [
         'あの人の気持ちを表層から鑑定する（¥500）',
-        'あの人の本音をAIで深層鑑定する（¥500）',
-        'この恋の今後の展開をAIで鑑定する（¥500）',
+        'あの人の本音を深層鑑定する（¥500）',
+        'この恋の今後の展開を鑑定する（¥500）',
       ]
     },
     compatibility: {
@@ -942,7 +942,7 @@ function showResult() {
     const btnLabel = fc.btnLabels[index];
     localStorage.setItem('tobira_reading_focus', opt);
     document.getElementById('teaserBtn').textContent = btnLabel;
-    document.getElementById('btnAiReading').querySelector('span').textContent = btnLabel;
+    document.getElementById('btnReading').querySelector('span').textContent = btnLabel;
     document.getElementById('focusSelectNote').textContent = `✦ 選んだ項目を重点的に深掘りして鑑定します`;
   }
 
