@@ -131,12 +131,12 @@
     .meter-unit{font-size:14px;letter-spacing:.2em;color:var(--mouve)}
     .possibility-message{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;letter-spacing:.2em;color:var(--mouve);line-height:2;margin-top:20px}
 
-    .ai-cta{background:var(--warm);padding:56px 48px;text-align:center;margin-bottom:48px}
-    .ai-cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--purple);margin-bottom:20px;display:block}
-    .ai-cta-title{font-weight:200;font-size:22px;letter-spacing:.2em;color:var(--ink);margin-bottom:12px;line-height:1.8}
-    .ai-cta-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust);margin-bottom:36px;line-height:2}
-    .ai-cta-features{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:36px}
-    .ai-cta-feature{font-size:11px;letter-spacing:.15em;color:var(--ink-lt);padding:6px 16px;border:1px solid rgba(155,139,180,.3);border-radius:2px}
+    .cta{background:var(--warm);padding:56px 48px;text-align:center;margin-bottom:48px}
+    .cta-eyebrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.45em;color:var(--purple);margin-bottom:20px;display:block}
+    .cta-title{font-weight:200;font-size:22px;letter-spacing:.2em;color:var(--ink);margin-bottom:12px;line-height:1.8}
+    .cta-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.2em;color:var(--dust);margin-bottom:36px;line-height:2}
+    .cta-features{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:36px}
+    .cta-feature{font-size:11px;letter-spacing:.15em;color:var(--ink-lt);padding:6px 16px;border:1px solid rgba(155,139,180,.3);border-radius:2px}
     .btn-ai{font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.4em;color:var(--cream);background:var(--ink);border:none;padding:22px 64px;cursor:none;position:relative;overflow:hidden;transition:color .4s;border-radius:999px;display:inline-block;text-decoration:none}
     .btn-ai::before{content:'';position:absolute;inset:0;background:var(--purple);transform:translateX(-100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);z-index:0;border-radius:999px}
     .btn-ai:hover::before{transform:translateX(0)}
@@ -213,7 +213,7 @@
       .fan-card{width:38px;height:66px}
       .result-area{padding:0 24px 80px}
       .result-card-img-wrap{width:90px;height:158px}
-      .ai-cta{padding:40px 24px}
+      .cta{padding:40px 24px}
       .possibility-meter{padding:40px 24px}
       .hamburger{display:flex}
     }
@@ -232,7 +232,7 @@
     <li><a href="love.html">あの人の気持ち</a></li>
     <li><a href="reunion.html" style="color:var(--ink)">復縁できる？</a></li>
     <li><a href="cards.html">カード解説</a></li>
-    <li><a href="product.html">本格AI鑑定</a></li>
+    <li><a href="product.html">本格深層鑑定</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="muteBtn" onclick="toggleMute()" style="background:none;border:none;cursor:pointer;padding:4px;line-height:1;opacity:.8;transition:opacity .3s;margin-right:12px" title="音声オン/オフ">
@@ -252,7 +252,7 @@
     <li><a href="love.html" onclick="closeMenu()">あの人の気持ち</a></li>
     <li><a href="reunion.html" onclick="closeMenu()">復縁できる？</a></li>
     <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
-    <li><a href="product.html" onclick="closeMenu()">本格AI鑑定</a></li>
+    <li><a href="product.html" onclick="closeMenu()">本格深層鑑定</a></li>
   </ul>
 </div>
 
@@ -322,24 +322,24 @@
   <div class="teaser-wrap" id="teaserWrap">
     <span class="teaser-hook" id="teaserHook"></span>
     <div class="teaser-preview">
-      <span class="teaser-preview-label">AI鑑定より（一部）</span>
+      <span class="teaser-preview-label">鑑定より（一部）</span>
       <p class="teaser-preview-text" id="teaserPreview"></p>
     </div>
-    <button class="teaser-btn" onclick="document.getElementById('btnAiReading').click()">続きをAI深層鑑定で見る（¥980）</button>
+    <button class="teaser-btn" onclick="document.getElementById('btnReading').click()">続きを深層鑑定で見る（¥980）</button>
   </div>
 
-  <!-- ▼ AI鑑定CTA：Stripe決済リンク⑥（¥980）へ直接遷移 -->
+  <!-- ▼ 鑑定CTA：Stripe決済リンク⑥（¥980）へ直接遷移 -->
   <div class="ai-cta">
-    <span class="ai-cta-eyebrow">AI Deep Reading</span>
+    <span class="ai-cta-eyebrow">Deep Reading</span>
     <h2 class="ai-cta-title">復縁への道をさらに深く読み解きませんか</h2>
-    <p class="ai-cta-desc">同じカードを使って、AIがより詳しい復縁鑑定を行います</p>
+    <p class="ai-cta-desc">同じカードを使って、深層鑑定がより詳しい復縁鑑定を行います</p>
     <p style="font-family:'Noto Serif JP',serif;font-weight:200;font-size:12px;letter-spacing:.15em;color:var(--ink-mid);line-height:2.4;margin-bottom:24px;padding:20px 24px;background:var(--warm);border-left:2px solid var(--purple)">この鑑定では、復縁の可能性が低い場合でも<br>その理由と今後の選択肢をはっきりお伝えします。</p>
     <div class="ai-cta-features">
       <span class="ai-cta-feature">相手の本音</span>
       <span class="ai-cta-feature">復縁の可能性</span>
       <span class="ai-cta-feature">あなたが取るべき行動</span>
     </div>
-    <a href="#" class="btn-ai" id="btnAiReading"><span>AI深層鑑定を受ける（¥980）</span></a>
+    <a href="#" class="btn-ai" id="btnReading"><span>深層鑑定を受ける（¥980）</span></a>
   </div>
 
   <div class="result-actions">
@@ -839,7 +839,7 @@ function showResult() {
   document.getElementById('teaserPreview').textContent = teaserContent.preview;
 
   // ▼ Stripe決済リンク⑥（¥980）へ直接遷移
-  const reunionBtn = document.getElementById('btnAiReading');
+  const reunionBtn = document.getElementById('btnReading');
   reunionBtn.href = 'https://buy.stripe.com/test_5kQ28qfC82y65aKgFJ2VG08';
 
   resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -918,24 +918,24 @@ const CARD_GROUPS = {
 };
 const TEASER_TEXTS = {
   A: {
-    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。復縁の可能性に、まだ気づいていない大きなサインが隠れています…', preview: 'あなたが引いた3枚のカードは、あの人の心にまだ消えていない感情が残っている可能性を示しています。AIはその本音と復縁への道筋を読み取りましたが、それが動き出すには、ある条件が…' },
-    r: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。復縁への道に、まだ気づいていない感情のすれ違いが隠れています…', preview: 'あなたが引いた3枚のカードは、二人の間にまだ整理されていない感情が残っている可能性を示しています。AIはその原因と解決の糸口を読み取りました。実はそれは…' },
+    u: { hook: '深層鑑定があなたの引いた3枚のカードを深く読み解きました。復縁の可能性に、まだ気づいていない大きなサインが隠れています…', preview: 'あなたが引いた3枚のカードは、あの人の心にまだ消えていない感情が残っている可能性を示しています。AIはその本音と復縁への道筋を読み取りましたが、それが動き出すには、ある条件が…' },
+    r: { hook: '深層鑑定があなたの引いた3枚のカードを深く読み解きました。復縁への道に、まだ気づいていない感情のすれ違いが隠れています…', preview: 'あなたが引いた3枚のカードは、二人の間にまだ整理されていない感情が残っている可能性を示しています。AIはその原因と解決の糸口を読み取りました。実はそれは…' },
   },
   B: {
-    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。復縁への大きな転機が近づいている可能性があります…', preview: 'あなたが引いた3枚のカードは、二人の関係に近づいている転機のサインを示しています。AIはそのタイミングとあなたが今取るべき行動を読み取りました。それによると…' },
-    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。今、重要な変化を見逃している可能性があります…', preview: 'あなたが引いた3枚のカードは、復縁の流れに重要な変化が起きている可能性を示しています。AIはその内容を読み取りました。このままでは…' },
+    u: { hook: '深層鑑定があなたの引いた3枚のカードを深く読み解きました。復縁への大きな転機が近づいている可能性があります…', preview: 'あなたが引いた3枚のカードは、二人の関係に近づいている転機のサインを示しています。AIはそのタイミングとあなたが今取るべき行動を読み取りました。それによると…' },
+    r: { hook: '深層鑑定があなたの引いた3枚のカードから気になるメッセージを受け取りました。今、重要な変化を見逃している可能性があります…', preview: 'あなたが引いた3枚のカードは、復縁の流れに重要な変化が起きている可能性を示しています。AIはその内容を読み取りました。このままでは…' },
   },
   C: {
-    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。あの人の内側に、まだ表に出ていない深い感情が眠っています…', preview: 'あなたが引いた3枚のカードは、あの人の心の奥にまだ言葉にされていない想いが残っている可能性を示しています。AIはそのメッセージを読み解きましたが、それはあなたの現状に…' },
-    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。自分でも気づいていない何かが復縁を妨げている可能性があります…', preview: 'あなたが引いた3枚のカードは、復縁を妨げている見えない障壁がある可能性を示しています。AIはその正体を読み取りました。それは意外にも…' },
+    u: { hook: '深層鑑定があなたの引いた3枚のカードを深く読み解きました。あの人の内側に、まだ表に出ていない深い感情が眠っています…', preview: 'あなたが引いた3枚のカードは、あの人の心の奥にまだ言葉にされていない想いが残っている可能性を示しています。AIはそのメッセージを読み解きましたが、それはあなたの現状に…' },
+    r: { hook: '深層鑑定があなたの引いた3枚のカードから気になるメッセージを受け取りました。自分でも気づいていない何かが復縁を妨げている可能性があります…', preview: 'あなたが引いた3枚のカードは、復縁を妨げている見えない障壁がある可能性を示しています。AIはその正体を読み取りました。それは意外にも…' },
   },
   D: {
-    u: { hook: 'AIがあなたの引いた3枚のカードを深く読み解きました。あなたの中に、まだ発揮されていない復縁への力が眠っています…', preview: 'あなたが引いた3枚のカードは、あなたの中にまだ活かされていない力と可能性が眠っていることを示しています。AIはそれを引き出す鍵を読み取りました。今あなたに最も必要なのは…' },
-    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。本来の魅力がうまく伝わっていない可能性があります…', preview: 'あなたが引いた3枚のカードは、あなたの本来の魅力が相手にうまく伝わっていない可能性を示しています。AIはその原因を読み取りました。鍵を握っているのは…' },
+    u: { hook: '深層鑑定があなたの引いた3枚のカードを深く読み解きました。あなたの中に、まだ発揮されていない復縁への力が眠っています…', preview: 'あなたが引いた3枚のカードは、あなたの中にまだ活かされていない力と可能性が眠っていることを示しています。AIはそれを引き出す鍵を読み取りました。今あなたに最も必要なのは…' },
+    r: { hook: '深層鑑定があなたの引いた3枚のカードから気になるメッセージを受け取りました。本来の魅力がうまく伝わっていない可能性があります…', preview: 'あなたが引いた3枚のカードは、あなたの本来の魅力が相手にうまく伝わっていない可能性を示しています。AIはその原因を読み取りました。鍵を握っているのは…' },
   },
   E: {
-    u: { hook: 'AIがあなたの引いた3枚のカードを読み解きました。ある人物や出来事が復縁に予想以上の影響を与えている可能性があります…', preview: 'あなたが引いた3枚のカードは、二人の復縁にある人物や出来事が想像以上に深く関わっている可能性を示しています。AIはそのつながりを読み取りましたが、注目すべきは…' },
-    r: { hook: 'AIがあなたの引いた3枚のカードから気になるメッセージを受け取りました。気づかないうちに自分を縛っているものが復縁を遠ざけている可能性があります…', preview: 'あなたが引いた3枚のカードは、あなたが無意識に自分を縛っているものがある可能性を示しています。AIはその正体と解放へのヒントを読み取りました。それによると…' },
+    u: { hook: '深層鑑定があなたの引いた3枚のカードを読み解きました。ある人物や出来事が復縁に予想以上の影響を与えている可能性があります…', preview: 'あなたが引いた3枚のカードは、二人の復縁にある人物や出来事が想像以上に深く関わっている可能性を示しています。AIはそのつながりを読み取りましたが、注目すべきは…' },
+    r: { hook: '深層鑑定があなたの引いた3枚のカードから気になるメッセージを受け取りました。気づかないうちに自分を縛っているものが復縁を遠ざけている可能性があります…', preview: 'あなたが引いた3枚のカードは、あなたが無意識に自分を縛っているものがある可能性を示しています。AIはその正体と解放へのヒントを読み取りました。それによると…' },
   },
 };
 function getCardGroup(cardName) {
@@ -991,7 +991,6 @@ function closeMenu(){
 </script>
 
 <footer style="border-top:1px solid rgba(182,169,154,.15);padding:32px 80px;text-align:center">
-  <a href="tokusho.html" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:.25em;color:var(--dust);text-decoration:none;transition:color .3s" onmouseover="this.style.color='var(--ink-lt)'" onmouseout="this.style.color='var(--dust)'">特定商取引法に基づく表記</a>
 </footer>
 </body>
 </html>
