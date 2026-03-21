@@ -144,7 +144,9 @@
     <li><a href="product.html">本格AI鑑定</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:12px">
-    <button id="muteBtn" onclick="toggleMute()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink-lt);padding:4px;line-height:1;opacity:.7;transition:opacity .3s" title="音声オン/オフ">🔊</button>
+    <button id="muteBtn" onclick="toggleMute()" style="background:none;border:none;cursor:pointer;padding:4px;line-height:1;opacity:.8;transition:opacity .3s;margin-right:12px" title="音声オン/オフ">
+      <img id="soundIcon" src="sound_on.png" alt="音声オン" style="width:32px;height:32px;object-fit:contain">
+    </button>
     <button class="hamburger" id="hamburger" aria-label="メニュー">
       <span></span><span></span><span></span>
     </button>
@@ -298,8 +300,11 @@ function playSound(key, volumeScale = 1.0, lowpass = null) {
 
 function toggleMute() {
   _muted = !_muted;
-  const btn = document.getElementById('muteBtn');
-  if (btn) btn.textContent = _muted ? '🔇' : '🔊';
+  const icon = document.getElementById('soundIcon');
+  if (icon) {
+    icon.src = _muted ? 'sound_off.png' : 'sound_on.png';
+    icon.alt = _muted ? '音声オフ' : '音声オン';
+  }
 }
 
 const CARDS = [
