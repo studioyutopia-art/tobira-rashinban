@@ -452,7 +452,7 @@ function toggleMute() {
   _muted = !_muted;
   const icon = document.getElementById('soundIcon');
   if (icon) {
-    icon.src = _muted ? 'sound_off.png' : 'sound_on.png';
+    icon.src = _muted ? 'volume_off.png' : 'volume.png';
     icon.alt = _muted ? '音声オフ' : '音声オン';
   }
 }
