@@ -825,6 +825,7 @@ function confirmCard(index) {
 function showResult() {
   const theme = THEMES[currentTheme];
   const resultArea = document.getElementById('resultArea');
+  resultArea.style.display = 'block';
   resultArea.classList.add('visible');
   document.body.style.background = 'var(--ink)';
   document.body.style.transition = 'background 0.8s ease';
