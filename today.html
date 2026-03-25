@@ -141,7 +141,7 @@
     <li><a href="love.html">あの人の気持ち</a></li>
     <li><a href="reunion.html">復縁できる？</a></li>
     <li><a href="cards.html">カード解説</a></li>
-    <li><a href="product.html">本格AI鑑定</a></li>
+    <li><a href="product.html">本格深層鑑定</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="muteBtn" onclick="toggleMute()" style="background:none;border:none;cursor:pointer;padding:4px;line-height:1;opacity:.8;transition:opacity .3s;margin-right:12px" title="音声オン/オフ">
@@ -161,7 +161,7 @@
     <li><a href="love.html" onclick="closeMenu()">あの人の気持ち</a></li>
     <li><a href="reunion.html" onclick="closeMenu()">復縁できる？</a></li>
     <li><a href="cards.html" onclick="closeMenu()">カード解説</a></li>
-    <li><a href="product.html" onclick="closeMenu()">本格AI鑑定</a></li>
+    <li><a href="product.html" onclick="closeMenu()">本格深層鑑定</a></li>
   </ul>
 </div>
 
@@ -212,14 +212,14 @@
   <p class="result-message" id="resultMessage"></p>
   <div class="result-actions">
     <a href="tarot.html" class="btn-action"><span>自分でカードを引く</span></a>
-    <!-- ▼ チラ見せUI＋AI深層鑑定ボタン -->
+    <!-- ▼ チラ見せUI＋深層鑑定ボタン -->
     <div class="teaser-wrap" id="teaserWrap" style="width:100%;max-width:400px;text-align:left">
       <span class="teaser-hook" id="teaserHook"></span>
       <div class="teaser-preview">
-        <span class="teaser-preview-label">AI鑑定より（一部）</span>
+        <span class="teaser-preview-label">鑑定より（一部）</span>
         <p class="teaser-preview-text" id="teaserPreview"></p>
       </div>
-      <button class="teaser-btn" onclick="saveReadingData();window.location.href='https://buy.stripe.com/test_00w9AS3TqdcK8mW6152VG03'">続きをAI深層鑑定で見る（¥300）</button>
+      <button class="teaser-btn" onclick="saveReadingData();window.location.href='https://buy.stripe.com/test_00w9AS3TqdcK8mW6152VG03'">続きを深層鑑定で見る（¥300）</button>
     </div>
     <div class="share-wrap">
       <a id="btnShareX" href="#" target="_blank" class="btn-share">X でシェア</a>
@@ -593,7 +593,7 @@ function getTeaserText(cardName, reversed) {
   return { hook: data.hook, preview: data.preview.replace('{card}', cardName) };
 }
 
-// AI深層鑑定ボタン押下時：reading.html用データをlocalStorageに保存
+// 深層鑑定ボタン押下時：reading.html用データをlocalStorageに保存
 function saveReadingData() {
   if (_currentCard) {
     const orientation = _currentReversed ? '逆位置' : '正位置';
